@@ -1,0 +1,43 @@
+---
+/**
+ * The connecting line.
+ *
+ * A 1px --color-signal hairline on the page's centre axis, occupying the gap
+ * between every pair of sections from the hero down to the footer. Because
+ * every gap carries it at the same x, the eye reads one continuous span top
+ * to bottom — the crossing, stated structurally rather than illustrated.
+ *
+ * It is never an arrow, never labelled, never a gradient. It stays
+ * subordinate to the card render, which is the page's only loud object.
+ * Hidden below 768px, where the single-column rhythm carries the page on its
+ * own and a centre line would only crowd it.
+ *
+ * Purely decorative, so it is hidden from assistive technology.
+ */
+---
+
+<div class="bridge-span" aria-hidden="true"></div>
+
+<style>
+  .bridge-span {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .bridge-span {
+      display: flex;
+      justify-content: center;
+      height: 64px;
+    }
+
+    .bridge-span::before {
+      content: '';
+      width: 1px;
+      height: 100%;
+      background-color: var(--color-signal);
+      /* Quiet enough that most visitors register it as rhythm, not as a
+         drawn element. */
+      opacity: 0.5;
+    }
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+/**
+ * The landing page, one route per locale.
+ *
+ * The section order is the page's argument: the hero establishes the near
+ * side and the card as the way across; Apple Pay and the use cases are the
+ * far side, the ordinary things that start working again; the tiers are the
+ * choice of how to cross; the process is the crossing itself. Reading top to
+ * bottom should take you somewhere.
+ *
+ * <BridgeSpan> occupies each gap between those sections, so the connecting
+ * line is unbroken from the hero to the footer.
+ */
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Hero from '../../components/Hero.astro';
+import DisclosureBand from '../../components/DisclosureBand.astro';
+import ApplePay from '../../components/ApplePay.astro';
+import UseCases from '../../components/UseCases.astro';
+import Tiers from '../../components/Tiers.astro';
+import Process from '../../components/Process.astro';
+import Faq from '../../components/Faq.astro';
+import ClosingCta from '../../components/ClosingCta.astro';
+import Footer from '../../components/Footer.astro';
+import BridgeSpan from '../../components/BridgeSpan.astro';
+import { LOCALES, t, type Locale } from '../../i18n';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const copy = t(locale);
+---
+
+<Base locale={locale}>
+  <Nav locale={locale} />
+
+  <main id="main" aria-label={copy.a11y.mainLabel}>
+    <Hero locale={locale} />
+    <BridgeSpan />
+    <DisclosureBand locale={locale} />
+    <BridgeSpan />
+    <ApplePay locale={locale} />
+    <BridgeSpan />
+    <UseCases locale={locale} />
+    <BridgeSpan />
+    <Tiers locale={locale} />
+    <BridgeSpan />
+    <Process locale={locale} />
+    <BridgeSpan />
+    <Faq locale={locale} />
+    <BridgeSpan />
+    <ClosingCta locale={locale} />
+    <BridgeSpan />
+  </main>
+
+  <Footer locale={locale} />
+</Base>

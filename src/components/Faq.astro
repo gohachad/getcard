@@ -1,0 +1,133 @@
+---
+/**
+ * FAQ accordion.
+ *
+ * Native <details>/<summary>: zero JavaScript, every answer present in the
+ * DOM at build time for search engines, and keyboard behaviour that comes
+ * free and correct.
+ *
+ * The 200ms reveal uses interpolate-size + ::details-content. Browsers
+ * without it open instantly, which is the same result reduced-motion users
+ * get by design.
+ */
+import { t, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+---
+
+<section class="faq section" id="faq" aria-labelledby="faq-heading">
+  <div class="measure-form">
+    <h2 id="faq-heading">{copy.faq.heading}</h2>
+
+    <div class="rows">
+      {
+        copy.faq.items.map((item, index) => (
+          <details open={index === 0}>
+            <summary>
+              <span class="question">{item.q}</span>
+              <svg class="chevron" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+                <path
+                  d="M4 6l4 4 4-4"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </summary>
+            <div class="answer">
+              <p>{item.a}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  h2 {
+    font-size: var(--text-heading);
+    line-height: var(--text-heading--line-height);
+    letter-spacing: var(--text-heading--letter-spacing);
+    font-weight: 600;
+    margin: 0 0 40px;
+    text-align: center;
+  }
+
+  /* Full-width rows on canvas, hairline between them, no panel fill. */
+  .rows {
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  details {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 20px;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .question {
+    font-size: var(--text-subheading);
+    line-height: var(--text-subheading--line-height);
+    letter-spacing: var(--text-subheading--letter-spacing);
+    font-weight: 400;
+    color: var(--color-ink);
+  }
+
+  .chevron {
+    flex: 0 0 auto;
+    color: var(--color-ash);
+    transition: rotate 200ms ease-out;
+  }
+
+  details[open] .chevron {
+    rotate: 180deg;
+  }
+
+  .answer {
+    padding-bottom: 20px;
+  }
+
+  .answer p {
+    margin: 0;
+    color: var(--color-graphite);
+    max-width: 62ch;
+  }
+
+  details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 200ms ease-out,
+      content-visibility 200ms allow-discrete;
+  }
+
+  details[open]::details-content {
+    block-size: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    details::details-content,
+    .chevron {
+      transition: none;
+    }
+  }
+</style>

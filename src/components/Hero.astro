@@ -1,0 +1,322 @@
+---
+import { t, type Locale } from '../i18n';
+import CardRender from './CardRender.astro';
+import Copy from './Copy.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+const tiers = copy.tiers;
+const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
+---
+
+<section class="hero section" aria-labelledby="hero-heading" data-tier={initial.id}>
+  <div class="measure hero-head">
+    <h1 id="hero-heading">{copy.hero.headline}</h1>
+    <p class="tagline">{copy.hero.tagline}</p>
+    <div class="hero-actions">
+      <a class="pill-filled" href="#process">{copy.hero.ctaPrimary}</a>
+      <a class="pill-outlined" href="#process">{copy.hero.ctaSecondary}</a>
+    </div>
+  </div>
+
+  <!-- The card crosses the frame rather than sitting in it: the stage is
+       wider than the text measure and the render overruns it. -->
+  <div class="card-stage">
+    <div class="card-tilt">
+      {
+        tiers.list.map((tier) => (
+          <div class="card-slot" data-slot={tier.id}>
+            <CardRender
+              tier={tier.id as 'gold' | 'platinum' | 'infinite'}
+              label={`${copy.hero.cardAlt} — ${tier.name}`}
+              active={tier.id === initial.id}
+            />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="measure">
+    <div
+      class="tier-selector"
+      role="radiogroup"
+      aria-label={copy.hero.tierSelectorLabel}
+      data-tier-selector
+    >
+      {
+        tiers.list.map((tier) => (
+          <button
+            type="button"
+            role="radio"
+            class="tier-option"
+            data-tier-option={tier.id}
+            aria-checked={tier.id === initial.id ? 'true' : 'false'}
+            tabindex={tier.id === initial.id ? 0 : -1}
+          >
+            {tier.name}
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- All three spec sets are in the DOM at build time. Without JS the
+         initial tier stays shown and the section still reads correctly. -->
+    <dl class="hero-specs">
+      <div class="spec">
+        <dt>{copy.hero.specs.annualFee}</dt>
+        <dd>
+          {
+            tiers.list.map((tier) => (
+              <span class="spec-value" data-spec={tier.id}>
+                {tier.annualFee}
+              </span>
+            ))
+          }
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>{copy.hero.specs.dailyAtm}</dt>
+        <dd>
+          {
+            tiers.list.map((tier) => (
+              <span class="spec-value" data-spec={tier.id}>
+                {tier.dailyAtm}
+              </span>
+            ))
+          }
+        </dd>
+      </div>
+      <div class="spec">
+        <dt>{copy.hero.specs.validity}</dt>
+        <dd><span class="spec-value spec-static">{tiers.shared.validity}</span></dd>
+      </div>
+      <div class="spec">
+        <dt>{tiers.specLabels.serviceFee}</dt>
+        <dd>
+          {
+            tiers.list.map((tier) => (
+              <span class="spec-value" data-spec={tier.id}>
+                <Copy text={tier.serviceFee} />
+              </span>
+            ))
+          }
+        </dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<script>
+  // The one animated moment on the site. Selecting a tier flips a single
+  // data attribute on the hero; the cross-fade and the spec swap are pure
+  // CSS from there, and prefers-reduced-motion turns them into instant swaps.
+  const hero = document.querySelector<HTMLElement>('.hero');
+  const group = document.querySelector<HTMLElement>('[data-tier-selector]');
+
+  if (hero && group) {
+    const options = Array.from(group.querySelectorAll<HTMLButtonElement>('[data-tier-option]'));
+
+    const select = (index: number, moveFocus = false) => {
+      const chosen = options[index];
+      if (!chosen) return;
+
+      hero.dataset.tier = chosen.dataset.tierOption;
+
+      options.forEach((option, i) => {
+        const isChosen = i === index;
+        option.setAttribute('aria-checked', String(isChosen));
+        option.tabIndex = isChosen ? 0 : -1;
+      });
+
+      // Only the visible card should be reachable by assistive tech.
+      hero.querySelectorAll<HTMLElement>('.card-slot').forEach((slot) => {
+        const svg = slot.querySelector('svg');
+        if (!svg) return;
+        if (slot.dataset.slot === hero.dataset.tier) svg.removeAttribute('aria-hidden');
+        else svg.setAttribute('aria-hidden', 'true');
+      });
+
+      if (moveFocus) chosen.focus();
+    };
+
+    options.forEach((option, index) => {
+      option.addEventListener('click', () => select(index));
+    });
+
+    // Arrow-key navigation, as a radiogroup is expected to support.
+    group.addEventListener('keydown', (event) => {
+      const current = options.findIndex((option) => option.tabIndex === 0);
+      if (current < 0) return;
+
+      const step =
+        event.key === 'ArrowRight' || event.key === 'ArrowDown'
+          ? 1
+          : event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+            ? -1
+            : 0;
+
+      if (step === 0) return;
+      event.preventDefault();
+      select((current + step + options.length) % options.length, true);
+    });
+  }
+</script>
+
+<style>
+  .hero {
+    text-align: center;
+    overflow-x: clip;
+  }
+
+  .hero-head h1 {
+    font-size: var(--text-display);
+    line-height: var(--text-display--line-height);
+    letter-spacing: var(--text-display--letter-spacing);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .tagline {
+    font-size: var(--text-subheading);
+    line-height: var(--text-subheading--line-height);
+    letter-spacing: var(--text-subheading--letter-spacing);
+    font-weight: 300;
+    color: var(--color-graphite);
+    margin: 20px auto 0;
+    max-width: 34ch;
+    text-wrap: balance;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  /* Stage is deliberately wider than the 980px text measure so the render
+     runs past the edges of the column the words sit in. */
+  .card-stage {
+    margin-top: 56px;
+    padding-inline: 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card-tilt {
+    position: relative;
+    width: min(720px, 108%);
+    aspect-ratio: 540 / 340;
+    rotate: -15deg;
+    /* Rotation leaves the corners overhanging; this keeps the tilt from
+       adding page height. */
+    margin-block: clamp(24px, 6vw, 56px);
+  }
+
+  .card-slot {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+    pointer-events: none;
+  }
+
+  .hero[data-tier='gold'] .card-slot[data-slot='gold'],
+  .hero[data-tier='platinum'] .card-slot[data-slot='platinum'],
+  .hero[data-tier='infinite'] .card-slot[data-slot='infinite'] {
+    opacity: 1;
+  }
+
+  /* Segmented control */
+  .tier-selector {
+    display: inline-flex;
+    gap: 4px;
+    margin-top: 8px;
+    padding: 4px;
+    background-color: var(--color-pebble);
+    border-radius: var(--radius-full);
+  }
+
+  .tier-option {
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-full);
+    padding: 8px 20px;
+    font-family: inherit;
+    font-size: var(--text-body-sm);
+    font-weight: 600;
+    color: var(--color-graphite);
+    cursor: pointer;
+    transition:
+      background-color 300ms ease-out,
+      color 300ms ease-out;
+  }
+
+  .tier-option[aria-checked='true'] {
+    background-color: var(--color-action);
+    color: var(--color-white);
+  }
+
+  .hero-specs {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin: 40px auto 0;
+    max-width: var(--container-form);
+    text-align: center;
+  }
+
+  .spec dt {
+    font-size: var(--text-body-sm);
+    color: var(--color-ash);
+  }
+
+  .spec dd {
+    margin: 4px 0 0;
+    /* Every value for this row is stacked here; only the active one is
+       shown, so the row height never jumps during a swap. */
+    display: grid;
+  }
+
+  .spec-value {
+    grid-area: 1 / 1;
+    font-size: var(--text-heading-sm);
+    line-height: var(--text-heading-sm--line-height);
+    letter-spacing: var(--text-heading-sm--letter-spacing);
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+  }
+
+  .spec-static {
+    opacity: 1;
+  }
+
+  .hero[data-tier='gold'] .spec-value[data-spec='gold'],
+  .hero[data-tier='platinum'] .spec-value[data-spec='platinum'],
+  .hero[data-tier='infinite'] .spec-value[data-spec='infinite'] {
+    opacity: 1;
+  }
+
+  @media (min-width: 768px) {
+    .hero-specs {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+  }
+
+  /* An instant swap instead of a cross-fade. */
+  @media (prefers-reduced-motion: reduce) {
+    .card-slot,
+    .spec-value,
+    .tier-option {
+      transition: none;
+    }
+  }
+</style>

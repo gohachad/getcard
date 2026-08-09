@@ -1,0 +1,116 @@
+---
+/**
+ * Flat and typographic — no panels. The intermediary disclosure repeats here
+ * at 14px, per DESIGN.md §7.
+ */
+import { t, type Locale } from '../i18n';
+import Copy from './Copy.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+---
+
+<footer class="footer">
+  <div class="measure">
+    <div class="columns">
+      {
+        copy.footer.columns.map((column) => (
+          <div class="column">
+            <h2>{column.title}</h2>
+            <ul>
+              {column.links.map((link) => (
+                <li>
+                  <a href={link.href}>
+                    <Copy text={link.label} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="fine">
+      <p class="disclosure">{copy.disclosure.footer}</p>
+      <p>{copy.footer.visaNote}</p>
+      {copy.footer.legalLines.map((line) => <p><Copy text={line} /></p>)}
+      <p>{copy.footer.copyright}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background-color: var(--color-canvas);
+    padding-block: 64px 48px;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+  }
+
+  h2 {
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-sm--line-height);
+    font-weight: 600;
+    color: var(--color-ink);
+    margin: 0 0 12px;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  a {
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-sm--line-height);
+    font-weight: 400;
+    color: var(--color-ash);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--color-link);
+  }
+
+  .fine {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-hairline);
+    display: grid;
+    gap: 12px;
+  }
+
+  .fine p {
+    margin: 0;
+    font-size: var(--text-caption);
+    line-height: 1.5;
+    color: var(--color-ash);
+    max-width: 90ch;
+  }
+
+  /* The disclosure repeats at 14px, a step above the rest of the fine print:
+     it is a statement about what getcard is, not a legal footnote. */
+  .fine .disclosure {
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-sm--line-height);
+    color: var(--color-graphite);
+  }
+
+  @media (min-width: 768px) {
+    .columns {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

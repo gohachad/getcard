@@ -1,0 +1,85 @@
+---
+/**
+ * DESIGN.md §7 Notice Callout. Semantic background fill, matching semantic
+ * border, icon left at 20px in the semantic colour.
+ *
+ * Only the warning variant is used on this page; success and error belong to
+ * the application flow, which is not built here.
+ */
+
+interface Props {
+  variant?: 'warning' | 'success' | 'error';
+  title: string;
+}
+
+const { variant = 'warning', title } = Astro.props;
+---
+
+<aside class={`notice notice-${variant}`}>
+  <svg class="icon" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+    <path
+      d="M10 1.6 19 18H1L10 1.6Z"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linejoin="round"></path>
+    <path d="M10 7.4v4.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+    <circle cx="10" cy="14.8" r="0.9" fill="currentColor"></circle>
+  </svg>
+
+  <div class="body">
+    <p class="title">{title}</p>
+    <p class="text"><slot /></p>
+  </div>
+</aside>
+
+<style>
+  .notice {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    border-radius: var(--radius-card);
+    border: 1px solid;
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+  }
+
+  .notice-warning {
+    background-color: var(--color-warning-bg);
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+  }
+
+  .notice-success {
+    background-color: var(--color-success-bg);
+    border-color: var(--color-success);
+    color: var(--color-success);
+  }
+
+  .notice-error {
+    background-color: var(--color-error-bg);
+    border-color: var(--color-error);
+    color: var(--color-error);
+  }
+
+  .icon {
+    flex: 0 0 auto;
+    margin-top: 3px;
+  }
+
+  .body {
+    min-width: 0;
+  }
+
+  .title {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  /* The message itself reads as body copy; the semantic colour stays on the
+     icon and the title so a whole paragraph is not set in warning orange. */
+  .text {
+    margin: 8px 0 0;
+    color: var(--color-graphite);
+  }
+</style>

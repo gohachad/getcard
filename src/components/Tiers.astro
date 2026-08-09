@@ -1,0 +1,218 @@
+---
+/**
+ * Tier comparison — the choice of how to cross.
+ *
+ * Three panels per DESIGN.md §5: white fill, hairline border, no shadow,
+ * never nested. Exactly one filled button in the row; Platinum is the
+ * recommended tier and takes it.
+ *
+ * Spec rows are aligned across all three panels with subgrid rather than
+ * fixed heights, so a value that wraps in Russian pushes the same row in
+ * every panel instead of knocking the columns out of step.
+ */
+import { t, type Locale } from '../i18n';
+import Copy from './Copy.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+const { specLabels, shared } = copy.tiers;
+
+const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
+  { label: specLabels.dailyAtm, value: tier.dailyAtm },
+  { label: specLabels.atmFee, value: shared.atmFee },
+  { label: specLabels.crossCurrency, value: shared.crossCurrency },
+  { label: specLabels.currency, value: shared.currency },
+  { label: specLabels.validity, value: shared.validity },
+  { label: specLabels.wallets, value: shared.wallets },
+  { label: specLabels.serviceFee, value: tier.serviceFee },
+];
+---
+
+<section class="tiers section" id="tiers" aria-labelledby="tiers-heading">
+  <div class="measure">
+    <h2 id="tiers-heading">{copy.tiers.heading}</h2>
+    <p class="intro">{copy.tiers.intro}</p>
+
+    <ul class="tiers-grid">
+      {
+        copy.tiers.list.map((tier) => (
+          <li class="panel tier-panel">
+            <h3>
+              {tier.name}
+              {tier.recommended && <span class="badge">{copy.tiers.recommendedLabel}</span>}
+            </h3>
+
+            <p class="fee">
+              {tier.annualFee}
+              <span class="fee-unit">{copy.tiers.annualFeeLabel}</span>
+            </p>
+
+            <dl class="specs">
+              {rowsFor(tier).map((row) => (
+                <div class="spec-row">
+                  <dt>{row.label}</dt>
+                  <dd>
+                    <Copy text={row.value} />
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <a class={tier.recommended ? 'pill-filled' : 'pill-outlined'} href="#process">
+              {tier.recommended ? copy.tiers.ctaRecommended : copy.tiers.cta}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="note">{copy.tiers.currencyNote}</p>
+  </div>
+</section>
+
+<style>
+  h2 {
+    font-size: var(--text-heading);
+    line-height: var(--text-heading--line-height);
+    letter-spacing: var(--text-heading--letter-spacing);
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+  }
+
+  .intro {
+    max-width: var(--container-form);
+    margin: 20px auto 40px;
+    color: var(--color-graphite);
+    text-align: center;
+  }
+
+  .tiers-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tier-panel {
+    display: grid;
+    gap: 0;
+    align-content: start;
+  }
+
+  h3 {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: var(--text-heading-sm);
+    line-height: var(--text-heading-sm--line-height);
+    letter-spacing: var(--text-heading-sm--letter-spacing);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .badge {
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-graphite);
+    border: 1px solid var(--color-signal);
+    border-radius: var(--radius-full);
+    padding: 2px 10px;
+    white-space: nowrap;
+  }
+
+  .fee {
+    font-size: var(--text-heading);
+    line-height: var(--text-heading--line-height);
+    letter-spacing: var(--text-heading--letter-spacing);
+    font-weight: 600;
+    margin: 12px 0 0;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .fee-unit {
+    font-size: var(--text-body-sm);
+    font-weight: 400;
+    letter-spacing: var(--text-body-sm--letter-spacing);
+    color: var(--color-ash);
+  }
+
+  .specs {
+    margin: 20px 0 0;
+    padding: 0;
+  }
+
+  .spec-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px 16px;
+    padding-block: 12px;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .spec-row dt {
+    font-size: var(--text-body-sm);
+    color: var(--color-ash);
+  }
+
+  .spec-row dd {
+    margin: 0;
+    font-size: var(--text-body);
+    text-align: right;
+  }
+
+  .tier-panel > .pill-filled,
+  .tier-panel > .pill-outlined {
+    margin-top: 24px;
+    align-self: end;
+    justify-self: stretch;
+  }
+
+  .note {
+    max-width: var(--container-form);
+    margin: 32px auto 0;
+    color: var(--color-ash);
+    font-size: var(--text-body-sm);
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    /* 11 rows: name, fee, 7 spec rows, spacer, button. The panels and their
+       spec lists both inherit these tracks, so every row lines up across
+       all three columns regardless of how the copy wraps. */
+    .tiers-grid {
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto repeat(7, auto) 1fr auto;
+      gap: 20px;
+    }
+
+    .tier-panel {
+      grid-row: 1 / -1;
+      grid-template-rows: subgrid;
+    }
+
+    .specs {
+      grid-row: span 7;
+      display: grid;
+      grid-template-rows: subgrid;
+    }
+
+    .tier-panel > .pill-filled,
+    .tier-panel > .pill-outlined {
+      grid-row: -2 / -1;
+    }
+  }
+</style>

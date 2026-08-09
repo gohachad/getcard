@@ -1,0 +1,31 @@
+---
+/**
+ * Renders a copy string, turning any `[TBD]` sentinel inside it into a
+ * visible gap rather than letting it read as ordinary text.
+ *
+ * Placeholders are interpolated mid-sentence in the locale files
+ * ("Способы оплаты: [TBD]."), so the marker has to survive inside a string.
+ * Once src/config/placeholders.ts is filled in, the sentinel disappears and
+ * this renders as plain text with no markup left behind.
+ */
+import { TBD } from '../config/placeholders';
+
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+
+// split() keeps the delimiter out of the result, so parts and separators
+// alternate: part, [TBD], part, [TBD], part…
+const parts = text.split(TBD);
+---
+
+{
+  parts.map((part, index) => (
+    <>
+      {part}
+      {index < parts.length - 1 && <span class="tbd">{TBD}</span>}
+    </>
+  ))
+}

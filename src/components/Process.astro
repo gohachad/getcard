@@ -1,0 +1,161 @@
+---
+/**
+ * The crossing itself, step by step.
+ *
+ * A genuine ordered sequence, so the numbering is meaningful — DESIGN.md §7.
+ * Vertical on mobile, horizontal on desktop, with a hairline connector
+ * between steps.
+ *
+ * Every step here is a real, completed part of the process, so all five
+ * circles render in the "complete" state rather than one being "active" —
+ * this is a description of the route, not a progress indicator.
+ */
+import { t, type Locale } from '../i18n';
+import Copy from './Copy.astro';
+import NoticeCallout from './NoticeCallout.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+---
+
+<section class="process section" id="process" aria-labelledby="process-heading">
+  <div class="measure">
+    <h2 id="process-heading">{copy.process.heading}</h2>
+    <p class="intro"><Copy text={copy.process.intro} /></p>
+
+    <ol class="steps">
+      {
+        copy.process.steps.map((step, index) => (
+          <li class="step">
+            <span class="marker" aria-hidden="true">
+              {index + 1}
+            </span>
+            <h3>{step.title}</h3>
+            <p>
+              <Copy text={step.body} />
+            </p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <p class="route-note"><Copy text={copy.process.routeNote} /></p>
+
+    <div class="tax">
+      <NoticeCallout title={copy.process.taxNotice.title}>
+        {copy.process.taxNotice.body}
+      </NoticeCallout>
+    </div>
+  </div>
+</section>
+
+<style>
+  h2 {
+    font-size: var(--text-heading);
+    line-height: var(--text-heading--line-height);
+    letter-spacing: var(--text-heading--letter-spacing);
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+  }
+
+  .intro {
+    max-width: var(--container-form);
+    margin: 20px auto 48px;
+    color: var(--color-graphite);
+    text-align: center;
+  }
+
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 32px;
+  }
+
+  .step {
+    position: relative;
+    padding-left: 48px;
+  }
+
+  .marker {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-action);
+    color: var(--color-white);
+    font-size: var(--text-body-sm);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  /* Vertical connector on mobile. */
+  .step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 16px;
+    top: 40px;
+    bottom: -32px;
+    border-left: 1px solid var(--color-hairline);
+  }
+
+  h3 {
+    font-size: var(--text-body);
+    line-height: 32px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .step p {
+    margin: 8px 0 0;
+    color: var(--color-graphite);
+  }
+
+  .route-note {
+    margin: 40px 0 0;
+    font-size: var(--text-body-sm);
+    color: var(--color-ash);
+    text-align: center;
+  }
+
+  .tax {
+    max-width: var(--container-form);
+    margin: 32px auto 0;
+  }
+
+  @media (min-width: 768px) {
+    .steps {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+    }
+
+    .step {
+      padding-left: 0;
+      padding-top: 48px;
+    }
+
+    /* Horizontal connector on desktop, running between the circles. */
+    .step:not(:last-child)::before {
+      left: 40px;
+      right: -24px;
+      top: 16px;
+      bottom: auto;
+      border-left: none;
+      border-top: 1px solid var(--color-hairline);
+    }
+
+    h3 {
+      line-height: var(--text-body--line-height);
+    }
+  }
+</style>

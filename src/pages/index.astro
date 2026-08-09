@@ -1,17 +1,40 @@
 ---
+/**
+ * `/` sends visitors to the Russian landing page.
+ *
+ * A static build has no server to issue a 301, so this does the three things
+ * a static redirect can: a canonical link and hreflang pair so search engines
+ * index the locale routes rather than this stub, a meta refresh, and a
+ * visible link for anyone the refresh does not carry across.
+ */
+import { localePath, LOCALES, htmlLang, DEFAULT_LOCALE, t } from '../i18n';
 
+const target = localePath(DEFAULT_LOCALE);
+const site = Astro.site ?? new URL('https://gohachad.github.io');
+const absolute = (path: string) => new URL(path, site).href;
+const copy = t(DEFAULT_LOCALE);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<!doctype html>
+<html lang={htmlLang[DEFAULT_LOCALE]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{copy.meta.title}</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={absolute(target)} />
+    {
+      LOCALES.map((locale) => (
+        <link rel="alternate" hreflang={htmlLang[locale]} href={absolute(localePath(locale))} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={absolute(localePath('ru'))} />
+  </head>
+  <body>
+    <a href={target}>{copy.meta.title}</a>
+    <script is:inline define:vars={{ target }}>
+      window.location.replace(target);
+    </script>
+  </body>
 </html>

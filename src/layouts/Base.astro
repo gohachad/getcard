@@ -1,0 +1,86 @@
+---
+import '../styles/global.css';
+import { t, htmlLang, localePath, LOCALES, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+
+const absolute = (path: string) => new URL(path, Astro.site ?? 'https://gohachad.github.io').href;
+---
+
+<!doctype html>
+<html lang={htmlLang[locale]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{copy.meta.title}</title>
+    <meta name="description" content={copy.meta.description} />
+
+    <link rel="canonical" href={absolute(localePath(locale))} />
+    {
+      LOCALES.map((other) => (
+        <link rel="alternate" hreflang={htmlLang[other]} href={absolute(localePath(other))} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={absolute(localePath('ru'))} />
+
+    <!-- Both subsets are needed on first paint in either locale: the RU build
+         carries Latin figures and the word "getcard"; the EN build carries none
+         of the Cyrillic, but preloading both keeps the switcher instant. -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={`${import.meta.env.BASE_URL}fonts/inter-latin-wght-normal.woff2`}
+      crossorigin
+    />
+    {
+      locale === 'ru' && (
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href={`${import.meta.env.BASE_URL}fonts/inter-cyrillic-wght-normal.woff2`}
+          crossorigin
+        />
+      )
+    }
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={copy.meta.title} />
+    <meta property="og:description" content={copy.meta.description} />
+    <meta property="og:url" content={absolute(localePath(locale))} />
+    <meta property="og:locale" content={locale === 'ru' ? 'ru_RU' : 'en_US'} />
+  </head>
+
+  <body>
+    <a href="#main" class="skip-link">{copy.a11y.skipToContent}</a>
+    <slot />
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    translate: -50% -150%;
+    z-index: 100;
+    padding: 11px 15px;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-full);
+    color: var(--color-link);
+    font-size: var(--text-body-sm);
+    text-decoration: none;
+    transition: translate 150ms ease-out;
+  }
+
+  .skip-link:focus-visible {
+    translate: -50% 8px;
+  }
+</style>

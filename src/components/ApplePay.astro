@@ -1,0 +1,50 @@
+---
+/**
+ * Apple Pay.
+ *
+ * Restrained on purpose: a wash band, a heading, three lines, and the launch
+ * date stated plainly. The date is the proof — most competing guides still
+ * list this as unsupported.
+ *
+ * Constraints held here: the Apple Pay mark is never reproduced (it is
+ * licensed to issuers and merchants, and getcard is neither), there are no
+ * device renders or Wallet screenshots, and no affiliation is implied.
+ * "Apple Pay" is plain text in the body typeface.
+ */
+import { t, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+---
+
+<section class="apple-pay section" id="apple-pay" aria-labelledby="apple-pay-heading">
+  <div class="measure-form">
+    <h2 id="apple-pay-heading">{copy.applePay.heading}</h2>
+    {copy.applePay.body.map((line) => <p>{line}</p>)}
+  </div>
+</section>
+
+<style>
+  .apple-pay {
+    background-color: var(--color-wash);
+    border-top: 1px solid var(--color-hairline);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  h2 {
+    font-size: var(--text-heading-sm);
+    line-height: var(--text-heading-sm--line-height);
+    letter-spacing: var(--text-heading-sm--letter-spacing);
+    font-weight: 600;
+    margin: 0;
+  }
+
+  p {
+    margin: 20px 0 0;
+    color: var(--color-graphite);
+  }
+</style>

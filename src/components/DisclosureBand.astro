@@ -1,0 +1,37 @@
+---
+/**
+ * DESIGN.md §7: not fine print. Set at full body size on the homepage.
+ * A service that states its own limits reads as more trustworthy, not less.
+ */
+import { t, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+---
+
+<aside class="disclosure">
+  <p>{copy.disclosure.homepage}</p>
+</aside>
+
+<style>
+  .disclosure {
+    background-color: var(--color-wash);
+    border-top: 1px solid var(--color-hairline);
+    border-bottom: 1px solid var(--color-hairline);
+    padding-block: 24px;
+    padding-inline: 24px;
+  }
+
+  .disclosure p {
+    max-width: var(--container-form);
+    margin: 0 auto;
+    text-align: center;
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    color: var(--color-graphite);
+  }
+</style>
