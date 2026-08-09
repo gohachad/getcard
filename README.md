@@ -10,8 +10,10 @@ Astro + Tailwind v4, static, Russian and English.
 [Русская версия](https://gohachad.github.io/getcard/ru/) ·
 [English](https://gohachad.github.io/getcard/en/)
 
-> Two setup steps are still outstanding before that URL resolves — see
-> [docs/README.md](docs/README.md). Delete this note once it does.
+> Not live yet — Pages is still pointed at `main`, which has no built output.
+> The built site is on the `gh-pages` branch; switching **Settings → Pages →
+> Branch** to `gh-pages` publishes it. See [docs/README.md](docs/README.md).
+> Delete this note once the URL resolves.
 
 ---
 
