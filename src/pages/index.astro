@@ -7,11 +7,14 @@
  * index the locale routes rather than this stub, a meta refresh, and a
  * visible link for anyone the refresh does not carry across.
  */
-import { localePath, LOCALES, htmlLang, DEFAULT_LOCALE, t } from '../i18n';
+import { localePath, canonicalPath, LOCALES, htmlLang, DEFAULT_LOCALE, t } from '../i18n';
 
+// The redirect target is a real link the browser follows, so it carries the
+// base path. The canonical and hreflang URLs are the site's public identity on
+// getcard.kg, so they do not.
 const target = localePath(DEFAULT_LOCALE);
-const site = Astro.site ?? new URL('https://gohachad.github.io');
-const absolute = (path: string) => new URL(path, site).href;
+const site = Astro.site ?? new URL('https://getcard.kg');
+const absolute = (locale: typeof DEFAULT_LOCALE) => new URL(canonicalPath(locale), site).href;
 const copy = t(DEFAULT_LOCALE);
 ---
 
@@ -23,13 +26,13 @@ const copy = t(DEFAULT_LOCALE);
     <title>{copy.meta.title}</title>
     <meta name="robots" content="noindex, follow" />
     <meta http-equiv="refresh" content={`0; url=${target}`} />
-    <link rel="canonical" href={absolute(target)} />
+    <link rel="canonical" href={absolute(DEFAULT_LOCALE)} />
     {
       LOCALES.map((locale) => (
-        <link rel="alternate" hreflang={htmlLang[locale]} href={absolute(localePath(locale))} />
+        <link rel="alternate" hreflang={htmlLang[locale]} href={absolute(locale)} />
       ))
     }
-    <link rel="alternate" hreflang="x-default" href={absolute(localePath('ru'))} />
+    <link rel="alternate" hreflang="x-default" href={absolute('ru')} />
   </head>
   <body>
     <a href={target}>{copy.meta.title}</a>

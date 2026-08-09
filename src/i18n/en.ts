@@ -1,5 +1,13 @@
 import type { Translations } from './types';
-import { TBD, serviceFee, payment, timeline, legal, contacts } from '../config/placeholders';
+import {
+  TBD,
+  pricing,
+  payment,
+  timeline,
+  legal,
+  contacts,
+  specs,
+} from '../config/placeholders';
 
 /**
  * English — translated from ru.ts, which is the source of truth for meaning.
@@ -8,9 +16,9 @@ import { TBD, serviceFee, payment, timeline, legal, contacts } from '../config/p
  */
 export const en: Translations = {
   meta: {
-    title: 'getcard — a USD VISA card, arranged remotely',
+    title: 'getcard — a VISA card from a Kyrgyz bank: two documents and one meeting',
     description:
-      'We help Russian residents remotely obtain a USD VISA debit card issued by a licensed Kyrgyz bank. Apple Pay and Google Pay. Annual fee from $20.',
+      'We help Russian citizens obtain a VISA card issued by a licensed Kyrgyz bank. Dollars, euros, dirhams and rubles. Two documents, one meeting in Moscow. The card works before the plastic arrives — straight into Apple Pay and Google Pay.',
     localeName: 'English',
     localeShort: 'EN',
   },
@@ -25,7 +33,7 @@ export const en: Translations = {
   nav: {
     wordmark: 'getcard',
     links: [
-      { label: 'What the card does', href: '#uses' },
+      { label: 'Who it suits', href: '#audiences' },
       { label: 'Plans', href: '#tiers' },
       { label: 'How it works', href: '#process' },
       { label: 'Questions', href: '#faq' },
@@ -38,58 +46,74 @@ export const en: Translations = {
   },
 
   hero: {
-    headline: 'A USD VISA card, arranged remotely',
-    tagline: 'Issued by a licensed Kyrgyz bank. You do not travel anywhere.',
+    headline: 'Two documents, one meeting — and the card works',
+    tagline:
+      'The account and the card go live the moment the card is issued — add it to Apple Pay or Google Pay and start paying without waiting for the plastic.',
     ctaPrimary: 'Get a card',
     ctaSecondary: 'How it works',
     tierSelectorLabel: 'Choose a plan',
-    cardAlt: 'Illustration of a USD VISA card',
+    cardAlt: 'Illustration of a VISA card',
     specs: {
       annualFee: 'Annual fee',
       dailyAtm: 'Daily ATM limit',
-      validity: 'Valid for',
+      currencies: 'Account currencies',
+      serviceFee: 'Service fee',
     },
+    currencies: '$ € AED ₽',
   },
 
   disclosure: {
     homepage:
-      'getcard is an independent intermediary. We are not a bank and we do not issue cards. We prepare the documents and file the application with a licensed Kyrgyz bank on your behalf, under a notarised power of attorney.',
+      'getcard is an independent intermediary. We are not a bank and we do not issue cards. We help you assemble the documents and file the application with a licensed Kyrgyz bank, which decides whether to issue the card on its own.',
     footer:
       'getcard is an independent intermediary. We are not a bank, we do not issue cards, and we are not affiliated with any bank or payment network.',
+  },
+
+  audiences: {
+    heading: 'Who the card suits',
+    columns: [
+      {
+        title: 'You live in Russia',
+        items: [
+          'Paying for things and withdrawing cash while travelling — anywhere VISA is accepted.',
+          'Foreign subscriptions and online services that no longer accept cards issued in Russia.',
+          'A card that works at terminals abroad, where a Russian one stopped.',
+          'Top-ups by transfer from major Russian banks.',
+        ],
+      },
+      {
+        title: 'You live abroad and stay connected to Russia',
+        items: [
+          'An account in several currencies: dollars, euros, dirhams and rubles.',
+          'Ruble transfers — both sending and receiving.',
+          'Paying for Russian services from abroad.',
+          'One card that works on both sides.',
+        ],
+      },
+    ],
   },
 
   applePay: {
     heading: 'Apple Pay has worked since 28 July 2026',
     body: [
       'Apple Pay launched in Kyrgyzstan on 28 July 2026. The issuing bank was in the first wave, so the card adds to Wallet and works from day one.',
-      'The account and the card start working before the physical card reaches you. You can add it to Apple Pay or Google Pay and start paying as soon as the account is open, without waiting for delivery.',
+      'You can add the card to Apple Pay or Google Pay as soon as it is issued, before the plastic reaches you. From that moment you can pay with it.',
       'Visa charges no extra fee for paying via Apple Pay. The fees and the exchange rate are the same as paying with the physical card.',
-      'Google Pay is supported as well.',
     ],
   },
 
-  uses: {
-    heading: 'What the card does',
-    items: [
-      {
-        title: 'Payments and cash withdrawals abroad',
-        body: 'Pay in shops, cafés and terminals anywhere VISA is accepted. ATM withdrawals cost 1%, minimum $3.',
-      },
-      {
-        title: 'Foreign subscriptions and online services',
-        body: 'Pay for foreign subscriptions and online services that no longer accept cards issued in Russia.',
-      },
-      {
-        title: 'SWIFT transfers in dirhams',
-        body: 'Incoming and outgoing SWIFT transfers. In UAE dirhams (AED) only — transfers in dollars or euros are not available.',
-      },
-    ],
+  eligibility: {
+    heading: 'Who can apply',
+    body: 'Russian citizens only. The bank requires an in-person meeting with the client, and it takes place at the bank’s representative office in Moscow — which is why we can only arrange this for Russian citizens. The service is not yet available to citizens of other countries.',
   },
 
   tiers: {
     heading: 'Plans',
     intro:
-      'Three versions of the card. All are USD, VISA, and valid for 5 years. They differ in the annual fee and the daily ATM limit.',
+      'Three versions of the card. All are multi-currency and all work with Apple Pay and Google Pay. They differ in the annual fee and the daily ATM limit.',
+    unverifiedTitle: 'These figures are not confirmed with the bank yet',
+    unverifiedNotice:
+      'Figures marked [VERIFY] have not been confirmed with the bank yet — they come from third-party material that has already proven inaccurate about currency support. Do not treat them as final: we confirm the terms of your plan before you pay anything.',
     recommendedLabel: 'Recommended',
     annualFeeLabel: 'per year',
     ctaRecommended: 'Get Platinum',
@@ -99,73 +123,70 @@ export const en: Translations = {
       atmFee: 'ATM withdrawal fee',
       crossCurrency: 'Cross-currency fee',
       validity: 'Valid for',
-      currency: 'Account currency',
+      currencies: 'Account currencies',
       wallets: 'Contactless payment',
       serviceFee: 'getcard service fee',
     },
     shared: {
-      atmFee: '1%, minimum $3',
-      crossCurrency: '1.5%',
-      validity: '5 years',
-      currency: 'US dollars only',
+      atmFee: specs.shared.atmFeeEn,
+      crossCurrency: specs.shared.crossCurrencyEn,
+      validity: specs.shared.validityEn,
+      currencies: 'Dollars, euros, dirhams, rubles',
       wallets: 'Apple Pay, Google Pay',
+      serviceFee: pricing.serviceFee,
     },
     list: [
       {
         id: 'gold',
         name: 'Gold',
-        annualFee: '$20',
-        dailyAtm: '$6,000',
-        serviceFee: serviceFee.gold,
+        annualFee: specs.gold.annualFee,
+        dailyAtm: specs.gold.dailyAtm,
         recommended: false,
       },
       {
         id: 'platinum',
         name: 'Platinum',
-        annualFee: '$100',
-        dailyAtm: '$12,000',
-        serviceFee: serviceFee.platinum,
+        annualFee: specs.platinum.annualFee,
+        dailyAtm: specs.platinum.dailyAtm,
         recommended: true,
       },
       {
         id: 'infinite',
         name: 'Infinite',
-        annualFee: '$150',
-        dailyAtm: '$12,000',
-        serviceFee: serviceFee.infinite,
+        annualFee: specs.infinite.annualFee,
+        dailyAtm: specs.infinite.dailyAtm,
         recommended: false,
       },
     ],
-    currencyNote:
-      'The account is dollars and dollars only — this is not a multi-currency card. Purchases in other currencies are converted at a 1.5% cross-currency fee.',
+    priceNote: `The getcard service fee is ${pricing.serviceFee}. Whether that price covers all three plans: ${TBD}. Whether it includes the first year's annual fee: ${TBD}.`,
   },
 
   process: {
     heading: 'How it works',
-    intro: `Five steps from documents to the card in your hand. Start to finish: ${timeline.total}.`,
+    intro: 'Five steps. Only one of them is offline — the meeting in Moscow.',
     steps: [
       {
-        title: 'Send your documents',
-        body: 'Scans of your international and internal passports. We check the set and tell you if anything is missing.',
+        title: 'Fill in the form and upload two documents',
+        body: 'Your Russian internal passport — the photo page and the registration page. Your foreign passport — the title page only. Plus a short form: contact details and occupation. Nothing else is needed.',
       },
       {
-        title: 'Sign the contract',
-        body: 'A contract with getcard and a notarised power of attorney to file the application on your behalf. The power of attorney is signed at a notary in your own city.',
+        title: 'Automatic verification',
+        body: 'The system checks the documents against the form. If something is missing or does not match, we tell you what to fix straight away.',
       },
       {
-        title: 'Pay',
-        body: `Payment methods: ${payment.methods}. Payment schedule: ${payment.schedule}.`,
+        title: "Meeting at the bank's Moscow representative office",
+        body: `The one offline step: the bank has to record an in-person meeting with the client. That is a single meeting in Moscow — there is no flight to Bishkek. Address: ${contacts.moscowOffice}.`,
       },
       {
-        title: 'We file the application',
-        body: 'Our representative submits the documents at a branch of a licensed Kyrgyz bank and opens the account under the power of attorney.',
+        title: 'Card issued — and already working',
+        body: 'The account and the card are active as soon as the card is issued. You have the account details, the card goes into Apple Pay or Google Pay, and you can pay from that moment — while the plastic is still in transit.',
       },
       {
-        title: 'The card is delivered',
-        body: 'The card and the account details are handed over to you. From there the account is yours alone — getcard has no access to it.',
+        title: 'The plastic is delivered',
+        body: 'The physical card is handed over to you. By then you are already using the account, so delivery holds nothing up.',
       },
     ],
-    routeNote: `One route is described here: filing under a notarised power of attorney. Whether a route without a power of attorney is offered: ${TBD}.`,
+    highlightLabel: 'This is where the card starts working',
     taxNotice: {
       title: 'On notifying the tax authority',
       body: 'Opening an account with a foreign bank must be reported to the Russian tax authority within one month, and an annual statement of account activity is due after that. This is the account holder’s obligation rather than ours — but it is better to know now than in a year.',
@@ -176,35 +197,35 @@ export const en: Translations = {
     heading: 'Questions',
     items: [
       {
+        q: 'How many documents are needed?',
+        a: 'Two. Your Russian internal passport — the photo page and the registration page. Your foreign passport — the title page. Plus a short form with your contact details and occupation. No proof of income, no proof of address, and no notarised paperwork.',
+      },
+      {
         q: 'Do I have to travel to Kyrgyzstan?',
-        a: 'No. Our representative files the application under a notarised power of attorney. You visit a notary in your own city once, and that is the only trip involved.',
+        a: "No. The bank requires one in-person meeting, and it happens at its representative office in Moscow. Everything else — the application, document checks, issuing — happens online.",
       },
       {
-        q: 'Why is a power of attorney needed?',
-        a: 'The bank opens an account only in person — either the client or their representative. A notarised power of attorney lets our representative file the application on your behalf. It is limited to submitting the documents and opening the account: it does not allow anyone to move your money.',
+        q: 'When can I start paying with the card?',
+        a: 'As soon as it is issued, without waiting for the plastic. The account and card are active, you have the details, and you can add the card to Apple Pay or Google Pay and pay from that moment. The physical card arrives later and holds nothing up.',
       },
       {
-        q: 'How long does it take?',
-        a: `From sending your documents to receiving the card: ${timeline.total}. The exact time depends on how quickly you arrange the power of attorney.`,
+        q: 'Which currencies does the account work in?',
+        a: 'Dollars, euros, dirhams and rubles. The account is multi-currency: you can hold and spend in any of them, and the ruble support is what makes the card useful to people living abroad who stay connected to Russia.',
       },
       {
-        q: 'Which documents are required?',
-        a: 'An international passport, an internal passport, and a notarised power of attorney. Proof of income and proof of address are not required.',
-      },
-      {
-        q: 'How do I add money to the card?',
-        a: `The account is in dollars and is topped up by transfer. Available methods: ${payment.methods}. Topping up is an operation you carry out with the account directly; getcard is not involved in it.`,
+        q: 'I am not a Russian citizen. Can I apply?',
+        a: 'Not at the moment. The bank records an in-person meeting at its Moscow representative office, and the bank’s requirements limit the service to Russian citizens. We are collecting interest from citizens of other countries — write to us and we will let you know if that changes.',
       },
       {
         q: 'Does the card work inside Russia?',
-        a: 'No. It is a foreign bank’s card, and VISA and Mastercard have not processed transactions inside Russia since 2022. The card is for payments abroad and online.',
+        a: 'It is a foreign bank’s card, and VISA and Mastercard have not processed transactions inside Russia since 2022. It does not work domestically; it is for payments abroad, online, and for operations in the account currencies.',
       },
     ],
   },
 
   closing: {
-    heading: 'Start with the documents',
-    body: 'The first step is a scan of your international passport. We will look at the set and tell you what comes next, before any payment.',
+    heading: 'Start with the form',
+    body: 'Filling in the form and uploading two documents takes about ten minutes. We check the set and tell you what comes next, before any payment.',
     ctaPrimary: 'Get a card',
     ctaSecondary: 'Ask a question',
   },
@@ -214,7 +235,7 @@ export const en: Translations = {
       {
         title: 'The card',
         links: [
-          { label: 'What the card does', href: '#uses' },
+          { label: 'Who it suits', href: '#audiences' },
           { label: 'Plans', href: '#tiers' },
           { label: 'Apple Pay', href: '#apple-pay' },
         ],
@@ -223,8 +244,8 @@ export const en: Translations = {
         title: 'Applying',
         links: [
           { label: 'How it works', href: '#process' },
-          { label: 'Questions', href: '#faq' },
           { label: 'Documents', href: '#process' },
+          { label: 'Questions', href: '#faq' },
         ],
       },
       {
@@ -247,8 +268,10 @@ export const en: Translations = {
     legalLines: [
       `${legal.entityName} · INN ${legal.inn} · OGRN ${legal.ogrn}`,
       `Registered address: ${legal.registeredAddress}`,
+      `Payment methods: ${payment.methods}. Payment schedule: ${payment.schedule}.`,
+      `Time to account activation: ${timeline.toActivation}. Plastic delivery time: ${timeline.toDelivery}.`,
     ],
-    copyright: '© 2026 getcard',
+    copyright: '© 2026 getcard · getcard.kg',
     visaNote:
       'VISA is the payment network the card runs on. getcard is not affiliated with VISA and does not act on its behalf. Apple Pay and Google Pay are services of their respective companies; getcard is not their partner.',
   },

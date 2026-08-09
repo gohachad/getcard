@@ -51,7 +51,8 @@
   /* Semantic state -------------------------------------------------------- */
   --color-error: #d70015;
   --color-error-bg: #fff2f2;
-  --color-success: #248a3d;
+  /* #248a3d measured 4.40:1 on white and failed AA; see DESIGN.md §1 and §2. */
+  --color-success: #1e7a35;
   --color-success-bg: #f1faf3;
   --color-warning: #b25000;
   --color-warning-bg: #fff8f0;
@@ -216,9 +217,8 @@
 
 @layer components {
   /* Filled pill — primary action. The only filled interactive element.
-     DESIGN.md §6 specifies --color-wash text; that lands at 4.40:1 on the
-     action fill, just under AA. §11 makes AA non-negotiable, so this uses
-     --color-white (4.70:1) instead. */
+     White text, not --color-wash: 4.70:1 against the action fill rather than
+     4.40:1. Now recorded in DESIGN.md §6 rather than being a local deviation. */
   .pill-filled {
     display: inline-flex;
     align-items: center;
@@ -298,19 +298,35 @@
     }
   }
 
-  /* An unfinalised value, rendered as an obvious hole in the copy so it can
-     never be mistaken for a real figure. See src/config/placeholders.ts. */
-  .tbd {
+  /* Two markers, both deliberately obvious so neither can be mistaken for
+     real content. See src/config/placeholders.ts.
+
+     .tbd    — a value nobody has decided yet
+     .verify — a figure we display but have not confirmed with the bank */
+  .tbd,
+  .verify {
     display: inline-block;
     padding-inline: 6px;
-    border: 1px dashed var(--color-warning);
     border-radius: 4px;
-    background-color: var(--color-warning-bg);
-    color: var(--color-warning);
-    font-size: 0.9em;
+    font-size: 0.8em;
     font-weight: 600;
     letter-spacing: 0;
     white-space: nowrap;
+    vertical-align: 2px;
+  }
+
+  .tbd {
+    border: 1px dashed var(--color-warning);
+    background-color: var(--color-warning-bg);
+    color: var(--color-warning);
+  }
+
+  /* Distinct from .tbd on purpose: an unconfirmed number is a different kind
+     of problem from a missing one, and conflating them hides which is which. */
+  .verify {
+    border: 1px dashed var(--color-error);
+    background-color: var(--color-error-bg);
+    color: var(--color-error);
   }
 
   /* Text blocks centre internally at 980px, forms and tables at 720px.

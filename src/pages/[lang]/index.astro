@@ -2,22 +2,24 @@
 /**
  * The landing page, one route per locale.
  *
- * The section order is the page's argument: the hero establishes the near
- * side and the card as the way across; Apple Pay and the use cases are the
- * far side, the ordinary things that start working again; the tiers are the
- * choice of how to cross; the process is the crossing itself. Reading top to
- * bottom should take you somewhere.
+ * The page makes one argument: getting the card through us is fast and takes
+ * almost no effort. The hero states the outcome and the effort; the two-audience
+ * columns show who it is for and, structurally, both directions of the crossing;
+ * eligibility gates honestly before anyone compares prices; the tiers are the
+ * choice; the process is the five steps, with the payoff called out.
  *
- * <BridgeSpan> occupies each gap between those sections, so the connecting
- * line is unbroken from the hero to the footer.
+ * <BridgeSpan> occupies each gap between sections, so the connecting line is
+ * unbroken from the hero to the footer — and it passes exactly between the two
+ * audience columns, which is the one place its meaning becomes legible.
  */
 import Base from '../../layouts/Base.astro';
 import SloganBand from '../../components/SloganBand.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
 import DisclosureBand from '../../components/DisclosureBand.astro';
+import Audiences from '../../components/Audiences.astro';
 import ApplePay from '../../components/ApplePay.astro';
-import UseCases from '../../components/UseCases.astro';
+import Eligibility from '../../components/Eligibility.astro';
 import Tiers from '../../components/Tiers.astro';
 import Process from '../../components/Process.astro';
 import Faq from '../../components/Faq.astro';
@@ -43,9 +45,11 @@ const copy = t(locale);
     <BridgeSpan />
     <DisclosureBand locale={locale} />
     <BridgeSpan />
+    <Audiences locale={locale} />
+    <BridgeSpan />
     <ApplePay locale={locale} />
     <BridgeSpan />
-    <UseCases locale={locale} />
+    <Eligibility locale={locale} />
     <BridgeSpan />
     <Tiers locale={locale} />
     <BridgeSpan />

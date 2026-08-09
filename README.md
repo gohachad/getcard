@@ -1,21 +1,28 @@
 # getcard
 
-Landing page for **getcard**, an independent intermediary service that helps
-Russian residents remotely obtain a USD VISA debit card issued by a licensed
-Kyrgyz bank.
+Landing page for **getcard**, an independent intermediary that helps Russian
+citizens obtain a multi-currency VISA card issued by a licensed Kyrgyz bank.
 
 Astro + Tailwind v4, static, Russian and English.
 
-**Site:** [gohachad.github.io/getcard](https://gohachad.github.io/getcard/) ·
-[Русская версия](https://gohachad.github.io/getcard/ru/) ·
-[English](https://gohachad.github.io/getcard/en/)
+**Site:** [getcard.kg](https://getcard.kg) — the production domain.
+A staging copy deploys to `gohachad.github.io/getcard/`.
 
-> Not live yet — Pages is still pointed at `main`, which has no built output.
-> The built site is on the `gh-pages` branch; switching **Settings → Pages →
-> Branch** to `gh-pages` publishes it. See [docs/README.md](docs/README.md).
-> Delete this note once the URL resolves.
+> Neither URL is live yet. The built site is on the `gh-pages` branch;
+> switching **Settings → Pages → Branch** to `gh-pages` publishes the staging
+> copy. See [docs/README.md](docs/README.md). Delete this note once it resolves.
 
 ---
+
+## What the page argues
+
+One thing: **getting the card through us is fast and takes almost no effort.**
+Two documents, one meeting, and the card is working. The tiers, the currencies
+and the two-audience columns are supporting evidence.
+
+The strongest fact on the page, and the reason the promise is credible rather
+than generic: **the account and card go live when the card is issued**, so it
+can go into Apple Pay or Google Pay before the plastic arrives.
 
 ## Running it
 
@@ -27,27 +34,71 @@ npm run preview
 npx astro check  # type-checks the locale trees
 ```
 
-The `base` is `/getcard`, so every local URL carries that prefix.
+## Deployment: two targets, one build
 
-## Unfinalised values
+GitHub Pages serves this as a project site under `/getcard`, so assets and
+internal links need that prefix. `getcard.kg` serves from the root, where the
+same prefix breaks every one of them. Both are environment variables, with the
+Pages values as defaults:
 
-Anywhere a price or a legal detail is not decided, the page renders a visible
-`[TBD]` rather than a plausible-looking invention. They all live in
-[`src/config/placeholders.ts`](src/config/placeholders.ts) — fill that file in
-and the markers disappear on their own.
+```bash
+npm run build                  # staging: base = /getcard
+BASE_PATH=/ npm run build      # production: getcard.kg, base = /
+```
 
-Outstanding: getcard's service fee per tier, payment methods and schedule,
-end-to-end timeline, legal entity and registration numbers, contact channels,
-and whether a route without a power of attorney is offered.
+`SITE_URL` is separate and defaults to `https://getcard.kg`. It is the site's
+public identity — canonical URLs, `hreflang`, Open Graph — and never carries
+`BASE_PATH`. That is deliberate: mixing them would emit
+`getcard.kg/getcard/ru/`, a URL that will never exist. So the staging build's
+canonical URLs already point at the production domain.
 
-The card's own figures — annual fees, ATM limits, the 1.5% cross-currency fee,
-the 1% / $3 withdrawal fee — are real and live in the locale files.
+| Variable | Default | Purpose |
+|---|---|---|
+| `BASE_PATH` | `/getcard` | Path prefix for assets and internal links |
+| `SITE_URL` | `https://getcard.kg` | Absolute origin for canonical / hreflang / OG |
+
+## Unconfirmed and unfinalised values
+
+Two markers, both visible in the rendered page and both greppable. Everything
+behind them lives in [`src/config/placeholders.ts`](src/config/placeholders.ts).
+
+### `[VERIFY]` — displayed but not confirmed with the bank
+
+**Every numeric card spec carries this.** The annual fees, daily ATM limits,
+ATM withdrawal fee and cross-currency fee came from a third-party guide that
+has since proven wrong about currency support. The three-tier structure is
+right; the figures are not confirmed, and the page says so in a callout above
+the comparison rather than presenting them as fact.
+
+### `[TBD]` — not decided yet
+
+Whether 29 000 ₽ covers all three tiers or only the entry tier; whether it
+includes the first year's annual fee; discounts and promo codes; payment
+methods and schedule; time to activation and to delivery; the Moscow office
+address; legal entity, INN, OGRN, registered address; contact channels.
+
+The service fee itself is confirmed: **29 000 ₽**.
+
+## Confirmed facts
+
+- **Multi-currency**: US dollars, euros, dirhams and rubles. Ruble support is
+  what makes the card useful to Russians living abroad.
+- **Russian citizens only.** The bank requires a recorded in-person meeting at
+  its Moscow representative office.
+- **Two documents**: Russian internal passport (registration and photo pages)
+  and foreign passport (title page), plus a short form with contact details and
+  occupation. Nothing else — no notarised paperwork.
+- **One offline step**: the Moscow meeting. No trip to Kyrgyzstan.
+- **The card works before the plastic arrives**, straight into Apple Pay or
+  Google Pay.
+- Apple Pay launched in Kyrgyzstan on **28 July 2026**; the issuing bank was in
+  the first wave.
 
 ## How it is put together
 
 ```
 src/
-  config/placeholders.ts   every [TBD] in one place
+  config/placeholders.ts   every [TBD] and [VERIFY] in one place
   i18n/ru.ts               Russian copy — written first, the source of truth
   i18n/en.ts               English, typed against the Russian tree
   i18n/types.ts            Widen<> — a missing key is a build error
@@ -62,39 +113,39 @@ src/
 widened `typeof ru`, so a key that exists in Russian and not in English fails
 `astro check` instead of leaking an English string into the Russian build.
 
-**JavaScript is limited to three places**, none of them a framework: the tier
-selector, the mobile nav drawer, and nothing else — the FAQ uses native
-`<details>`, so it is genuinely zero-JS and every answer is in the DOM for
-search engines. The scripts are small enough that Astro inlines them; the
-build ships no JS bundle at all.
+**JavaScript is limited to two places**, neither a framework: the tier selector
+and the mobile nav drawer. The FAQ uses native `<details>`, so it is genuinely
+zero-JS and every answer is in the DOM for search engines. Both scripts are
+small enough that Astro inlines them; the build ships no JS bundle.
 
 **Fonts.** Inter is self-hosted as latin and cyrillic variable subsets with
-`font-display: swap`. SF Pro is deliberately *not* shipped — it is licensed
-for Apple-platform development only — but stays first in the CSS fallback
-stack so Apple devices resolve it natively at no cost.
+`font-display: swap`. SF Pro is deliberately *not* shipped — it is licensed for
+Apple-platform development only — but stays first in the CSS fallback stack so
+Apple devices resolve it natively at no cost.
 
 ## Design
 
 [`DESIGN.md`](DESIGN.md) is authoritative for colour, type, spacing, and
-components. Two places where the build departs from it, both deliberate and
-both noted in the code:
-
-- Filled buttons use `--color-white` text rather than `--color-wash`. Wash on
-  the action fill measures 4.40:1, just under AA, and §11 makes AA
-  non-negotiable. White is 4.70:1.
-- Spacing uses a 1px Tailwind base unit, so `p-24` means 24px and the numeric
-  utilities map 1:1 onto the px scale in §4.
+components. It now also records the two contrast and spacing decisions that
+used to live only in the code, plus a third AA failure found while checking the
+palette (`--color-success` was 4.40:1 on white and is now `#1e7a35`).
 
 ## Content rules
 
-These are hard constraints, not preferences:
+Hard constraints, not preferences:
 
 - The issuing bank is never named — only "лицензированный банк Кыргызстана" /
   "a licensed Kyrgyz bank".
 - No affiliation with or endorsement by any bank, payment network, or Apple is
   implied anywhere.
+- getcard's visual identity is `DESIGN.md` and nothing else. It never imitates
+  any bank's identity.
 - No superlatives about the bank; verifiable facts only.
-- The VISA and Apple Pay marks are never reproduced. Both appear as plain text
-  in the body typeface.
-- No third-party brand names in the use-case section.
+- The VISA and Apple Pay marks are never reproduced. Naming the services in
+  body text is fine; logos are not.
+- No stock photography, bridges, globes, flags, or maps. The card render is the
+  only visual object.
 - The card render carries no bank name, wordmark, or payment mark.
+- **This repository is public. Internal cost, margin, and supplier pricing
+  never appear in it** — not in the site, the README, comments, or commit
+  messages.

@@ -11,9 +11,11 @@
 
 ## 0. What this product is
 
-getcard is an **independent intermediary service**. It helps Russian residents remotely obtain a USD VISA debit card issued by a licensed Kyrgyz bank, for use abroad and for online payments.
+getcard is an **independent intermediary service**. It helps Russian citizens obtain a multi-currency VISA debit card — US dollars, euros, dirhams and rubles — issued by a licensed Kyrgyz bank, for use abroad, for online payments, and for ruble transfers by Russians living abroad.
 
-The visual job of the site: make a stranger comfortable enough to send passport scans, a notarised power of attorney, and a 50% prepayment to a company they found through search. Every design decision serves that. Restraint reads as competence here; ornament reads as a scam.
+The visual job of the site: make a stranger comfortable enough to send passport scans and a payment to a company they found through search. Every design decision serves that. Restraint reads as competence here; ornament reads as a scam.
+
+The page has one argument — getting the card is fast and takes almost no effort: two documents, one meeting, and the card is working. Design choices that add friction to reading are working against the message.
 
 ### Brand constraints — these are hard rules
 
@@ -39,6 +41,8 @@ The source file was scraped and carried defects. Fixed here — do not reintrodu
 | Spacing scale | jumped 24 → 40 | added 32 |
 | Semantic state colours | absent | added error / success / warning |
 | Body-sm line height | 1.29 | 1.43 — too tight for Cyrillic |
+| Filled button text: `--color-wash` on `--color-action` | 4.40:1 — fails AA | `--color-white` (4.70:1). Contrast measured during the first build; §11 makes AA non-negotiable, so §6 was wrong |
+| `--color-success` `#248a3d` | 4.40:1 on white — fails AA, though §2 claimed it cleared 4.5:1 | `#1e7a35` (5.40:1 on white, 5.07:1 on `--color-success-bg`) |
 
 **The Type Scale table (§3) is authoritative.** Ignore the per-font size/line-height lists from the source.
 
@@ -71,12 +75,16 @@ The source file was scraped and carried defects. Fixed here — do not reintrodu
 |---|---|---|
 | `--color-error` | `#d70015` | Validation errors, destructive confirmations, failed upload. |
 | `--color-error-bg` | `#fff2f2` | Error message background. |
-| `--color-success` | `#248a3d` | Successful upload, completed step, confirmed payment. |
+| `--color-success` | `#1e7a35` | Successful upload, completed step, confirmed payment. |
 | `--color-success-bg` | `#f1faf3` | Success message background. |
 | `--color-warning` | `#b25000` | Tax-notice callouts, deadline reminders, required-action notices. |
 | `--color-warning-bg` | `#fff8f0` | Warning message background. |
 
 These are the accessible light-mode variants of the Apple system palette, so they sit coherently beside `--color-action` while clearing 4.5:1 contrast on white and on canvas.
+
+`--color-success` was `#248a3d`, which measured 4.40:1 on white and did not clear that bar despite the claim above. It is now `#1e7a35`. Error and warning were checked at the same time and both pass: `#d70015` is 5.38:1 on white and 4.93:1 on `--color-error-bg`; `#b25000` is 5.24:1 on white and 4.97:1 on `--color-warning-bg`.
+
+`--color-mist` is 3.5:1 on white and must never be used for text — its role is hairline rules, and it fails AA as a text colour.
 
 ---
 
@@ -135,6 +143,8 @@ Below 768px, step display sizes down one rung: display 56 → 40, heading-lg 44 
 
 **Scale:** 4, 8, 12, 16, 20, 24, **32**, 40, 48, 56, 64, 80
 
+**Tailwind base unit is 1px**, set as `--spacing: 1px` in the `@theme` block. Numeric utilities therefore map 1:1 onto the scale above — `p-24` is 24px, `gap-12` is 12px, `mt-64` is 64px — instead of Tailwind's default 4× multiplier, where `p-24` would mean 96px. This keeps the utilities and this document reading as the same system.
+
 **Radius — only two values exist:**
 - `--radius-full: 980px` — every button, pill, tag, badge
 - `--radius-card: 8px` — every card, panel, image, input
@@ -168,7 +178,9 @@ This is the one bent rule in the system. Do not extend it into shadowed cards, n
 ## 6. Core components
 
 ### Filled Pill Button — primary action
-`--radius-full`, `--color-action` fill, `--color-wash` text, 17px/400, padding 11px 15px, no border, no shadow. Hover: darken fill 8%. The only filled interactive element in the system.
+`--radius-full`, `--color-action` fill, **`--color-white` text**, 17px/400, padding 11px 15px, no border, no shadow. Hover: darken fill 8%. The only filled interactive element in the system.
+
+Text is `--color-white`, not `--color-wash`. Wash on the action fill measures 4.40:1, under the 4.5:1 floor §11 sets; white measures 4.70:1. Do not change this back — the fill colour is fixed brand, so the text colour is the only free variable.
 
 ### Outlined Pill Button — secondary action
 `--radius-full`, `1px solid --color-link`, `--color-link` text, 17px/400, transparent fill, padding 11px 15px. Always paired to the right of a filled primary. **Never stack two filled buttons.**
@@ -284,7 +296,7 @@ Write Russian first, then translate to English. Russian is the primary market; E
   /* Semantic state */
   --color-error:      #d70015;
   --color-error-bg:   #fff2f2;
-  --color-success:    #248a3d;
+  --color-success:    #1e7a35;
   --color-success-bg: #f1faf3;
   --color-warning:    #b25000;
   --color-warning-bg: #fff8f0;

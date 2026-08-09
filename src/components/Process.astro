@@ -6,9 +6,14 @@
  * Vertical on mobile, horizontal on desktop, with a hairline connector
  * between steps.
  *
- * Every step here is a real, completed part of the process, so all five
- * circles render in the "complete" state rather than one being "active" —
- * this is a description of the route, not a progress indicator.
+ * Every step here is a real part of the process, so all five circles render in
+ * the same state rather than one being "active" — this is a description of the
+ * route, not a progress indicator.
+ *
+ * Step 4 is the payoff and gets the emphasis: it is the moment the card starts
+ * working, which is the strongest fact on the page. Step 3 is the only offline
+ * step and the only real friction; it is stated plainly in its own words rather
+ * than softened or buried mid-list.
  */
 import { t, type Locale } from '../i18n';
 import Copy from './Copy.astro';
@@ -30,7 +35,7 @@ const copy = t(locale);
     <ol class="steps">
       {
         copy.process.steps.map((step, index) => (
-          <li class="step">
+          <li class="step" data-payoff={index === 3 ? '' : undefined}>
             <span class="marker" aria-hidden="true">
               {index + 1}
             </span>
@@ -38,12 +43,11 @@ const copy = t(locale);
             <p>
               <Copy text={step.body} />
             </p>
+            {index === 3 && <p class="payoff-label">{copy.process.highlightLabel}</p>}
           </li>
         ))
       }
     </ol>
-
-    <p class="route-note"><Copy text={copy.process.routeNote} /></p>
 
     <div class="tax">
       <NoticeCallout title={copy.process.taxNotice.title}>
@@ -121,22 +125,33 @@ const copy = t(locale);
     color: var(--color-graphite);
   }
 
-  .route-note {
-    margin: 40px 0 0;
-    font-size: var(--text-body-sm);
-    color: var(--color-ash);
-    text-align: center;
+  /* The payoff step. Weight comes from a signal rule and a label, not from a
+     panel or a shadow — DESIGN.md keeps both for other jobs. */
+  .step[data-payoff] p:not(.payoff-label) {
+    color: var(--color-ink);
+  }
+
+  .payoff-label {
+    margin: 12px 0 0;
+    padding-top: 8px;
+    border-top: 1px solid var(--color-signal);
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-graphite);
   }
 
   .tax {
     max-width: var(--container-form);
-    margin: 32px auto 0;
+    margin: 48px auto 0;
   }
 
   @media (min-width: 768px) {
     .steps {
       grid-template-columns: repeat(5, 1fr);
-      grid-template-rows: auto auto;
+      /* Three rows: title, body, and the payoff label that only step 4 fills.
+         The third track stays empty in the other four columns. */
+      grid-template-rows: auto auto auto;
       gap: 24px;
     }
 
@@ -148,7 +163,7 @@ const copy = t(locale);
       padding-top: 48px;
       display: grid;
       grid-template-rows: subgrid;
-      grid-row: span 2;
+      grid-row: span 3;
       align-content: start;
     }
 

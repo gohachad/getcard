@@ -1,14 +1,20 @@
 ---
 /**
- * Renders a copy string, turning any `[TBD]` sentinel inside it into a
- * visible gap rather than letting it read as ordinary text.
+ * Renders a copy string, turning marker sentinels inside it into visible
+ * markers rather than letting them read as ordinary text.
  *
- * Placeholders are interpolated mid-sentence in the locale files
- * ("Способы оплаты: [TBD]."), so the marker has to survive inside a string.
- * Once src/config/placeholders.ts is filled in, the sentinel disappears and
- * this renders as plain text with no markup left behind.
+ *   [TBD]    — a value that is not decided yet
+ *   [VERIFY] — a figure shown but not confirmed with the bank
+ *
+ * Markers are interpolated mid-sentence in the locale files ("$20 [VERIFY]",
+ * "Способы оплаты: [TBD]."), so they have to survive inside a string. Once
+ * src/config/placeholders.ts is filled in, the sentinels disappear and this
+ * renders as plain text with no markup left behind.
+ *
+ * No wording lives here — the markers are literal sentinels, identical in both
+ * locales, and every translatable string stays in the locale trees.
  */
-import { TBD } from '../config/placeholders';
+import { TBD, VERIFY } from '../config/placeholders';
 
 interface Props {
   text: string;
@@ -16,16 +22,19 @@ interface Props {
 
 const { text } = Astro.props;
 
-// split() keeps the delimiter out of the result, so parts and separators
-// alternate: part, [TBD], part, [TBD], part…
-const parts = text.split(TBD);
+// Keeping the delimiters in the result is what lets each be styled to say a
+// different thing, so the pattern is a capture group.
+const parts = text.split(/(\[TBD\]|\[VERIFY\])/g);
 ---
 
 {
-  parts.map((part, index) => (
-    <>
-      {part}
-      {index < parts.length - 1 && <span class="tbd">{TBD}</span>}
-    </>
-  ))
+  parts.map((part) =>
+    part === TBD ? (
+      <span class="tbd">{part}</span>
+    ) : part === VERIFY ? (
+      <span class="verify">{part}</span>
+    ) : (
+      <>{part}</>
+    )
+  )
 }

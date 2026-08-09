@@ -1,31 +1,56 @@
 /**
- * Every unfinalised value on the site, in one place.
+ * Every unfinalised or unconfirmed value on the site, in one place.
  *
- * Rule: anywhere a price or a legal detail would go, the page renders a
- * visible [TBD] rather than a plausible-looking invention. Replace the values
- * below and the whole site updates — nothing is hardcoded in a component.
+ * Two kinds of marker, both visible in the build and both greppable:
  *
- * `TBD` is the sentinel. `<Tbd />` renders it visibly. A value is considered
- * filled in once it is no longer strictly equal to TBD.
+ *   TBD    — not decided yet. Anywhere a price or a legal detail would go, the
+ *            page renders a visible gap rather than a plausible-looking
+ *            invention.
+ *   VERIFY — a figure we are displaying but have not confirmed with the bank.
+ *            These came from a third-party guide that has since proven wrong
+ *            about currency support, so none of them can be presented as fact
+ *            on a page that asks people for money.
+ *
+ * Replace the values and the markers disappear on their own — nothing is
+ * hardcoded in a component.
+ *
+ * NOTE: this repository is public. Never put internal cost, margin, or
+ * supplier pricing in this file or anywhere else in the tree.
  */
 
 export const TBD = '[TBD]' as const;
+export const VERIFY = '[VERIFY]' as const;
 
 export type Placeholder = string;
 
 /** True while a placeholder is still unfilled. */
 export const isTbd = (value: Placeholder): boolean => value === TBD;
 
+/** Wraps a figure that is displayed but not yet confirmed with the bank. */
+export const verify = (value: string): string => `${value} ${VERIFY}`;
+
 /* -------------------------------------------------------------------------
-   Pricing — getcard's own service fee, charged on top of the bank's annual
-   card fee. The annual fees ($20 / $100 / $150) are real and live in the
-   locale files; these are ours and are not decided yet.
+   Pricing — what the client pays getcard.
    ------------------------------------------------------------------------- */
 
-export const serviceFee = {
-  gold: TBD,
-  platinum: TBD,
-  infinite: TBD,
+export const pricing = {
+  /** Confirmed. Rubles are the primary currency for this audience. */
+  serviceFee: '29 000 ₽',
+
+  /**
+   * Open question: does 29 000 ₽ apply to all three tiers, or only to the
+   * entry tier with the others priced above it?
+   */
+  tierCoverage: TBD,
+
+  /**
+   * Open question: does 29 000 ₽ include the first year's annual card fee,
+   * or is that billed separately by the bank?
+   */
+  includesFirstYearFee: TBD,
+
+  /** Promo codes and discounts are planned but out of scope for this pass. */
+  discounts: TBD,
 } as const;
 
 /* -------------------------------------------------------------------------
@@ -35,18 +60,19 @@ export const serviceFee = {
 export const payment = {
   /** e.g. 'Перевод на карту, СБП' — how the client actually pays us. */
   methods: TBD,
-  /** e.g. '50% предоплата, 50% по факту доставки' vs full upfront. */
+  /** Full amount upfront vs a split. */
   schedule: TBD,
 } as const;
 
 /* -------------------------------------------------------------------------
-   Timing — how long the whole process takes end to end. Not invented:
-   this is a real promise and needs a real number behind it.
+   Timing — a real promise, so it needs a real number behind it.
    ------------------------------------------------------------------------- */
 
 export const timeline = {
-  /** e.g. '10–14 дней' */
-  total: TBD,
+  /** From submitting the form to the accounts going live. */
+  toActivation: TBD,
+  /** From the accounts going live to the physical card arriving. */
+  toDelivery: TBD,
 } as const;
 
 /* -------------------------------------------------------------------------
@@ -68,18 +94,25 @@ export const contacts = {
   telegram: TBD,
   email: TBD,
   phone: TBD,
+  /** Address of the Moscow representative office where the meeting happens. */
+  moscowOffice: TBD,
 } as const;
 
 /* -------------------------------------------------------------------------
-   Offering
+   Card specifications — structure is right, figures are not confirmed.
+   Every numeric spec below is wrapped so it renders with a [VERIFY] marker.
    ------------------------------------------------------------------------- */
 
-export const offering = {
-  /**
-   * The site currently describes a single route: application filed by
-   * notarised power of attorney. If a without-PoA route is also offered,
-   * set this to a description of it and the process section gains a second
-   * variant. Until then the stepper carries a visible [TBD] note.
-   */
-  withoutPoaRoute: TBD,
+export const specs = {
+  gold: { annualFee: verify('$20'), dailyAtm: verify('$6 000') },
+  platinum: { annualFee: verify('$100'), dailyAtm: verify('$12 000') },
+  infinite: { annualFee: verify('$150'), dailyAtm: verify('$12 000') },
+  shared: {
+    atmFee: verify('1%, минимум $3'),
+    atmFeeEn: verify('1%, minimum $3'),
+    crossCurrency: verify('1,5%'),
+    crossCurrencyEn: verify('1.5%'),
+    validity: verify('5 лет'),
+    validityEn: verify('5 years'),
+  },
 } as const;

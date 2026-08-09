@@ -12,6 +12,7 @@
  */
 import { t, type Locale } from '../i18n';
 import Copy from './Copy.astro';
+import NoticeCallout from './NoticeCallout.astro';
 
 interface Props {
   locale: Locale;
@@ -21,14 +22,16 @@ const { locale } = Astro.props;
 const copy = t(locale);
 const { specLabels, shared } = copy.tiers;
 
+// Seven rows per panel. The SWIFT row is gone: the "AED only" claim conflicts
+// with confirmed multi-currency support and could not be verified.
 const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
   { label: specLabels.dailyAtm, value: tier.dailyAtm },
   { label: specLabels.atmFee, value: shared.atmFee },
   { label: specLabels.crossCurrency, value: shared.crossCurrency },
-  { label: specLabels.currency, value: shared.currency },
+  { label: specLabels.currencies, value: shared.currencies },
   { label: specLabels.validity, value: shared.validity },
   { label: specLabels.wallets, value: shared.wallets },
-  { label: specLabels.serviceFee, value: tier.serviceFee },
+  { label: specLabels.serviceFee, value: shared.serviceFee },
 ];
 ---
 
@@ -36,6 +39,14 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
   <div class="measure">
     <h2 id="tiers-heading">{copy.tiers.heading}</h2>
     <p class="intro">{copy.tiers.intro}</p>
+
+    {/* Stated before the figures, not after: someone who reads the numbers and
+        stops should already know they are provisional. */}
+    <div class="notice">
+      <NoticeCallout title={copy.tiers.unverifiedTitle} variant="warning">
+        <Copy text={copy.tiers.unverifiedNotice} />
+      </NoticeCallout>
+    </div>
 
     <ul class="tiers-grid">
       {
@@ -47,7 +58,7 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
             </h3>
 
             <p class="fee">
-              {tier.annualFee}
+              <Copy text={tier.annualFee} />
               <span class="fee-unit">{copy.tiers.annualFeeLabel}</span>
             </p>
 
@@ -70,7 +81,7 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
       }
     </ul>
 
-    <p class="note">{copy.tiers.currencyNote}</p>
+    <p class="note"><Copy text={copy.tiers.priceNote} /></p>
   </div>
 </section>
 
@@ -86,9 +97,14 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
 
   .intro {
     max-width: var(--container-form);
-    margin: 20px auto 40px;
+    margin: 20px auto 32px;
     color: var(--color-graphite);
     text-align: center;
+  }
+
+  .notice {
+    max-width: var(--container-form);
+    margin: 0 auto 40px;
   }
 
   .tiers-grid {

@@ -4,7 +4,7 @@ import '../styles/global.css';
 // same files are referenced by @font-face in global.css.
 import interLatin from '../fonts/inter-latin-wght-normal.woff2?url';
 import interCyrillic from '../fonts/inter-cyrillic-wght-normal.woff2?url';
-import { t, htmlLang, localePath, LOCALES, type Locale } from '../i18n';
+import { t, htmlLang, canonicalPath, LOCALES, type Locale } from '../i18n';
 
 interface Props {
   locale: Locale;
@@ -13,7 +13,10 @@ interface Props {
 const { locale } = Astro.props;
 const copy = t(locale);
 
-const absolute = (path: string) => new URL(path, Astro.site ?? 'https://gohachad.github.io').href;
+// Public identity of the page, which is the production domain — never the
+// GitHub Pages base path. See canonicalPath() in src/i18n.
+const absolute = (locale: Locale) =>
+  new URL(canonicalPath(locale), Astro.site ?? 'https://getcard.kg').href;
 ---
 
 <!doctype html>
@@ -24,13 +27,13 @@ const absolute = (path: string) => new URL(path, Astro.site ?? 'https://gohachad
     <title>{copy.meta.title}</title>
     <meta name="description" content={copy.meta.description} />
 
-    <link rel="canonical" href={absolute(localePath(locale))} />
+    <link rel="canonical" href={absolute(locale)} />
     {
       LOCALES.map((other) => (
-        <link rel="alternate" hreflang={htmlLang[other]} href={absolute(localePath(other))} />
+        <link rel="alternate" hreflang={htmlLang[other]} href={absolute(other)} />
       ))
     }
-    <link rel="alternate" hreflang="x-default" href={absolute(localePath('ru'))} />
+    <link rel="alternate" hreflang="x-default" href={absolute('ru')} />
 
     <!-- Both subsets are needed on first paint in either locale: the RU build
          carries Latin figures and the word "getcard"; the EN build carries none
@@ -47,7 +50,7 @@ const absolute = (path: string) => new URL(path, Astro.site ?? 'https://gohachad
     <meta property="og:type" content="website" />
     <meta property="og:title" content={copy.meta.title} />
     <meta property="og:description" content={copy.meta.description} />
-    <meta property="og:url" content={absolute(localePath(locale))} />
+    <meta property="og:url" content={absolute(locale)} />
     <meta property="og:locale" content={locale === 'ru' ? 'ru_RU' : 'en_US'} />
   </head>
 

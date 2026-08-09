@@ -73,7 +73,7 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
           {
             tiers.list.map((tier) => (
               <span class="spec-value" data-spec={tier.id}>
-                {tier.annualFee}
+                <Copy text={tier.annualFee} />
               </span>
             ))
           }
@@ -85,26 +85,22 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
           {
             tiers.list.map((tier) => (
               <span class="spec-value" data-spec={tier.id}>
-                {tier.dailyAtm}
+                <Copy text={tier.dailyAtm} />
               </span>
             ))
           }
         </dd>
       </div>
       <div class="spec">
-        <dt>{copy.hero.specs.validity}</dt>
-        <dd><span class="spec-value spec-static">{tiers.shared.validity}</span></dd>
+        <dt>{copy.hero.specs.currencies}</dt>
+        <dd><span class="spec-value spec-static">{copy.hero.currencies}</span></dd>
       </div>
       <div class="spec">
-        <dt>{tiers.specLabels.serviceFee}</dt>
+        <dt>{copy.hero.specs.serviceFee}</dt>
         <dd>
-          {
-            tiers.list.map((tier) => (
-              <span class="spec-value" data-spec={tier.id}>
-                <Copy text={tier.serviceFee} />
-              </span>
-            ))
-          }
+          <span class="spec-value spec-static">
+            <Copy text={tiers.shared.serviceFee} />
+          </span>
         </dd>
       </div>
     </dl>

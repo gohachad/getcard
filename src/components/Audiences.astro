@@ -1,0 +1,118 @@
+---
+/**
+ * Two audiences, two columns — and the two directions of the crossing.
+ *
+ * Column A travels outward: Russia to the world. Column B travels back. The
+ * --color-signal hairline that runs down the page's centre axis passes exactly
+ * between them, which is the one place the bridge idea becomes legible without
+ * anyone naming it. Nothing here labels that, and nothing points: no arrows,
+ * no directional icons, no "туда и обратно". The structure carries it or it
+ * does not.
+ *
+ * The alignment is load-bearing and it is not a coincidence to be maintained
+ * by eye: the columns are two equal 1fr tracks inside a centred measure, so the
+ * gap between them is the centre of the content box, which is the centre of the
+ * viewport — the same axis <BridgeSpan> draws on.
+ *
+ * No panels. Hairline vocabulary only, per DESIGN.md §5.
+ */
+import { t, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+---
+
+<section class="audiences section" id="audiences" aria-labelledby="audiences-heading">
+  <div class="measure">
+    <h2 id="audiences-heading">{copy.audiences.heading}</h2>
+
+    <div class="columns">
+      {
+        copy.audiences.columns.map((column) => (
+          <div class="column">
+            <h3>{column.title}</h3>
+            <ul>
+              {column.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  h2 {
+    font-size: var(--text-heading);
+    line-height: var(--text-heading--line-height);
+    letter-spacing: var(--text-heading--letter-spacing);
+    font-weight: 600;
+    margin: 0 0 48px;
+    text-align: center;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  h3 {
+    font-size: var(--text-subheading);
+    line-height: var(--text-subheading--line-height);
+    letter-spacing: var(--text-subheading--letter-spacing);
+    font-weight: 600;
+    margin: 0 0 20px;
+    /* Decorative accent — --color-signal is never interactive. */
+    padding-top: 16px;
+    border-top: 1px solid var(--color-signal);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+
+  li {
+    color: var(--color-graphite);
+    padding-left: 16px;
+    position: relative;
+  }
+
+  li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 6px;
+    height: 1px;
+    background-color: var(--color-mist);
+  }
+
+  @media (min-width: 768px) {
+    .columns {
+      /* Two equal tracks: the gap's midpoint is the page's centre axis, which
+         is where the connecting line runs. */
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .column:first-child {
+      padding-right: 40px;
+    }
+
+    .column:last-child {
+      padding-left: 40px;
+      border-left: 1px solid var(--color-hairline);
+    }
+  }
+</style>
