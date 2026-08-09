@@ -4,8 +4,10 @@ Landing page for **getcard**, an independent intermediary service that helps
 Russian residents remotely obtain a USD VISA debit card issued by a licensed
 Kyrgyz bank.
 
-Astro + Tailwind v4, static, Russian and English. **Live:**
-[gohachad.github.io/getcard](https://gohachad.github.io/getcard/)
+Astro + Tailwind v4, static, Russian and English.
+
+Deploys to `https://gohachad.github.io/getcard/` once the Pages workflow is
+activated — see [docs/README.md](docs/README.md). Not published yet.
 
 ---
 
