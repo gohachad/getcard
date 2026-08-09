@@ -292,6 +292,14 @@
     padding-block: 40px;
   }
 
+  /* The nav is sticky, so an anchor that scrolls a section to y=0 puts its
+     heading underneath the nav. Every nav link is an in-page anchor, so this
+     is the difference between the links working and appearing to do nothing. */
+  :target,
+  section[id] {
+    scroll-margin-top: 72px;
+  }
+
   @media (min-width: 768px) {
     .section {
       padding-block: 64px;
@@ -306,13 +314,18 @@
   .tbd,
   .verify {
     display: inline-block;
-    padding-inline: 6px;
+    padding-inline: 5px;
     border-radius: 4px;
-    font-size: 0.8em;
+    /* Fixed, not relative: at 0.8em a marker inside a 40px figure renders at
+       32px and competes with the number it is annotating. A marker should read
+       as a marker at every type size on the page. */
+    font-size: 11px;
+    line-height: 1.5;
     font-weight: 600;
     letter-spacing: 0;
     white-space: nowrap;
-    vertical-align: 2px;
+    vertical-align: middle;
+    translate: 0 -1px;
   }
 
   .tbd {
