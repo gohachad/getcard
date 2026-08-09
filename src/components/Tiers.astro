@@ -153,25 +153,25 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
     padding: 0;
   }
 
+  /* Label over value, always. Inline label/value pairs look tidier until one
+     of them wraps — and in Russian several of them do at panel width, which
+     leaves some values flush right and others flush left in the same list.
+     Stacking is uniform in both languages. */
   .spec-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px 16px;
     padding-block: 12px;
     border-top: 1px solid var(--color-hairline);
   }
 
   .spec-row dt {
     font-size: var(--text-body-sm);
+    line-height: var(--text-body-sm--line-height);
     color: var(--color-ash);
   }
 
   .spec-row dd {
-    margin: 0;
+    margin: 2px 0 0;
     font-size: var(--text-body);
-    text-align: right;
+    line-height: var(--text-body--line-height);
   }
 
   .tier-panel > .pill-filled,

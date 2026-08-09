@@ -211,12 +211,18 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
 
   .card-tilt {
     position: relative;
-    width: min(720px, 108%);
+    /* 820px of card, rotated 15°, spans about 926px plus its shadow — past
+       the edges of the 980px column the words sit in. The tilt is what makes
+       it cross the frame; sizing it past the measure outright just makes it
+       a wall. */
+    width: min(820px, 92vw);
     aspect-ratio: 540 / 340;
     rotate: -15deg;
-    /* Rotation leaves the corners overhanging; this keeps the tilt from
-       adding page height. */
-    margin-block: clamp(24px, 6vw, 56px);
+    /* Rotation is not part of layout, so the corners overhang the element's
+       own box by (w·sinθ + h·cosθ − h) / 2 — about 97px at full width. The
+       margin matches that, which is what keeps the card off the segmented
+       control below it. */
+    margin-block: clamp(32px, 11vw, 100px);
   }
 
   .card-slot {
@@ -266,15 +272,27 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
   .hero-specs {
     display: grid;
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     gap: 20px;
     margin: 40px auto 0;
     max-width: var(--container-form);
     text-align: center;
   }
 
+  /* Label and value are subgrid rows of .hero-specs, so a label that wraps
+     to two lines — "Стоимость услуги getcard" does — pushes every value in
+     the row down together instead of leaving one figure off the baseline. */
+  .spec {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+    align-content: start;
+  }
+
   .spec dt {
     font-size: var(--text-body-sm);
     color: var(--color-ash);
+    align-self: end;
   }
 
   .spec dd {

@@ -55,6 +55,12 @@ const otherCopy = t(other);
       <a class="pill-outlined" href="#">{copy.nav.signIn}</a>
       <a class="pill-filled" href="#process">{copy.nav.cta}</a>
     </div>
+
+    {/* The desktop switcher lives in .nav-actions, which is hidden at this
+        width — without this the other locale is unreachable on a phone. */}
+    <a class="drawer-lang" href={localePath(other)} hreflang={other} lang={other}>
+      {otherCopy.meta.localeName}
+    </a>
   </div>
 </header>
 
@@ -246,6 +252,15 @@ const otherCopy = t(other);
     flex-wrap: wrap;
     gap: 12px;
     padding-top: 20px;
+  }
+
+  .drawer-lang {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: var(--text-body-sm);
+    font-weight: 600;
+    color: var(--color-link);
+    text-decoration: none;
   }
 
   @media (min-width: 768px) {

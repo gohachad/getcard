@@ -136,12 +136,20 @@ const copy = t(locale);
   @media (min-width: 768px) {
     .steps {
       grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: auto auto;
       gap: 24px;
     }
 
+    /* Titles wrap to two lines in some columns and one in others, so the
+       step bodies are subgrid rows: every description starts on the same
+       line regardless of how long its title is. */
     .step {
       padding-left: 0;
       padding-top: 48px;
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 2;
+      align-content: start;
     }
 
     /* Horizontal connector on desktop, running between the circles. */
