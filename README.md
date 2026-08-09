@@ -6,8 +6,12 @@ Kyrgyz bank.
 
 Astro + Tailwind v4, static, Russian and English.
 
-Deploys to `https://gohachad.github.io/getcard/` once the Pages workflow is
-activated — see [docs/README.md](docs/README.md). Not published yet.
+**Site:** [gohachad.github.io/getcard](https://gohachad.github.io/getcard/) ·
+[Русская версия](https://gohachad.github.io/getcard/ru/) ·
+[English](https://gohachad.github.io/getcard/en/)
+
+> Two setup steps are still outstanding before that URL resolves — see
+> [docs/README.md](docs/README.md). Delete this note once it does.
 
 ---
 
