@@ -1,0 +1,311 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Inter — self-hosted, variable weight axis, latin + cyrillic subsets.
+   SF Pro is NOT shipped: it is licensed for Apple-platform development only.
+   It stays first in the fallback stack so Apple devices resolve it natively.
+   --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('/fonts/inter-cyrillic-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('/fonts/inter-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ---------------------------------------------------------------------------
+   Design tokens — DESIGN.md §10.
+   Tailwind v4 generates utilities directly from these; no tailwind.config.js.
+   --------------------------------------------------------------------------- */
+
+@theme {
+  /* Core colour ----------------------------------------------------------- */
+  --color-action: #0071e3;
+  --color-link: #0066cc;
+  --color-signal: #2997ff;
+  --color-ink: #1d1d1f;
+  --color-canvas: #f5f5f7;
+  --color-wash: #f4f8fb;
+  --color-smoke: #333333;
+  --color-graphite: #474747;
+  --color-ash: #707070;
+  --color-mist: #858585;
+  --color-hairline: #d2d2d7;
+  --color-onyx: #000000;
+  --color-pebble: #e2e2e5;
+  --color-white: #ffffff;
+
+  /* Semantic state -------------------------------------------------------- */
+  --color-error: #d70015;
+  --color-error-bg: #fff2f2;
+  --color-success: #248a3d;
+  --color-success-bg: #f1faf3;
+  --color-warning: #b25000;
+  --color-warning-bg: #fff8f0;
+
+  /* Font families --------------------------------------------------------- */
+  --font-display: 'SF Pro Display', 'Inter Variable', ui-sans-serif, system-ui,
+    -apple-system, sans-serif;
+  --font-text: 'SF Pro Text', 'Inter Variable', ui-sans-serif, system-ui,
+    -apple-system, sans-serif;
+
+  /* Type scale — DESIGN.md §3, authoritative.
+     Tailwind v4 pairs `--text-x--line-height` / `--text-x--letter-spacing`
+     with `--text-x`, so a single `text-body` utility carries all three. */
+  --text-caption: 12px;
+  --text-caption--line-height: 1.33;
+  --text-caption--letter-spacing: -0.26px;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 1.43;
+  --text-body-sm--letter-spacing: -0.22px;
+
+  --text-body: 17px;
+  --text-body--line-height: 1.47;
+  --text-body--letter-spacing: -0.27px;
+
+  --text-subheading: 21px;
+  --text-subheading--line-height: 1.24;
+  --text-subheading--letter-spacing: -0.11px;
+
+  --text-heading-sm: 28px;
+  --text-heading-sm--line-height: 1.18;
+  --text-heading-sm--letter-spacing: -0.4px;
+
+  --text-heading: 40px;
+  --text-heading--line-height: 1.14;
+  --text-heading--letter-spacing: -0.8px;
+
+  --text-heading-lg: 44px;
+  --text-heading-lg--line-height: 1.12;
+  --text-heading-lg--letter-spacing: -0.99px;
+
+  --text-display: 56px;
+  --text-display--line-height: 1.07;
+  --text-display--letter-spacing: -1.34px;
+
+  /* Spacing — base unit is 1px so every numeric utility is literal:
+     p-24 = 24px, gap-12 = 12px, mt-64 = 64px. Maps 1:1 to DESIGN.md §4. */
+  --spacing: 1px;
+
+  /* Radius — only two values exist ---------------------------------------- */
+  --radius-card: 8px;
+  --radius-full: 980px;
+
+  /* Layout measures ------------------------------------------------------- */
+  --container-text: 980px;
+  --container-form: 720px;
+
+  /* Shadow — card render only --------------------------------------------- */
+  --shadow-xl: rgba(0, 0, 0, 0.22) 3px 5px 30px 0px;
+}
+
+/* ---------------------------------------------------------------------------
+   Cyrillic tracking — DESIGN.md §3.
+   Tailwind emits `letter-spacing: var(--text-x--letter-spacing)` inside each
+   utility, so redefining the custom properties on the RU root eases tracking
+   per scale step through normal inheritance. ~30% less negative.
+   --------------------------------------------------------------------------- */
+
+:root:lang(ru) {
+  --text-caption--letter-spacing: -0.18px;
+  --text-body-sm--letter-spacing: -0.15px;
+  --text-body--letter-spacing: -0.19px;
+  --text-subheading--letter-spacing: -0.08px;
+  --text-heading-sm--letter-spacing: -0.28px;
+  --text-heading--letter-spacing: -0.56px;
+  --text-heading-lg--letter-spacing: -0.69px;
+  --text-display--letter-spacing: -0.94px;
+}
+
+/* ---------------------------------------------------------------------------
+   Mobile type scale — DESIGN.md §3.
+   Display sizes step down one rung below 768px. Body and below stay fixed;
+   body never drops under 17px.
+   --------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  :root {
+    --text-display: 40px;
+    --text-display--line-height: 1.14;
+    --text-heading-lg: 34px;
+    --text-heading-lg--line-height: 1.14;
+    --text-heading: 28px;
+    --text-heading--line-height: 1.18;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-text);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    letter-spacing: var(--text-body--letter-spacing);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  /* Visible keyboard focus on every interactive element. Never removed. */
+  :focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Pointer clicks do not need the ring; keyboard always does. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Components — DESIGN.md §6.
+   Kept as classes rather than repeated utility strings because each is a
+   fixed contract in the system: one filled button style, one outlined, one
+   panel. Nothing here is per-instance.
+   --------------------------------------------------------------------------- */
+
+@layer components {
+  /* Filled pill — primary action. The only filled interactive element.
+     DESIGN.md §6 specifies --color-wash text; that lands at 4.40:1 on the
+     action fill, just under AA. §11 makes AA non-negotiable, so this uses
+     --color-white (4.70:1) instead. */
+  .pill-filled {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 15px;
+    border: none;
+    border-radius: var(--radius-full);
+    background-color: var(--color-action);
+    color: var(--color-white);
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 1.4;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 150ms ease-out;
+  }
+
+  .pill-filled:hover {
+    background-color: color-mix(in srgb, var(--color-action) 92%, #000);
+  }
+
+  /* Outlined pill — secondary action. Always paired to the right of a filled
+     primary. Never two filled buttons. */
+  .pill-outlined {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 15px;
+    border: 1px solid var(--color-link);
+    border-radius: var(--radius-full);
+    background-color: transparent;
+    color: var(--color-link);
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 1.4;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out;
+  }
+
+  .pill-outlined:hover {
+    background-color: var(--color-link);
+    color: var(--color-white);
+  }
+
+  /* Ghost link — tertiary. */
+  .link-ghost {
+    color: var(--color-link);
+    text-decoration: none;
+    font-weight: 400;
+  }
+
+  .link-ghost:hover {
+    text-decoration: underline;
+  }
+
+  /* Panel — the one bent rule, DESIGN.md §5. Border and fill shift only.
+     Never a shadow, never nested. */
+  .panel {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+    padding: 24px;
+  }
+
+  /* Section rhythm. Sections carry their own vertical padding; the gap
+     between them is owned by <BridgeSpan>. */
+  .section {
+    padding-block: 40px;
+  }
+
+  @media (min-width: 768px) {
+    .section {
+      padding-block: 64px;
+    }
+  }
+
+  /* Text blocks centre internally at 980px, forms and tables at 720px.
+     The page itself is full-bleed — no global max-width container. */
+  .measure {
+    max-width: var(--container-text);
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+
+  .measure-form {
+    max-width: var(--container-form);
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+}
