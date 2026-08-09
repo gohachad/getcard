@@ -19,6 +19,21 @@ export const ru = {
     localeShort: 'RU',
   },
 
+  header: {
+    // Two audiences, two different reasons to want this card, so two slogans
+    // rather than one. Residents of Russia are working around payment
+    // limitations; Russians living abroad have no such limitation locally and
+    // want the opposite direction — keeping a financial link to Russia.
+    //
+    // A static site cannot detect which visitor it has, so both are shown and
+    // each is labelled. Kept factual rather than promotional: DESIGN.md §9 is
+    // plain and unhurried, and this audience is comparison-shopping.
+    audiences: [
+      { label: 'Если вы в России', slogan: 'Снова платить за границей' },
+      { label: 'Если вы за границей', slogan: 'Не терять связь с Россией' },
+    ],
+  },
+
   nav: {
     wordmark: 'getcard',
     links: [
@@ -59,6 +74,7 @@ export const ru = {
     heading: 'Apple Pay работает с 28 июля 2026 года',
     body: [
       'Apple Pay запустился в Кыргызстане 28 июля 2026 года. Банк, который выпускает карту, вошёл в первую волну — карта добавляется в Wallet и работает с первого дня.',
+      'Счёт и карта начинают работать до того, как вы получите пластик. Добавить карту в Apple Pay или Google Pay и платить ею можно сразу после открытия счёта — не дожидаясь доставки.',
       'Visa не берёт дополнительную комиссию за оплату через Apple Pay. Комиссии и курс те же, что при оплате пластиковой картой.',
       'Google Pay тоже поддерживается.',
     ],

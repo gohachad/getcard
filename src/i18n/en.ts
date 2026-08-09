@@ -15,6 +15,13 @@ export const en: Translations = {
     localeShort: 'EN',
   },
 
+  header: {
+    audiences: [
+      { label: "If you're in Russia", slogan: 'Paying abroad works again' },
+      { label: "If you're abroad", slogan: 'Keep your link to Russia' },
+    ],
+  },
+
   nav: {
     wordmark: 'getcard',
     links: [
@@ -55,6 +62,7 @@ export const en: Translations = {
     heading: 'Apple Pay has worked since 28 July 2026',
     body: [
       'Apple Pay launched in Kyrgyzstan on 28 July 2026. The issuing bank was in the first wave, so the card adds to Wallet and works from day one.',
+      'The account and the card start working before the physical card reaches you. You can add it to Apple Pay or Google Pay and start paying as soon as the account is open, without waiting for delivery.',
       'Visa charges no extra fee for paying via Apple Pay. The fees and the exchange rate are the same as paying with the physical card.',
       'Google Pay is supported as well.',
     ],

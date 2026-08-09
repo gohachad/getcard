@@ -12,6 +12,7 @@
  * line is unbroken from the hero to the footer.
  */
 import Base from '../../layouts/Base.astro';
+import SloganBand from '../../components/SloganBand.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
 import DisclosureBand from '../../components/DisclosureBand.astro';
@@ -34,6 +35,7 @@ const copy = t(locale);
 ---
 
 <Base locale={locale}>
+  <SloganBand locale={locale} />
   <Nav locale={locale} />
 
   <main id="main" aria-label={copy.a11y.mainLabel}>
