@@ -1,7 +1,7 @@
 # getcard
 
-Landing page for **getcard**, an independent intermediary that helps Russian
-citizens obtain a multi-currency VISA card issued by a licensed Kyrgyz bank.
+Landing page for **getcard** — a service that helps Russian citizens obtain a
+multi-currency VISA card issued by a licensed Kyrgyz bank.
 
 Astro + Tailwind v4, static, Russian and English.
 
@@ -16,13 +16,23 @@ A staging copy deploys to `gohachad.github.io/getcard/`.
 
 ## What the page argues
 
-One thing: **getting the card through us is fast and takes almost no effort.**
-Two documents, one meeting, and the card is working. The tiers, the currencies
-and the two-audience columns are supporting evidence.
+One thing: **two documents and the card is yours.** The plans, the currencies
+and the two benefit columns are supporting evidence.
 
 The strongest fact on the page, and the reason the promise is credible rather
 than generic: **the account and card go live when the card is issued**, so it
 can go into Apple Pay or Google Pay before the plastic arrives.
+
+**Gold is the baseline.** It is what the page opens on, it carries the one
+filled button in the plans row, and no plan is badged as recommended. Values
+better than Gold render in `--color-success` with a check and animate in on
+selection; the same green and check mark the benefit lines, so a gain looks
+identical everywhere. A higher annual fee is deliberately not highlighted — it
+is not an upgrade.
+
+**The intermediary disclosure has been removed** from the page and the footer
+by product decision. See `DESIGN.md` §0 rule 4, which records the change rather
+than hiding it.
 
 ## Running it
 

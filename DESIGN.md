@@ -22,7 +22,7 @@ The page has one argument — getting the card is fast and takes almost no effor
 1. **Never name the issuing bank** anywhere in the UI, copy, alt text, metadata, filenames, or code comments. Refer to it as "лицензированный банк Кыргызстана" / "a licensed Kyrgyz bank."
 2. **Never imitate any bank's visual identity.** No borrowed logos, wordmarks, colour schemes, or layouts. getcard's identity is its own — that is the entire point of this file.
 3. **Never imply affiliation, partnership, or endorsement** by any bank or payment network. getcard is an intermediary that files applications on the client's behalf.
-4. **State the intermediary relationship plainly** on the homepage and in the footer. See §8, Disclosure Band.
+4. ~~**State the intermediary relationship plainly** on the homepage and in the footer.~~ **Withdrawn by product decision.** The Disclosure Band was removed from the site and the footer statement with it. Rules 1–3 and 5–6 are unaffected: the bank is still never named, no affiliation is implied, and no bank's identity is imitated. Noted here rather than deleted so the change is visible as a decision, not an oversight — the site no longer states anywhere that getcard is not a bank, which is worth revisiting before launch.
 5. **No superlatives about the bank.** Not "the biggest," not "the best." Verifiable facts only: licensed, operating since 1998, 127 branches.
 6. **VISA is a payment network the card runs on**, not a partner. Mention acceptance, never endorsement. Do not reproduce the VISA logo without a licence.
 
@@ -229,9 +229,11 @@ State the retention policy directly beneath the dropzone at 14px `--color-ash`. 
 `--radius-card`, semantic background fill, `1px solid` in the matching semantic colour, 20px padding, 17px/400 text. Three variants: warning (tax obligations, deadlines), success (confirmations), error (failures). Icon left at 20px in the semantic colour. Use warning for the Russian tax-declaration notice — it is a legal obligation for the client, not a footnote.
 
 ### Disclosure Band
-Full-width `--color-wash`, 24px vertical padding, `1px solid --color-hairline` top and bottom. Centred text at 17px/400 `--color-graphite`, max-width 720px. States that getcard is an independent intermediary, not a bank, and does not issue cards. Appears once on the homepage below the hero and again in the footer at 14px.
+**Removed from the build.** The component and both of its placements — the homepage band and the footer line — were taken out by product decision. The spec is kept here only so that a future reader knows it was a deliberate removal rather than something never built. See §0, rule 4.
 
-This is not fine print. Set it at full body size on the homepage. A service that states its own limits reads as more trustworthy, not less.
+### Apple Pay section
+
+**Removed from the build.** Its one load-bearing fact — the card works before the plastic arrives — now sits in step two of the process, where it does more work.
 
 ---
 
