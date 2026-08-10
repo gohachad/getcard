@@ -104,12 +104,29 @@ export const contacts = {
    ------------------------------------------------------------------------- */
 
 export const specs = {
-  gold: { annualFee: verify('$20'), dailyAtm: verify('$6 000') },
-  platinum: { annualFee: verify('$100'), dailyAtm: verify('$12 000') },
-  infinite: { annualFee: verify('$150'), dailyAtm: verify('$12 000') },
+  /**
+   * Annual fees and the ATM withdrawal fee are CONFIRMED against the issuing
+   * bank's published VISA tariff schedule for foreign citizens, effective
+   * 26 November 2025 — read from the debit ("физические лица") columns, not
+   * the revolving-credit ones, which are a separate group in the same table
+   * and are priced in som only.
+   *
+   * Fees are identical in the first year and every year after. The schedule
+   * also offers a five-year upfront option (Platinum $400, Infinite $600, not
+   * available on Gold) which the site does not currently mention.
+   *
+   * Still unconfirmed, so still marked:
+   *  - daily ATM limits: the schedule merges these cells across several card
+   *    columns, so a per-tier figure cannot be read off it honestly
+   *  - cross-currency fee: does not appear in that schedule at all
+   *  - validity: not stated in that schedule
+   */
+  gold: { annualFee: '$20', dailyAtm: verify('$6 000') },
+  platinum: { annualFee: '$100', dailyAtm: verify('$12 000') },
+  infinite: { annualFee: '$150', dailyAtm: verify('$12 000') },
   shared: {
-    atmFee: verify('1%, минимум $3'),
-    atmFeeEn: verify('1%, minimum $3'),
+    atmFee: '1%, минимум $3',
+    atmFeeEn: '1%, minimum $3',
     crossCurrency: verify('1,5%'),
     crossCurrencyEn: verify('1.5%'),
     validity: verify('5 лет'),

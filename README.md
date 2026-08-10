@@ -64,11 +64,23 @@ behind them lives in [`src/config/placeholders.ts`](src/config/placeholders.ts).
 
 ### `[VERIFY]` — displayed but not confirmed with the bank
 
-**Every numeric card spec carries this.** The annual fees, daily ATM limits,
-ATM withdrawal fee and cross-currency fee came from a third-party guide that
-has since proven wrong about currency support. The three-tier structure is
-right; the figures are not confirmed, and the page says so in a callout above
-the comparison rather than presenting them as fact.
+Checked against the issuing bank's published VISA tariff schedule for foreign
+citizens, effective 26 November 2025, reading the debit columns rather than the
+revolving-credit group in the same table.
+
+**Confirmed and no longer marked:** annual fees ($20 / $100 / $150, identical in
+the first year and every year after) and the ATM withdrawal fee outside
+Kyrgyzstan (1%, minimum $3).
+
+**Still marked**, because the published schedule does not settle them:
+
+- **daily ATM limits** — the schedule merges these cells across several card
+  columns, so a per-tier figure cannot be read off it honestly
+- **cross-currency fee** — does not appear in that schedule at all
+- **validity period** — not stated there either
+
+The schedule also offers a **five-year upfront option** (Platinum $400,
+Infinite $600, not available on Gold) that the page does not yet mention.
 
 ### `[TBD]` — not decided yet
 
