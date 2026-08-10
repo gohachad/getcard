@@ -1,7 +1,6 @@
 ---
 /**
- * Flat and typographic — no panels. The intermediary disclosure repeats here
- * at 14px, per DESIGN.md §7.
+ * Flat and typographic — no panels.
  */
 import { t, type Locale } from '../i18n';
 import Copy from './Copy.astro';
@@ -36,7 +35,6 @@ const copy = t(locale);
     </div>
 
     <div class="fine">
-      <p class="disclosure">{copy.disclosure.footer}</p>
       <p>{copy.footer.visaNote}</p>
       {copy.footer.legalLines.map((line) => <p><Copy text={line} /></p>)}
       <p>{copy.footer.copyright}</p>
@@ -98,14 +96,6 @@ const copy = t(locale);
     line-height: 1.5;
     color: var(--color-ash);
     max-width: 90ch;
-  }
-
-  /* The disclosure repeats at 14px, a step above the rest of the fine print:
-     it is a statement about what getcard is, not a legal footnote. */
-  .fine .disclosure {
-    font-size: var(--text-body-sm);
-    line-height: var(--text-body-sm--line-height);
-    color: var(--color-graphite);
   }
 
   @media (min-width: 768px) {

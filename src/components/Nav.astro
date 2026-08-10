@@ -1,4 +1,13 @@
 ---
+/**
+ * Sticky header, stripped to the four things it needs: the wordmark, the
+ * language switch, sign in, and the one primary action.
+ *
+ * There are no section links. The page is short enough to scroll and every
+ * link that used to live here now sits in the footer, so the header stays a
+ * single uncluttered line at every width — which also means no hamburger is
+ * needed and no nav JavaScript ships at all.
+ */
 import { t, otherLocale, localePath, type Locale } from '../i18n';
 
 interface Props {
@@ -15,96 +24,21 @@ const otherCopy = t(other);
   <div class="nav-inner">
     <a class="wordmark" href={localePath(locale)}>{copy.nav.wordmark}</a>
 
-    <nav class="nav-links" aria-label={copy.nav.wordmark}>
-      {copy.nav.links.map((link) => <a href={link.href}>{link.label}</a>)}
-    </nav>
-
     <div class="nav-actions">
       <a class="lang-switch" href={localePath(other)} hreflang={other} lang={other}>
-        <span class="sr-only">{copy.nav.languageLabel}: </span>
-        {otherCopy.meta.localeShort}
+        <span class="lang-label">{copy.nav.languageLabel}</span>
+        <span class="lang-code">{otherCopy.meta.localeShort}</span>
       </a>
 
       {/* TODO: auth is a later pass — point this at the real sign-in route
-          when it exists. Rendered now so the nav layout is already balanced
+          when it exists. Rendered now so the header is already balanced
           around it and nothing shifts when it becomes live. */}
       <a class="pill-outlined nav-signin" href="#">{copy.nav.signIn}</a>
 
       <a class="pill-filled nav-cta" href="#process">{copy.nav.cta}</a>
     </div>
-
-    <button
-      class="hamburger"
-      type="button"
-      aria-expanded="false"
-      aria-controls="nav-drawer"
-      data-menu-toggle
-      data-close-label={copy.nav.closeMenu}
-    >
-      <span class="sr-only" data-menu-label>{copy.nav.openMenu}</span>
-      <span class="hamburger-bars" aria-hidden="true"></span>
-    </button>
-  </div>
-
-  <div class="nav-drawer" id="nav-drawer" hidden>
-    <nav aria-label={copy.nav.wordmark}>
-      {copy.nav.links.map((link) => <a href={link.href}>{link.label}</a>)}
-    </nav>
-    <div class="nav-drawer-actions">
-      {/* TODO: same auth placeholder as above. */}
-      <a class="pill-outlined" href="#">{copy.nav.signIn}</a>
-      <a class="pill-filled" href="#process">{copy.nav.cta}</a>
-    </div>
-
-    {/* The desktop switcher lives in .nav-actions, which is hidden at this
-        width — without this the other locale is unreachable on a phone. */}
-    <a class="drawer-lang" href={localePath(other)} hreflang={other} lang={other}>
-      {otherCopy.meta.localeName}
-    </a>
   </div>
 </header>
-
-<script>
-  // The only nav JS: an accessible disclosure for the mobile drawer.
-  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
-  const drawer = document.querySelector<HTMLElement>('#nav-drawer');
-  const label = document.querySelector<HTMLElement>('[data-menu-label]');
-
-  if (toggle && drawer && label) {
-    const labels = {
-      open: label.textContent ?? '',
-      close: toggle.dataset.closeLabel ?? '',
-    };
-
-    const setOpen = (open: boolean) => {
-      toggle.setAttribute('aria-expanded', String(open));
-      drawer.hidden = !open;
-      label.textContent = open ? labels.close : labels.open;
-    };
-
-    toggle.addEventListener('click', () => {
-      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
-    });
-
-    // Following an in-page link should put the drawer away.
-    drawer.addEventListener('click', (event) => {
-      if ((event.target as HTMLElement).closest('a')) setOpen(false);
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !drawer.hidden) {
-        setOpen(false);
-        toggle.focus();
-      }
-    });
-
-    // The drawer is a mobile affordance; leaving mobile widths closes it so
-    // it can never be left open behind the desktop layout.
-    window.matchMedia('(min-width: 768px)').addEventListener('change', (event) => {
-      if (event.matches) setOpen(false);
-    });
-  }
-</script>
 
 <style>
   .nav {
@@ -118,6 +52,7 @@ const otherCopy = t(other);
   .nav-inner {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
     padding: 8px 24px;
   }
@@ -129,57 +64,47 @@ const otherCopy = t(other);
     color: var(--color-ink);
     text-decoration: none;
     letter-spacing: -0.4px;
-    /* Never a fixed width; this only stops the wordmark being squeezed by
-       longer Russian nav strings. */
     flex: 0 0 auto;
   }
 
-  /* Links are centred between the wordmark and the actions. 14px, not the
-     source system's 12px — 12px nav is unreadable in Cyrillic. */
-  .nav-links {
-    display: none;
-    flex: 1 1 auto;
-    justify-content: center;
-    /* Shrinks with the viewport rather than wrapping. Russian labels are
-       longer than English ones, so the gap gives way before the text does. */
-    gap: clamp(12px, 1.8vw, 24px);
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
     min-width: 0;
   }
 
-  .nav-links a {
+  .lang-switch {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 4px;
     font-size: var(--text-body-sm);
-    font-weight: 400;
-    color: var(--color-ink);
+    color: var(--color-graphite);
     text-decoration: none;
     white-space: nowrap;
   }
 
-  .nav-links a:hover {
+  .lang-switch:hover .lang-code {
     color: var(--color-link);
   }
 
-  .nav-actions {
-    display: none;
-    align-items: center;
-    gap: 12px;
-    flex: 0 0 auto;
-  }
-
-  .lang-switch {
-    font-size: var(--text-body-sm);
+  .lang-code {
     font-weight: 600;
-    color: var(--color-graphite);
-    text-decoration: none;
-    padding: 4px;
   }
 
-  .lang-switch:hover {
-    color: var(--color-link);
+  /* The label is the first thing worth dropping when width runs out — the
+     language code alone is still unambiguous. */
+  @media (max-width: 600px) {
+    .lang-label {
+      display: none;
+    }
   }
 
-  /* Nav pills sit a step smaller than the body pills so the bar stays 8px
-     padded per DESIGN.md §6. Padding, never width — Russian labels are
-     longer and must be allowed to set their own size. */
+  /* Header pills sit a step smaller than the body pills so the bar keeps its
+     8px padding. Padding, never width: Russian labels are longer and must set
+     their own size. */
   .nav-actions .pill-outlined,
   .nav-actions .pill-filled {
     font-size: var(--text-body-sm);
@@ -187,103 +112,15 @@ const otherCopy = t(other);
     white-space: nowrap;
   }
 
-  .hamburger {
-    display: grid;
-    place-items: center;
-    margin-left: auto;
-    width: 40px;
-    height: 40px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-  }
-
-  .hamburger-bars,
-  .hamburger-bars::before,
-  .hamburger-bars::after {
-    display: block;
-    width: 18px;
-    height: 1.5px;
-    background-color: var(--color-ink);
-  }
-
-  .hamburger-bars {
-    position: relative;
-  }
-
-  .hamburger-bars::before,
-  .hamburger-bars::after {
-    content: '';
-    position: absolute;
-    left: 0;
-  }
-
-  .hamburger-bars::before {
-    top: -6px;
-  }
-  .hamburger-bars::after {
-    top: 6px;
-  }
-
-  .nav-drawer {
-    border-top: 1px solid var(--color-hairline);
-    padding: 16px 24px 24px;
-  }
-
-  .nav-drawer[hidden] {
-    display: none;
-  }
-
-  .nav-drawer nav {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .nav-drawer nav a {
-    padding-block: 12px;
-    font-size: var(--text-body);
-    color: var(--color-ink);
-    text-decoration: none;
-    border-bottom: 1px solid var(--color-hairline);
-  }
-
-  .nav-drawer-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    padding-top: 20px;
-  }
-
-  .drawer-lang {
-    display: inline-block;
-    margin-top: 20px;
-    font-size: var(--text-body-sm);
-    font-weight: 600;
-    color: var(--color-link);
-    text-decoration: none;
-  }
-
-  @media (min-width: 768px) {
-    .nav-links,
-    .nav-actions {
-      display: flex;
-    }
-
-    .hamburger,
-    .nav-drawer {
+  /* Below 420px the primary action alone is worth the space; sign in stays
+     reachable from the page itself once auth exists. */
+  @media (max-width: 420px) {
+    .nav-signin {
       display: none;
     }
-  }
 
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
+    .nav-inner {
+      padding-inline: 16px;
+    }
   }
 </style>

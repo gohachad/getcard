@@ -2,24 +2,18 @@
 /**
  * The landing page, one route per locale.
  *
- * The page makes one argument: getting the card through us is fast and takes
- * almost no effort. The hero states the outcome and the effort; the two-audience
- * columns show who it is for and, structurally, both directions of the crossing;
- * eligibility gates honestly before anyone compares prices; the tiers are the
- * choice; the process is the five steps, with the payoff called out.
+ * The page makes one argument: two documents and the card is yours. The hero
+ * states it and lets the reader compare plans; the benefits show what the card
+ * pays for; the plans are the choice; the process is three steps.
  *
- * <BridgeSpan> occupies each gap between sections, so the connecting line is
- * unbroken from the hero to the footer — and it passes exactly between the two
- * audience columns, which is the one place its meaning becomes legible.
+ * <BridgeSpan> occupies each gap between sections, so the connecting line runs
+ * unbroken from the hero to the footer — and passes exactly between the two
+ * benefit columns, which is the one place its meaning becomes legible.
  */
 import Base from '../../layouts/Base.astro';
-import SloganBand from '../../components/SloganBand.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
-import DisclosureBand from '../../components/DisclosureBand.astro';
-import Audiences from '../../components/Audiences.astro';
-import ApplePay from '../../components/ApplePay.astro';
-import Eligibility from '../../components/Eligibility.astro';
+import Benefits from '../../components/Benefits.astro';
 import Tiers from '../../components/Tiers.astro';
 import Process from '../../components/Process.astro';
 import Faq from '../../components/Faq.astro';
@@ -37,19 +31,12 @@ const copy = t(locale);
 ---
 
 <Base locale={locale}>
-  <SloganBand locale={locale} />
   <Nav locale={locale} />
 
   <main id="main" aria-label={copy.a11y.mainLabel}>
     <Hero locale={locale} />
     <BridgeSpan />
-    <DisclosureBand locale={locale} />
-    <BridgeSpan />
-    <Audiences locale={locale} />
-    <BridgeSpan />
-    <ApplePay locale={locale} />
-    <BridgeSpan />
-    <Eligibility locale={locale} />
+    <Benefits locale={locale} />
     <BridgeSpan />
     <Tiers locale={locale} />
     <BridgeSpan />

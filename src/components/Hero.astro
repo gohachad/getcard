@@ -9,31 +9,50 @@ interface Props {
 
 const { locale } = Astro.props;
 const copy = t(locale);
-const tiers = copy.tiers;
-const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
+const { comparison } = copy;
+
+// Gold is the baseline and the card most people take, so it is what the page
+// opens on. Every other tier is presented as a change from it.
+const tiers = comparison.tiers;
+const baseline = tiers[0];
+
+// Rows that can differ between tiers, followed by rows that never do. Keeping
+// the varying ones first means the upgrade highlights land in one place
+// instead of being scattered down the list.
+const perTierRows = ['annualFee', 'dailyAtm', 'expressIssue', 'minBalance'] as const;
+const sharedRows = ['atmFee', 'crossCurrency', 'currencies', 'wallets', 'serviceFee'] as const;
 ---
 
-<section class="hero section" aria-labelledby="hero-heading" data-tier={initial.id}>
+<section class="hero section" aria-labelledby="hero-heading" data-tier={baseline.id}>
   <div class="measure hero-head">
     <h1 id="hero-heading">{copy.hero.headline}</h1>
-    <p class="tagline">{copy.hero.tagline}</p>
+
+    <ul class="audiences">
+      {
+        copy.hero.audiences.map((audience) => (
+          <li>
+            <span class="audience-label">{audience.label}</span>
+            <span class="audience-slogan">{audience.slogan}</span>
+          </li>
+        ))
+      }
+    </ul>
+
     <div class="hero-actions">
       <a class="pill-filled" href="#process">{copy.hero.ctaPrimary}</a>
       <a class="pill-outlined" href="#process">{copy.hero.ctaSecondary}</a>
     </div>
   </div>
 
-  <!-- The card crosses the frame rather than sitting in it: the stage is
-       wider than the text measure and the render overruns it. -->
   <div class="card-stage">
     <div class="card-tilt">
       {
-        tiers.list.map((tier) => (
+        tiers.map((tier) => (
           <div class="card-slot" data-slot={tier.id}>
             <CardRender
               tier={tier.id as 'gold' | 'platinum' | 'infinite'}
               label={`${copy.hero.cardAlt} — ${tier.name}`}
-              active={tier.id === initial.id}
+              active={tier.id === baseline.id}
             />
           </div>
         ))
@@ -49,14 +68,14 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
       data-tier-selector
     >
       {
-        tiers.list.map((tier) => (
+        tiers.map((tier) => (
           <button
             type="button"
             role="radio"
             class="tier-option"
             data-tier-option={tier.id}
-            aria-checked={tier.id === initial.id ? 'true' : 'false'}
-            tabindex={tier.id === initial.id ? 0 : -1}
+            aria-checked={tier.id === baseline.id ? 'true' : 'false'}
+            tabindex={tier.id === baseline.id ? 0 : -1}
           >
             {tier.name}
           </button>
@@ -64,64 +83,78 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
       }
     </div>
 
-    <!-- All three spec sets are in the DOM at build time. Without JS the
-         initial tier stays shown and the section still reads correctly. -->
-    <dl class="hero-specs">
-      <div class="spec">
-        <dt>{copy.hero.specs.annualFee}</dt>
-        <dd>
-          {
-            tiers.list.map((tier) => (
-              <span class="spec-value" data-spec={tier.id}>
-                <Copy text={tier.annualFee} />
+    {/* Every tier's terms are in the DOM at build time, so without JS the
+        baseline plan still renders completely and the section still reads. */}
+    <dl class="comparison" aria-label={copy.hero.comparisonLabel}>
+      {
+        perTierRows.map((row) => (
+          <div class="row">
+            <dt>{comparison.labels[row]}</dt>
+            <dd>
+              {tiers.map((tier) => (
+                <span
+                  class="value"
+                  data-value={tier.id}
+                  data-upgrade={tier.upgrades.includes(row) ? '' : undefined}
+                >
+                  <Copy text={tier[row]} />
+                  {tier.upgrades.includes(row) && (
+                    <span class="upgrade-mark" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" width="14" height="14">
+                        <path
+                          d="M3.5 8.5l3 3 6-7"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      <span class="sr-only">{copy.hero.upgradeLabel}</span>
+                    </span>
+                  )}
+                </span>
+              ))}
+            </dd>
+          </div>
+        ))
+      }
+
+      {
+        sharedRows.map((row) => (
+          <div class="row">
+            <dt>{comparison.labels[row]}</dt>
+            <dd>
+              <span class="value value-static">
+                <Copy text={comparison.shared[row]} />
               </span>
-            ))
-          }
-        </dd>
-      </div>
-      <div class="spec">
-        <dt>{copy.hero.specs.dailyAtm}</dt>
-        <dd>
-          {
-            tiers.list.map((tier) => (
-              <span class="spec-value" data-spec={tier.id}>
-                <Copy text={tier.dailyAtm} />
-              </span>
-            ))
-          }
-        </dd>
-      </div>
-      <div class="spec">
-        <dt>{copy.hero.specs.currencies}</dt>
-        <dd><span class="spec-value spec-static">{copy.hero.currencies}</span></dd>
-      </div>
-      <div class="spec">
-        <dt>{copy.hero.specs.serviceFee}</dt>
-        <dd>
-          <span class="spec-value spec-static">
-            <Copy text={tiers.shared.serviceFee} />
-          </span>
-        </dd>
-      </div>
+            </dd>
+          </div>
+        ))
+      }
     </dl>
   </div>
 </section>
 
 <script>
-  // The one animated moment on the site. Selecting a tier flips a single
-  // data attribute on the hero; the cross-fade and the spec swap are pure
-  // CSS from there, and prefers-reduced-motion turns them into instant swaps.
+  // The one animated moment on the page. Selecting a tier flips a single data
+  // attribute; the swap is CSS from there. The only thing JS adds beyond that
+  // is retriggering the upgrade animation, which CSS cannot do on its own
+  // because the animated elements are already in their final state.
   const hero = document.querySelector<HTMLElement>('.hero');
   const group = document.querySelector<HTMLElement>('[data-tier-selector]');
 
   if (hero && group) {
     const options = Array.from(group.querySelectorAll<HTMLButtonElement>('[data-tier-option]'));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     const select = (index: number, moveFocus = false) => {
       const chosen = options[index];
       if (!chosen) return;
 
-      hero.dataset.tier = chosen.dataset.tierOption;
+      const tier = chosen.dataset.tierOption ?? '';
+      const changed = hero.dataset.tier !== tier;
+      hero.dataset.tier = tier;
 
       options.forEach((option, i) => {
         const isChosen = i === index;
@@ -133,9 +166,22 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
       hero.querySelectorAll<HTMLElement>('.card-slot').forEach((slot) => {
         const svg = slot.querySelector('svg');
         if (!svg) return;
-        if (slot.dataset.slot === hero.dataset.tier) svg.removeAttribute('aria-hidden');
+        if (slot.dataset.slot === tier) svg.removeAttribute('aria-hidden');
         else svg.setAttribute('aria-hidden', 'true');
       });
+
+      // Replay the pop on whichever values are better than the baseline.
+      if (changed && !reduceMotion.matches) {
+        hero
+          .querySelectorAll<HTMLElement>(`.value[data-value="${tier}"][data-upgrade]`)
+          .forEach((el) => {
+            el.classList.remove('is-upgrading');
+            // Reading offsetWidth forces a reflow, which is what lets the same
+            // animation run again rather than being treated as unchanged.
+            void el.offsetWidth;
+            el.classList.add('is-upgrading');
+          });
+      }
 
       if (moveFocus) chosen.focus();
     };
@@ -144,7 +190,6 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
       option.addEventListener('click', () => select(index));
     });
 
-    // Arrow-key navigation, as a radiogroup is expected to support.
     group.addEventListener('keydown', (event) => {
       const current = options.findIndex((option) => option.tabIndex === 0);
       if (current < 0) return;
@@ -177,15 +222,37 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
     margin: 0;
   }
 
-  .tagline {
+  /* The two audiences, directly under the headline: each one qualifies the
+     promise for a different reader. */
+  .audiences {
+    list-style: none;
+    margin: 24px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .audiences li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px 8px;
+  }
+
+  .audience-label {
+    font-size: var(--text-body-sm);
+    color: var(--color-ash);
+  }
+
+  .audience-slogan {
     font-size: var(--text-subheading);
     line-height: var(--text-subheading--line-height);
     letter-spacing: var(--text-subheading--letter-spacing);
     font-weight: 300;
-    color: var(--color-graphite);
-    margin: 20px auto 0;
-    max-width: 34ch;
-    text-wrap: balance;
+    color: var(--color-ink);
   }
 
   .hero-actions {
@@ -196,10 +263,8 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
     margin-top: 32px;
   }
 
-  /* Stage is deliberately wider than the 980px text measure so the render
-     runs past the edges of the column the words sit in. */
   .card-stage {
-    margin-top: 56px;
+    margin-top: 48px;
     padding-inline: 24px;
     display: flex;
     justify-content: center;
@@ -207,17 +272,11 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
 
   .card-tilt {
     position: relative;
-    /* 820px of card, rotated 15°, spans about 926px plus its shadow — past
-       the edges of the 980px column the words sit in. The tilt is what makes
-       it cross the frame; sizing it past the measure outright just makes it
-       a wall. */
     width: min(820px, 92vw);
     aspect-ratio: 540 / 340;
     rotate: -15deg;
-    /* Rotation is not part of layout, so the corners overhang the element's
-       own box by (w·sinθ + h·cosθ − h) / 2 — about 97px at full width. The
-       margin matches that, which is what keeps the card off the segmented
-       control below it. */
+    /* Rotation is not layout, so the corners overhang the element's own box by
+       (w·sinθ + h·cosθ − h) / 2 — about 97px at full width. */
     margin-block: clamp(32px, 11vw, 100px);
   }
 
@@ -235,7 +294,6 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
     opacity: 1;
   }
 
-  /* Segmented control */
   .tier-selector {
     display: inline-flex;
     gap: 4px;
@@ -265,72 +323,125 @@ const initial = tiers.list.find((tier) => tier.recommended) ?? tiers.list[0];
     color: var(--color-white);
   }
 
-  .hero-specs {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    gap: 20px;
+  /* The comparison itself */
+  .comparison {
     margin: 40px auto 0;
     max-width: var(--container-form);
-    text-align: center;
-  }
-
-  /* Label and value are subgrid rows of .hero-specs, so a label that wraps
-     to two lines — "Стоимость услуги getcard" does — pushes every value in
-     the row down together instead of leaving one figure off the baseline. */
-  .spec {
+    text-align: left;
     display: grid;
-    grid-template-rows: subgrid;
-    grid-row: span 2;
-    align-content: start;
+    gap: 0;
   }
 
-  .spec dt {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 4px 16px;
+    padding-block: 14px;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .row:last-child {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  dt {
     font-size: var(--text-body-sm);
     color: var(--color-ash);
-    align-self: end;
   }
 
-  .spec dd {
-    margin: 4px 0 0;
-    /* Every value for this row is stacked here; only the active one is
-       shown, so the row height never jumps during a swap. */
+  dd {
+    margin: 0;
+    /* Every tier's value for this row is stacked in the same cell, so the row
+       height never jumps as the selection changes. */
     display: grid;
+    justify-items: end;
   }
 
-  .spec-value {
+  .value {
     grid-area: 1 / 1;
-    font-size: var(--text-heading-sm);
-    line-height: var(--text-heading-sm--line-height);
-    letter-spacing: var(--text-heading-sm--letter-spacing);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--text-body);
     font-weight: 600;
     opacity: 0;
     transition: opacity 300ms ease-out;
   }
 
-  .spec-static {
+  .value-static {
+    opacity: 1;
+    font-weight: 400;
+  }
+
+  .hero[data-tier='gold'] .value[data-value='gold'],
+  .hero[data-tier='platinum'] .value[data-value='platinum'],
+  .hero[data-tier='infinite'] .value[data-value='infinite'] {
     opacity: 1;
   }
 
-  .hero[data-tier='gold'] .spec-value[data-spec='gold'],
-  .hero[data-tier='platinum'] .spec-value[data-spec='platinum'],
-  .hero[data-tier='infinite'] .spec-value[data-spec='infinite'] {
-    opacity: 1;
+  /* A value better than the baseline plan reads green, with a check. The same
+     green as the benefit checks further down the page. */
+  .value[data-upgrade] {
+    color: var(--color-success);
+  }
+
+  .upgrade-mark {
+    display: inline-flex;
+    color: var(--color-success);
+  }
+
+  .value.is-upgrading {
+    animation: upgrade-pop 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes upgrade-pop {
+    0% {
+      transform: translateY(6px) scale(0.94);
+    }
+    60% {
+      transform: translateY(0) scale(1.06);
+    }
+    100% {
+      transform: translateY(0) scale(1);
+    }
   }
 
   @media (min-width: 768px) {
-    .hero-specs {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
+    .comparison {
+      grid-template-columns: 1fr 1fr;
+      column-gap: 48px;
+    }
+
+    /* Both columns start their own rule, so the two halves read as one table
+       rather than one list wrapped in half. */
+    .row:nth-child(2) {
+      border-top: 1px solid var(--color-hairline);
     }
   }
 
-  /* An instant swap instead of a cross-fade. */
   @media (prefers-reduced-motion: reduce) {
     .card-slot,
-    .spec-value,
+    .value,
     .tier-option {
       transition: none;
     }
+
+    .value.is-upgrading {
+      animation: none;
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

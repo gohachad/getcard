@@ -124,6 +124,21 @@ export const specs = {
   gold: { annualFee: '$20', dailyAtm: verify('$6 000') },
   platinum: { annualFee: '$100', dailyAtm: verify('$12 000') },
   infinite: { annualFee: '$150', dailyAtm: verify('$12 000') },
+
+  /**
+   * Also confirmed from the same schedule, both read from unambiguous
+   * nine-cell rows: express issue (row 1.3) and the minimum balance the
+   * account must keep (row 1.6). Only Infinite carries the balance
+   * requirement — Gold and Platinum have none.
+   */
+  expressIssue: { gold: '$12', platinum: '$12', infinite: 'бесплатно', infiniteEn: 'free' },
+  minBalance: {
+    gold: 'нет',
+    goldEn: 'none',
+    platinum: 'нет',
+    platinumEn: 'none',
+    infinite: '$1 200',
+  },
   shared: {
     atmFee: '1%, минимум $3',
     atmFeeEn: '1%, minimum $3',

@@ -1,14 +1,18 @@
 ---
 /**
- * Tier comparison — the choice of how to cross.
+ * The three plans, side by side.
  *
- * Three panels per DESIGN.md §5: white fill, hairline border, no shadow,
- * never nested. Exactly one filled button in the row; Platinum is the
- * recommended tier and takes it.
+ * Gold is the baseline and carries the one filled button, because it is the
+ * card most people take. No plan is badged "recommended" — that decision is
+ * not made yet, and a badge would make it for us.
  *
- * Spec rows are aligned across all three panels with subgrid rather than
- * fixed heights, so a value that wraps in Russian pushes the same row in
- * every panel instead of knocking the columns out of step.
+ * Values better than Gold read in --color-success with a check, the same
+ * treatment the hero comparison uses, so an upgrade looks identical wherever
+ * it appears. Nothing is highlighted on Gold itself: it is what the others are
+ * measured against.
+ *
+ * Spec rows align across all three panels with subgrid rather than fixed
+ * heights, so Russian copy that wraps moves the same row in every column.
  */
 import { t, type Locale } from '../i18n';
 import Copy from './Copy.astro';
@@ -20,18 +24,18 @@ interface Props {
 
 const { locale } = Astro.props;
 const copy = t(locale);
-const { specLabels, shared } = copy.tiers;
+const { comparison } = copy;
+const { labels, shared } = comparison;
 
-// Seven rows per panel. The SWIFT row is gone: the "AED only" claim conflicts
-// with confirmed multi-currency support and could not be verified.
-const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
-  { label: specLabels.dailyAtm, value: tier.dailyAtm },
-  { label: specLabels.atmFee, value: shared.atmFee },
-  { label: specLabels.crossCurrency, value: shared.crossCurrency },
-  { label: specLabels.currencies, value: shared.currencies },
-  { label: specLabels.validity, value: shared.validity },
-  { label: specLabels.wallets, value: shared.wallets },
-  { label: specLabels.serviceFee, value: shared.serviceFee },
+const rowsFor = (tier: (typeof comparison.tiers)[number]) => [
+  { key: 'dailyAtm', label: labels.dailyAtm, value: tier.dailyAtm },
+  { key: 'expressIssue', label: labels.expressIssue, value: tier.expressIssue },
+  { key: 'minBalance', label: labels.minBalance, value: tier.minBalance },
+  { key: 'atmFee', label: labels.atmFee, value: shared.atmFee },
+  { key: 'crossCurrency', label: labels.crossCurrency, value: shared.crossCurrency },
+  { key: 'currencies', label: labels.currencies, value: shared.currencies },
+  { key: 'wallets', label: labels.wallets, value: shared.wallets },
+  { key: 'serviceFee', label: labels.serviceFee, value: shared.serviceFee },
 ];
 ---
 
@@ -40,8 +44,8 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
     <h2 id="tiers-heading">{copy.tiers.heading}</h2>
     <p class="intro">{copy.tiers.intro}</p>
 
-    {/* Stated before the figures, not after: someone who reads the numbers and
-        stops should already know they are provisional. */}
+    {/* Above the figures, not below: someone who reads the numbers and stops
+        should already know which of them are provisional. */}
     <div class="notice">
       <NoticeCallout title={copy.tiers.unverifiedTitle} variant="warning">
         <Copy text={copy.tiers.unverifiedNotice} />
@@ -50,38 +54,51 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
 
     <ul class="tiers-grid">
       {
-        copy.tiers.list.map((tier) => (
+        comparison.tiers.map((tier, index) => (
           <li class="panel tier-panel">
             <h3>
               {tier.name}
-              {tier.recommended && <span class="badge">{copy.tiers.recommendedLabel}</span>}
+              {index === 0 && <span class="badge">{copy.tiers.baselineLabel}</span>}
             </h3>
 
             <p class="fee">
               <Copy text={tier.annualFee} />
-              <span class="fee-unit">{copy.tiers.annualFeeLabel}</span>
+              <span class="fee-unit">{labels.annualFee}</span>
             </p>
 
             <dl class="specs">
-              {rowsFor(tier).map((row) => (
-                <div class="spec-row">
-                  <dt>{row.label}</dt>
-                  <dd>
-                    <Copy text={row.value} />
-                  </dd>
-                </div>
-              ))}
+              {rowsFor(tier).map((row) => {
+                const upgraded = tier.upgrades.includes(row.key);
+                return (
+                  <div class="spec-row">
+                    <dt>{row.label}</dt>
+                    <dd data-upgrade={upgraded ? '' : undefined}>
+                      {upgraded && (
+                        <svg class="check" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true">
+                          <path
+                            d="M4 10.5l4 4 8-9"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      )}
+                      <Copy text={row.value} />
+                    </dd>
+                  </div>
+                );
+              })}
             </dl>
 
-            <a class={tier.recommended ? 'pill-filled' : 'pill-outlined'} href="#process">
-              {tier.recommended ? copy.tiers.ctaRecommended : copy.tiers.cta}
+            <a class={index === 0 ? 'pill-filled' : 'pill-outlined'} href="#process">
+              {copy.tiers.cta}
             </a>
           </li>
         ))
       }
     </ul>
-
-    <p class="note"><Copy text={copy.tiers.priceNote} /></p>
   </div>
 </section>
 
@@ -169,10 +186,6 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
     padding: 0;
   }
 
-  /* Label over value, always. Inline label/value pairs look tidier until one
-     of them wraps — and in Russian several of them do at panel width, which
-     leaves some values flush right and others flush left in the same list.
-     Stacking is uniform in both languages. */
   .spec-row {
     padding-block: 12px;
     border-top: 1px solid var(--color-hairline);
@@ -188,6 +201,21 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
     margin: 2px 0 0;
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  /* Better than the baseline plan. Same green and same check as the hero
+     comparison and the benefit list. */
+  .spec-row dd[data-upgrade] {
+    color: var(--color-success);
+    font-weight: 600;
+  }
+
+  .check {
+    flex: 0 0 auto;
+    align-self: center;
   }
 
   .tier-panel > .pill-filled,
@@ -197,21 +225,13 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
     justify-self: stretch;
   }
 
-  .note {
-    max-width: var(--container-form);
-    margin: 32px auto 0;
-    color: var(--color-ash);
-    font-size: var(--text-body-sm);
-    text-align: center;
-  }
-
   @media (min-width: 768px) {
-    /* 11 rows: name, fee, 7 spec rows, spacer, button. The panels and their
-       spec lists both inherit these tracks, so every row lines up across
-       all three columns regardless of how the copy wraps. */
+    /* 12 rows: name, fee, 8 spec rows, spacer, button. Panels and their spec
+       lists both inherit these tracks, so every row lines up across all three
+       columns however the copy wraps. */
     .tiers-grid {
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto repeat(7, auto) 1fr auto;
+      grid-template-rows: auto auto repeat(8, auto) 1fr auto;
       gap: 20px;
     }
 
@@ -221,7 +241,7 @@ const rowsFor = (tier: (typeof copy.tiers.list)[number]) => [
     }
 
     .specs {
-      grid-row: span 7;
+      grid-row: span 8;
       display: grid;
       grid-template-rows: subgrid;
     }

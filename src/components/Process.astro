@@ -1,19 +1,12 @@
 ---
 /**
- * The crossing itself, step by step.
+ * Three steps, one line of explanation each.
  *
- * A genuine ordered sequence, so the numbering is meaningful — DESIGN.md §7.
- * Vertical on mobile, horizontal on desktop, with a hairline connector
- * between steps.
+ * The previous version ran five steps with a paragraph under each, which made
+ * a simple process look like paperwork — the opposite of what the page argues.
+ * Anything that needs a paragraph belongs in the FAQ, not here.
  *
- * Every step here is a real part of the process, so all five circles render in
- * the same state rather than one being "active" — this is a description of the
- * route, not a progress indicator.
- *
- * Step 4 is the payoff and gets the emphasis: it is the moment the card starts
- * working, which is the strongest fact on the page. Step 3 is the only offline
- * step and the only real friction; it is stated plainly in its own words rather
- * than softened or buried mid-list.
+ * Step 2 carries the payoff: the card works before the plastic arrives.
  */
 import { t, type Locale } from '../i18n';
 import Copy from './Copy.astro';
@@ -30,12 +23,11 @@ const copy = t(locale);
 <section class="process section" id="process" aria-labelledby="process-heading">
   <div class="measure">
     <h2 id="process-heading">{copy.process.heading}</h2>
-    <p class="intro"><Copy text={copy.process.intro} /></p>
 
     <ol class="steps">
       {
         copy.process.steps.map((step, index) => (
-          <li class="step" data-payoff={index === 3 ? '' : undefined}>
+          <li class="step">
             <span class="marker" aria-hidden="true">
               {index + 1}
             </span>
@@ -43,7 +35,6 @@ const copy = t(locale);
             <p>
               <Copy text={step.body} />
             </p>
-            {index === 3 && <p class="payoff-label">{copy.process.highlightLabel}</p>}
           </li>
         ))
       }
@@ -63,14 +54,7 @@ const copy = t(locale);
     line-height: var(--text-heading--line-height);
     letter-spacing: var(--text-heading--letter-spacing);
     font-weight: 600;
-    margin: 0;
-    text-align: center;
-  }
-
-  .intro {
-    max-width: var(--container-form);
-    margin: 20px auto 48px;
-    color: var(--color-graphite);
+    margin: 0 0 48px;
     text-align: center;
   }
 
@@ -84,7 +68,7 @@ const copy = t(locale);
 
   .step {
     position: relative;
-    padding-left: 48px;
+    padding-left: 52px;
   }
 
   .marker {
@@ -93,92 +77,72 @@ const copy = t(locale);
     top: 0;
     display: grid;
     place-items: center;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: var(--radius-full);
     background-color: var(--color-action);
     color: var(--color-white);
-    font-size: var(--text-body-sm);
+    font-size: var(--text-body);
     font-weight: 600;
     letter-spacing: 0;
   }
 
-  /* Vertical connector on mobile. */
   .step:not(:last-child)::before {
     content: '';
     position: absolute;
-    left: 16px;
-    top: 40px;
+    left: 18px;
+    top: 44px;
     bottom: -32px;
     border-left: 1px solid var(--color-hairline);
   }
 
   h3 {
-    font-size: var(--text-body);
-    line-height: 32px;
+    font-size: var(--text-subheading);
+    line-height: 36px;
+    letter-spacing: var(--text-subheading--letter-spacing);
     font-weight: 600;
     margin: 0;
   }
 
   .step p {
-    margin: 8px 0 0;
-    color: var(--color-graphite);
-  }
-
-  /* The payoff step. Weight comes from a signal rule and a label, not from a
-     panel or a shadow — DESIGN.md keeps both for other jobs. */
-  .step[data-payoff] p:not(.payoff-label) {
-    color: var(--color-ink);
-  }
-
-  .payoff-label {
-    margin: 12px 0 0;
-    padding-top: 8px;
-    border-top: 1px solid var(--color-signal);
-    font-size: var(--text-caption);
-    font-weight: 600;
-    letter-spacing: 0;
+    margin: 6px 0 0;
     color: var(--color-graphite);
   }
 
   .tax {
     max-width: var(--container-form);
-    margin: 48px auto 0;
+    margin: 56px auto 0;
   }
 
   @media (min-width: 768px) {
     .steps {
-      grid-template-columns: repeat(5, 1fr);
-      /* Three rows: title, body, and the payoff label that only step 4 fills.
-         The third track stays empty in the other four columns. */
-      grid-template-rows: auto auto auto;
-      gap: 24px;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 32px;
     }
 
-    /* Titles wrap to two lines in some columns and one in others, so the
-       step bodies are subgrid rows: every description starts on the same
-       line regardless of how long its title is. */
+    /* Titles wrap to two lines in some columns and one in others, so bodies
+       are subgrid rows and every description starts on the same line. */
     .step {
       padding-left: 0;
-      padding-top: 48px;
+      padding-top: 52px;
       display: grid;
       grid-template-rows: subgrid;
-      grid-row: span 3;
+      grid-row: span 2;
       align-content: start;
     }
 
-    /* Horizontal connector on desktop, running between the circles. */
     .step:not(:last-child)::before {
-      left: 40px;
-      right: -24px;
-      top: 16px;
+      left: 44px;
+      right: -32px;
+      top: 18px;
       bottom: auto;
       border-left: none;
       border-top: 1px solid var(--color-hairline);
     }
 
     h3 {
-      line-height: var(--text-body--line-height);
+      line-height: var(--text-subheading--line-height);
     }
   }
 </style>
