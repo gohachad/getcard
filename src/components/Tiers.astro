@@ -28,15 +28,27 @@ const { comparison } = copy;
 const { labels, shared } = comparison;
 
 const rowsFor = (tier: (typeof comparison.tiers)[number]) => [
-  { key: 'dailyAtm', label: labels.dailyAtm, value: tier.dailyAtm },
+  { key: 'dailyLimit', label: labels.dailyLimit, value: tier.dailyLimit },
+  { key: 'lounge', label: labels.lounge, value: tier.lounge },
+  { key: 'personalManager', label: labels.personalManager, value: tier.personalManager },
+  { key: 'limitIncrease', label: labels.limitIncrease, value: tier.limitIncrease },
   { key: 'expressIssue', label: labels.expressIssue, value: tier.expressIssue },
   { key: 'minBalance', label: labels.minBalance, value: tier.minBalance },
+  { key: 'dailyTransactions', label: labels.dailyTransactions, value: shared.dailyTransactions },
   { key: 'atmFee', label: labels.atmFee, value: shared.atmFee },
   { key: 'crossCurrency', label: labels.crossCurrency, value: shared.crossCurrency },
   { key: 'currencies', label: labels.currencies, value: shared.currencies },
   { key: 'wallets', label: labels.wallets, value: shared.wallets },
   { key: 'serviceFee', label: labels.serviceFee, value: shared.serviceFee },
 ];
+
+// Qualifiers that belong to a specific benefit, shown only on the panel that
+// actually carries it.
+const notesFor = (tier: (typeof comparison.tiers)[number]) =>
+  [
+    tier.upgrades.includes('lounge') ? comparison.loungeNote : null,
+    tier.upgrades.includes('limitIncrease') ? comparison.limitIncreaseNote : null,
+  ].filter((note): note is string => note !== null);
 ---
 
 <section class="tiers section" id="tiers" aria-labelledby="tiers-heading">
@@ -91,6 +103,16 @@ const rowsFor = (tier: (typeof comparison.tiers)[number]) => [
                 );
               })}
             </dl>
+
+            {/* Qualifiers sit with the panel that actually carries the
+                benefit, not as fine print at the bottom of the section. The
+                element is always present so all three panels keep the same
+                subgrid row structure; it simply has no children on Gold. */}
+            <p class="panel-notes">
+              {notesFor(tier).map((note) => (
+                <span>{note}</span>
+              ))}
+            </p>
 
             <a class={index === 0 ? 'pill-filled' : 'pill-outlined'} href="#process">
               {copy.tiers.cta}
@@ -218,6 +240,15 @@ const rowsFor = (tier: (typeof comparison.tiers)[number]) => [
     align-self: center;
   }
 
+  .panel-notes {
+    display: grid;
+    gap: 4px;
+    margin: 12px 0 0;
+    font-size: var(--text-caption);
+    line-height: 1.4;
+    color: var(--color-ash);
+  }
+
   .tier-panel > .pill-filled,
   .tier-panel > .pill-outlined {
     margin-top: 24px;
@@ -226,12 +257,12 @@ const rowsFor = (tier: (typeof comparison.tiers)[number]) => [
   }
 
   @media (min-width: 768px) {
-    /* 12 rows: name, fee, 8 spec rows, spacer, button. Panels and their spec
+    /* 16 rows: name, fee, 12 spec rows, spacer, button. Panels and their spec
        lists both inherit these tracks, so every row lines up across all three
        columns however the copy wraps. */
     .tiers-grid {
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto repeat(8, auto) 1fr auto;
+      grid-template-rows: auto auto repeat(12, auto) 1fr auto;
       gap: 20px;
     }
 
@@ -241,7 +272,7 @@ const rowsFor = (tier: (typeof comparison.tiers)[number]) => [
     }
 
     .specs {
-      grid-row: span 8;
+      grid-row: span 12;
       display: grid;
       grid-template-rows: subgrid;
     }

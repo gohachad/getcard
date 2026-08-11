@@ -19,8 +19,23 @@ const baseline = tiers[0];
 // Rows that can differ between tiers, followed by rows that never do. Keeping
 // the varying ones first means the upgrade highlights land in one place
 // instead of being scattered down the list.
-const perTierRows = ['annualFee', 'dailyAtm', 'expressIssue', 'minBalance'] as const;
-const sharedRows = ['atmFee', 'crossCurrency', 'currencies', 'wallets', 'serviceFee'] as const;
+const perTierRows = [
+  'annualFee',
+  'dailyLimit',
+  'lounge',
+  'personalManager',
+  'limitIncrease',
+  'expressIssue',
+  'minBalance',
+] as const;
+const sharedRows = [
+  'dailyTransactions',
+  'atmFee',
+  'crossCurrency',
+  'currencies',
+  'wallets',
+  'serviceFee',
+] as const;
 ---
 
 <section class="hero section" aria-labelledby="hero-heading" data-tier={baseline.id}>
@@ -332,10 +347,13 @@ const sharedRows = ['atmFee', 'crossCurrency', 'currencies', 'wallets', 'service
     gap: 0;
   }
 
+  /* A grid rather than a flex row: Russian labels are long enough that a
+     wrapping flex row detaches the value onto its own line and strands it.
+     Here the label keeps the left track and wraps within it, and the value
+     stays on the right whatever happens. */
   .row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
     align-items: baseline;
     gap: 4px 16px;
     padding-block: 14px;
@@ -357,6 +375,7 @@ const sharedRows = ['atmFee', 'crossCurrency', 'currencies', 'wallets', 'service
        height never jumps as the selection changes. */
     display: grid;
     justify-items: end;
+    text-align: right;
   }
 
   .value {

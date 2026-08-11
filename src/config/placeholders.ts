@@ -69,8 +69,9 @@ export const payment = {
    ------------------------------------------------------------------------- */
 
 export const timeline = {
-  /** From submitting the form to the accounts going live. */
-  toActivation: TBD,
+  /** Confirmed: the bank's own deck states issue takes about three weeks. */
+  toIssue: 'около 3 недель',
+  toIssueEn: 'about 3 weeks',
   /** From the accounts going live to the physical card arriving. */
   toDelivery: TBD,
 } as const;
@@ -121,9 +122,46 @@ export const specs = {
    *  - cross-currency fee: does not appear in that schedule at all
    *  - validity: not stated in that schedule
    */
-  gold: { annualFee: '$20', dailyAtm: verify('$6 000') },
-  platinum: { annualFee: '$100', dailyAtm: verify('$12 000') },
-  infinite: { annualFee: '$150', dailyAtm: verify('$12 000') },
+  /**
+   * Daily limits, annual fees and the premium benefits below are CONFIRMED
+   * from the bank's own product deck. Note the label: the deck calls this the
+   * daily limit ("суточный лимит"), not specifically an ATM withdrawal limit,
+   * and the site now uses the same wording rather than narrowing it.
+   *
+   * Infinite is 20 000, not 12 000 — the earlier third-party figure was wrong.
+   */
+  gold: { annualFee: '$20', dailyLimit: '$6 000' },
+  platinum: { annualFee: '$100', dailyLimit: '$12 000' },
+  infinite: { annualFee: '$150', dailyLimit: '$20 000' },
+
+  /** Premium benefits, confirmed from the same deck. */
+  lounge: {
+    gold: 'нет',
+    goldEn: 'no',
+    platinum: '2 раза в год',
+    platinumEn: '2 visits a year',
+    infinite: '6 раз в год',
+    infiniteEn: '6 visits a year',
+  },
+  personalManager: {
+    gold: 'нет',
+    goldEn: 'no',
+    platinum: 'нет',
+    platinumEn: 'no',
+    infinite: 'да',
+    infiniteEn: 'yes',
+  },
+  limitIncrease: {
+    gold: 'нет',
+    goldEn: 'no',
+    platinum: 'нет',
+    platinumEn: 'no',
+    infinite: 'до $50 000',
+    infiniteEn: 'up to $50,000',
+  },
+  /** Same on all three. */
+  dailyTransactions: '20 в сутки',
+  dailyTransactionsEn: '20 per day',
 
   /**
    * Also confirmed from the same schedule, both read from unambiguous

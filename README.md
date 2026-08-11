@@ -74,6 +74,31 @@ behind them lives in [`src/config/placeholders.ts`](src/config/placeholders.ts).
 
 ### `[VERIFY]` — displayed but not confirmed with the bank
 
+**Update.** The bank's own product deck confirmed the daily limits, the annual
+fees, the premium benefits and the issue time, and corrected one figure that
+was wrong: **Infinite's daily limit is $20,000, not $12,000.** Only the
+cross-currency fee is still marked.
+
+Confirmed from the deck and now unmarked:
+
+| | Gold | Platinum | Infinite |
+|---|---|---|---|
+| Daily limit | $6,000 | $12,000 | $20,000 |
+| Airport lounges | — | 2 / year | 6 / year |
+| Personal manager | — | — | yes |
+| Limit increase | — | — | up to $50,000 |
+
+Also confirmed: 20 transactions per day on all three, and issue takes about
+three weeks. The lounge figure includes food and covers the cardholder; the
+limit increase is subject to confirming the source of funds. Both qualifiers
+render under the panel that carries the benefit.
+
+Note the label change: the deck calls this the **daily limit**, not
+specifically an ATM withdrawal limit, so the site uses the same wording rather
+than narrowing a claim the source does not make.
+
+
+
 Checked against the issuing bank's published VISA tariff schedule for foreign
 citizens, effective 26 November 2025, reading the debit columns rather than the
 revolving-credit group in the same table.
