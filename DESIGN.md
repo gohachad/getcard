@@ -226,7 +226,9 @@ Dashed `1px --color-hairline` border, `--radius-card`, `--color-wash` fill, 32px
 State the retention policy directly beneath the dropzone at 14px `--color-ash`. People are uploading passports; do not make them hunt for it.
 
 ### Notice Callout
-`--radius-card`, semantic background fill, `1px solid` in the matching semantic colour, 20px padding, 17px/400 text. Three variants: warning (tax obligations, deadlines), success (confirmations), error (failures). Icon left at 20px in the semantic colour. Use warning for the Russian tax-declaration notice — it is a legal obligation for the client, not a footnote.
+`--radius-card`, semantic background fill, `1px solid` in the matching semantic colour, 20px padding, 17px/400 text. Three variants: warning (unconfirmed figures, deadlines), success (confirmations), error (failures). Icon left at 20px in the semantic colour.
+
+Currently used once, in the plans section, to say which figures are not yet confirmed with the bank. The tax-declaration notice that previously used it was removed from the site by product decision.
 
 ### Disclosure Band
 **Removed from the build.** The component and both of its placements — the homepage band and the footer line — were taken out by product decision. The spec is kept here only so that a future reader knows it was a deliberate removal rather than something never built. See §0, rule 4.

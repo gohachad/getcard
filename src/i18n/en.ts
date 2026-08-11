@@ -140,10 +140,6 @@ export const en: Translations = {
         body: 'The physical card reaches you later.',
       },
     ],
-    taxNotice: {
-      title: 'On notifying the tax authority',
-      body: 'Opening an account with a foreign bank must be reported to the Russian tax authority within one month, and an annual statement of account activity is due after that. This is the account holder’s obligation rather than ours — but it is better to know now than in a year.',
-    },
   },
 
   faq: {
