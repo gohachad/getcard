@@ -30,10 +30,9 @@ const otherCopy = t(other);
         <span class="lang-code">{otherCopy.meta.localeShort}</span>
       </a>
 
-      {/* TODO: auth is a later pass — point this at the real sign-in route
-          when it exists. Rendered now so the header is already balanced
-          around it and nothing shifts when it becomes live. */}
-      <a class="pill-outlined nav-signin" href="#">{copy.nav.signIn}</a>
+      {/* The account area is a separate app on its own subdomain, so this is a
+          full URL rather than a route in this build. */}
+      <a class="pill-outlined nav-signin" href="https://app.getcard.kg/">{copy.nav.signIn}</a>
 
       <a class="pill-filled nav-cta" href="#process">{copy.nav.cta}</a>
     </div>
