@@ -67,6 +67,43 @@ canonical URLs already point at the production domain.
 | `BASE_PATH` | `/getcard` | Path prefix for assets and internal links |
 | `SITE_URL` | `https://getcard.kg` | Absolute origin for canonical / hreflang / OG |
 
+## Publishing
+
+**`getcard.kg` is live on a VPS, and the server does not pull from GitHub.**
+Pushing to `main` updates the source of truth; it does not update the site.
+Publishing is a separate act:
+
+```bash
+npm run deploy
+```
+
+That typechecks, builds with `BASE_PATH=/`, uploads, swaps the files in, and
+then fetches the live URL to confirm it actually worked. It refuses to publish
+a build that fails `astro check`, and it fails loudly rather than reporting
+success it has not verified. No container restart is involved — nginx serves
+whatever is on disk.
+
+Override the target with `DEPLOY_HOST` / `DEPLOY_PATH` if the server moves.
+
+**Where it lands:** `/srv/getcard/public`, served by an `nginx:alpine`
+container (`getcard-site`) defined in its own compose project at
+`/srv/getcard`, joined to the existing `n8n_internal` network. TLS and routing
+are handled by the Caddy that already fronts n8n and the other sites on that
+box, configured in `/root/n8n/Caddyfile`.
+
+Three constraints that are easy to rediscover the hard way:
+
+- **Set `BASE_PATH` in Node, never on a Git Bash command line.** MSYS path
+  conversion rewrites a bare `/` into `/C:/Program Files/Git/`, and the build
+  still succeeds — it just ships a site where every stylesheet 404s.
+- **Never rename the published directory.** It is bind-mounted into the
+  container, and Docker resolved that mount to an inode at container start.
+  Renaming detaches the mount and the container serves the old, unlinked
+  directory until restarted. Replace the *contents*, keep the directory.
+- **Reload Caddy, never restart it.** `docker exec n8n-caddy-1 caddy reload
+  --config /etc/caddy/Caddyfile` is graceful; restarting the container drops
+  n8n and the other production sites sharing it. Run `caddy validate` first.
+
 ## Unconfirmed and unfinalised values
 
 Two markers, both visible in the rendered page and both greppable. Everything
