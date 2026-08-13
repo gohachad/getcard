@@ -34,8 +34,17 @@ export const verify = (value: string): string => `${value} ${VERIFY}`;
    ------------------------------------------------------------------------- */
 
 export const pricing = {
-  /** Confirmed. Rubles are the primary currency for this audience. */
+  /**
+   * Confirmed. Rubles are the primary currency for this audience, and the
+   * default the page opens on; the other two are for the half of the market
+   * living abroad.
+   *
+   * These are three separate prices, not conversions — they do not track an
+   * exchange rate and should not be recalculated from the ruble figure.
+   */
   serviceFee: '29 000 ₽',
+  serviceFeeUsd: '$380',
+  serviceFeeEur: '€350',
 
   /**
    * Open question: does 29 000 ₽ apply to all three tiers, or only to the
@@ -81,10 +90,15 @@ export const timeline = {
    ------------------------------------------------------------------------- */
 
 export const legal = {
-  entityName: TBD,
-  inn: TBD,
-  ogrn: TBD,
-  registeredAddress: TBD,
+  entityName: 'ИП Томашевский Андрей Николаевич',
+  inn: '772915840980',
+  /** A sole trader has an ОГРНИП rather than an ОГРН — the label differs. */
+  ogrnip: '307770000254807',
+  /** Payment details, shown in the footer as реквизиты. */
+  account: '40802810194000006730',
+  bankName: '«ГПБ» (Открытое акционерное общество)',
+  bik: '044525823',
+  corrAccount: '30101810200000000823',
 } as const;
 
 /* -------------------------------------------------------------------------
@@ -95,8 +109,6 @@ export const contacts = {
   telegram: TBD,
   email: TBD,
   phone: TBD,
-  /** Address of the Moscow representative office where the meeting happens. */
-  moscowOffice: TBD,
 } as const;
 
 /* -------------------------------------------------------------------------
@@ -135,27 +147,31 @@ export const specs = {
   infinite: { annualFee: '$150', dailyLimit: '$20 000' },
 
   /** Premium benefits, confirmed from the same deck. */
+  /**
+   * A benefit a tier does not carry renders as an em dash, never as "нет".
+   *
+   * Gold is the card most people should take, and a column of the word "no"
+   * next to every line argues the opposite — it reads as a stripped-down
+   * version of something better rather than the sensible default. A dash is
+   * neutral: the row simply does not apply. Gold's own genuine advantages
+   * (cheapest annual fee, no minimum balance) are marked positively instead.
+   */
   lounge: {
-    gold: 'нет',
-    goldEn: 'no',
+    gold: '—',
     platinum: '2 раза в год',
     platinumEn: '2 visits a year',
     infinite: '6 раз в год',
     infiniteEn: '6 visits a year',
   },
   personalManager: {
-    gold: 'нет',
-    goldEn: 'no',
-    platinum: 'нет',
-    platinumEn: 'no',
+    gold: '—',
+    platinum: '—',
     infinite: 'да',
     infiniteEn: 'yes',
   },
   limitIncrease: {
-    gold: 'нет',
-    goldEn: 'no',
-    platinum: 'нет',
-    platinumEn: 'no',
+    gold: '—',
+    platinum: '—',
     infinite: 'до $50 000',
     infiniteEn: 'up to $50,000',
   },

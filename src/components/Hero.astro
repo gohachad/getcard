@@ -19,6 +19,8 @@ const baseline = tiers[0];
 // Rows that can differ between tiers, followed by rows that never do. Keeping
 // the varying ones first means the upgrade highlights land in one place
 // instead of being scattered down the list.
+// Our own fee leads: it is the number the visitor is actually deciding about,
+// and burying it under the bank's terms made them hunt for it.
 const perTierRows = [
   'annualFee',
   'dailyLimit',
@@ -34,7 +36,6 @@ const sharedRows = [
   'crossCurrency',
   'currencies',
   'wallets',
-  'serviceFee',
 ] as const;
 ---
 
@@ -52,6 +53,8 @@ const sharedRows = [
         ))
       }
     </ul>
+
+    <p class="issuer">{copy.hero.issuer}</p>
 
     <div class="hero-actions">
       <a class="pill-filled" href="#process">{copy.hero.ctaPrimary}</a>
@@ -101,6 +104,22 @@ const sharedRows = [
     {/* Every tier's terms are in the DOM at build time, so without JS the
         baseline plan still renders completely and the section still reads. */}
     <dl class="comparison" aria-label={copy.hero.comparisonLabel}>
+      {/* Our fee first — it is the number the visitor is deciding about. All
+          three currencies are in the DOM; the switcher only changes which is
+          shown, so there is no conversion happening at runtime. */}
+      <div class="row row-fee">
+        <dt>{comparison.labels.serviceFee}</dt>
+        <dd>
+          {
+            comparison.currencies.map((currency) => (
+              <span class="value value-fee" data-currency={currency.id}>
+                <Copy text={comparison.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur']} />
+              </span>
+            ))
+          }
+        </dd>
+      </div>
+
       {
         perTierRows.map((row) => (
           <div class="row">
@@ -110,11 +129,11 @@ const sharedRows = [
                 <span
                   class="value"
                   data-value={tier.id}
-                  data-upgrade={tier.upgrades.includes(row) ? '' : undefined}
+                  data-advantage={tier.advantages.includes(row) ? '' : undefined}
                 >
                   <Copy text={tier[row]} />
-                  {tier.upgrades.includes(row) && (
-                    <span class="upgrade-mark" aria-hidden="true">
+                  {tier.advantages.includes(row) && (
+                    <span class="advantage-mark" aria-hidden="true">
                       <svg viewBox="0 0 16 16" width="14" height="14">
                         <path
                           d="M3.5 8.5l3 3 6-7"
@@ -125,7 +144,7 @@ const sharedRows = [
                           stroke-linejoin="round"
                         />
                       </svg>
-                      <span class="sr-only">{copy.hero.upgradeLabel}</span>
+                      <span class="sr-only">{copy.hero.advantageLabel}</span>
                     </span>
                   )}
                 </span>
@@ -185,10 +204,10 @@ const sharedRows = [
         else svg.setAttribute('aria-hidden', 'true');
       });
 
-      // Replay the pop on whichever values are better than the baseline.
+      // Replay the pop on this plan's advantages.
       if (changed && !reduceMotion.matches) {
         hero
-          .querySelectorAll<HTMLElement>(`.value[data-value="${tier}"][data-upgrade]`)
+          .querySelectorAll<HTMLElement>(`.value[data-value="${tier}"][data-advantage]`)
           .forEach((el) => {
             el.classList.remove('is-upgrading');
             // Reading offsetWidth forces a reflow, which is what lets the same
@@ -270,12 +289,20 @@ const sharedRows = [
     color: var(--color-ink);
   }
 
+  .issuer {
+    margin: 20px auto 0;
+    max-width: 46ch;
+    font-size: var(--text-body-sm);
+    line-height: var(--text-body-sm--line-height);
+    color: var(--color-ash);
+  }
+
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 12px;
-    margin-top: 32px;
+    margin-top: 28px;
   }
 
   .card-stage {
@@ -400,15 +427,34 @@ const sharedRows = [
     opacity: 1;
   }
 
-  /* A value better than the baseline plan reads green, with a check. The same
-     green as the benefit checks further down the page. */
-  .value[data-upgrade] {
+  /* An advantage of the selected plan reads green, with a check — the same
+     green as the benefit checks further down the page. Every tier has some,
+     including Gold: it is the cheapest to keep and locks up no balance. */
+  .value[data-advantage] {
     color: var(--color-success);
   }
 
-  .upgrade-mark {
+  .advantage-mark {
     display: inline-flex;
     color: var(--color-success);
+  }
+
+  /* Our own fee is the decision, so it is set larger than the bank's terms. */
+  .row-fee dd .value {
+    font-size: var(--text-heading-sm);
+    line-height: var(--text-heading-sm--line-height);
+    letter-spacing: var(--text-heading-sm--letter-spacing);
+  }
+
+  .value-fee {
+    grid-area: 1 / 1;
+    opacity: 0;
+  }
+
+  :global([data-currency='rub']) .value-fee[data-currency='rub'],
+  :global([data-currency='usd']) .value-fee[data-currency='usd'],
+  :global([data-currency='eur']) .value-fee[data-currency='eur'] {
+    opacity: 1;
   }
 
   .value.is-upgrading {

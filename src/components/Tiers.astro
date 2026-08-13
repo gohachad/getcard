@@ -28,6 +28,7 @@ const { comparison } = copy;
 const { labels, shared } = comparison;
 
 const rowsFor = (tier: (typeof comparison.tiers)[number]) => [
+  { key: 'annualFee', label: labels.annualFee, value: tier.annualFee },
   { key: 'dailyLimit', label: labels.dailyLimit, value: tier.dailyLimit },
   { key: 'lounge', label: labels.lounge, value: tier.lounge },
   { key: 'personalManager', label: labels.personalManager, value: tier.personalManager },
@@ -39,15 +40,14 @@ const rowsFor = (tier: (typeof comparison.tiers)[number]) => [
   { key: 'crossCurrency', label: labels.crossCurrency, value: shared.crossCurrency },
   { key: 'currencies', label: labels.currencies, value: shared.currencies },
   { key: 'wallets', label: labels.wallets, value: shared.wallets },
-  { key: 'serviceFee', label: labels.serviceFee, value: shared.serviceFee },
 ];
 
 // Qualifiers that belong to a specific benefit, shown only on the panel that
 // actually carries it.
 const notesFor = (tier: (typeof comparison.tiers)[number]) =>
   [
-    tier.upgrades.includes('lounge') ? comparison.loungeNote : null,
-    tier.upgrades.includes('limitIncrease') ? comparison.limitIncreaseNote : null,
+    tier.advantages.includes('lounge') ? comparison.loungeNote : null,
+    tier.advantages.includes('limitIncrease') ? comparison.limitIncreaseNote : null,
   ].filter((note): note is string => note !== null);
 ---
 
@@ -55,6 +55,25 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
   <div class="measure">
     <h2 id="tiers-heading">{copy.tiers.heading}</h2>
     <p class="intro">{copy.tiers.intro}</p>
+
+    {/* Three prices, not a converter. Setting the attribute on <html> lets the
+        hero comparison follow the same choice from one control. */}
+    <div class="currency-switch" role="radiogroup" aria-label={comparison.currencyLabel}>
+      {
+        comparison.currencies.map((currency, index) => (
+          <button
+            type="button"
+            role="radio"
+            class="currency-option"
+            data-currency-option={currency.id}
+            aria-checked={index === 0 ? 'true' : 'false'}
+            tabindex={index === 0 ? 0 : -1}
+          >
+            {currency.label}
+          </button>
+        ))
+      }
+    </div>
 
     {/* Above the figures, not below: someone who reads the numbers and stops
         should already know which of them are provisional. */}
@@ -73,19 +92,26 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
               {index === 0 && <span class="badge">{copy.tiers.baselineLabel}</span>}
             </h3>
 
+            {/* Our fee is the headline number, not the bank's annual fee: it is
+                what the visitor is actually deciding to pay. All three
+                currencies render; the switcher picks one. */}
             <p class="fee">
-              <Copy text={tier.annualFee} />
-              <span class="fee-unit">{labels.annualFee}</span>
+              {comparison.currencies.map((currency) => (
+                <span class="fee-value" data-currency={currency.id}>
+                  <Copy text={comparison.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur']} />
+                </span>
+              ))}
+              <span class="fee-unit">{copy.tiers.serviceFeeLabel}</span>
             </p>
 
             <dl class="specs">
               {rowsFor(tier).map((row) => {
-                const upgraded = tier.upgrades.includes(row.key);
+                const isAdvantage = tier.advantages.includes(row.key);
                 return (
                   <div class="spec-row">
                     <dt>{row.label}</dt>
-                    <dd data-upgrade={upgraded ? '' : undefined}>
-                      {upgraded && (
+                    <dd data-advantage={isAdvantage ? '' : undefined}>
+                      {isAdvantage && (
                         <svg class="check" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true">
                           <path
                             d="M4 10.5l4 4 8-9"
@@ -123,6 +149,51 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
     </ul>
   </div>
 </section>
+
+<script>
+  // Sets the currency on <html> so the hero comparison and the plan panels
+  // both follow one control. Nothing is converted at runtime — all three
+  // prices are in the DOM and this only chooses which is visible, so the page
+  // still shows a correct price with JavaScript disabled.
+  const group = document.querySelector<HTMLElement>('.currency-switch');
+
+  if (group) {
+    const options = Array.from(group.querySelectorAll<HTMLButtonElement>('[data-currency-option]'));
+
+    const select = (index: number, moveFocus = false) => {
+      const chosen = options[index];
+      if (!chosen) return;
+
+      document.documentElement.dataset.currency = chosen.dataset.currencyOption;
+      options.forEach((option, i) => {
+        option.setAttribute('aria-checked', String(i === index));
+        option.tabIndex = i === index ? 0 : -1;
+      });
+
+      if (moveFocus) chosen.focus();
+    };
+
+    // The default has to be applied on load: the markup ships with rub checked
+    // but the attribute that drives the CSS lives on <html>.
+    select(0);
+
+    options.forEach((option, index) => option.addEventListener('click', () => select(index)));
+
+    group.addEventListener('keydown', (event) => {
+      const current = options.findIndex((o) => o.tabIndex === 0);
+      if (current < 0) return;
+      const step =
+        event.key === 'ArrowRight' || event.key === 'ArrowDown'
+          ? 1
+          : event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+            ? -1
+            : 0;
+      if (step === 0) return;
+      event.preventDefault();
+      select((current + step + options.length) % options.length, true);
+    });
+  }
+</script>
 
 <style>
   h2 {
@@ -184,6 +255,50 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
     white-space: nowrap;
   }
 
+  .currency-switch {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    width: fit-content;
+    margin: 0 auto 32px;
+    padding: 4px;
+    background-color: var(--color-pebble);
+    border-radius: var(--radius-full);
+  }
+
+  .currency-option {
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-full);
+    padding: 8px 22px;
+    font-family: inherit;
+    font-size: var(--text-body);
+    font-weight: 600;
+    color: var(--color-graphite);
+    cursor: pointer;
+    transition:
+      background-color 200ms ease-out,
+      color 200ms ease-out;
+  }
+
+  .currency-option[aria-checked='true'] {
+    background-color: var(--color-action);
+    color: var(--color-white);
+  }
+
+  /* All three prices occupy the same cell so the panel never changes height
+     when the currency changes. */
+  .fee-value {
+    grid-area: 1 / 1;
+    display: none;
+  }
+
+  :global([data-currency='rub']) .fee-value[data-currency='rub'],
+  :global([data-currency='usd']) .fee-value[data-currency='usd'],
+  :global([data-currency='eur']) .fee-value[data-currency='eur'] {
+    display: inline;
+  }
+
   .fee {
     font-size: var(--text-heading);
     line-height: var(--text-heading--line-height);
@@ -230,7 +345,7 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
 
   /* Better than the baseline plan. Same green and same check as the hero
      comparison and the benefit list. */
-  .spec-row dd[data-upgrade] {
+  .spec-row dd[data-advantage] {
     color: var(--color-success);
     font-weight: 600;
   }

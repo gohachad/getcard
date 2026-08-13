@@ -20,7 +20,9 @@ const absolute = (locale: Locale) =>
 ---
 
 <!doctype html>
-<html lang={htmlLang[locale]}>
+{/* data-currency ships as rub so the price renders correctly with JavaScript
+    disabled; the switcher only changes this attribute. */}
+<html lang={htmlLang[locale]} data-currency="rub">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />

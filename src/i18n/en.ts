@@ -30,12 +30,13 @@ export const en: Translations = {
       { label: "If you're in Russia", slogan: 'Paying abroad works again' },
       { label: "If you're abroad", slogan: 'Keep your link to Russia' },
     ],
+    issuer: 'The card is issued by a licensed Kyrgyz bank, operating since 1998',
     ctaPrimary: 'Get a card',
     ctaSecondary: 'How it works',
     tierSelectorLabel: 'Choose a plan',
     cardAlt: 'Illustration of a VISA card',
     comparisonLabel: 'Terms on this plan',
-    upgradeLabel: 'More than Gold',
+    advantageLabel: 'Plan advantage',
   },
 
   comparison: {
@@ -62,6 +63,17 @@ export const en: Translations = {
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
     },
+    serviceFeeBy: {
+      rub: pricing.serviceFee,
+      usd: pricing.serviceFeeUsd,
+      eur: pricing.serviceFeeEur,
+    },
+    currencyLabel: 'Payment currency',
+    currencies: [
+      { id: 'rub', label: '₽' },
+      { id: 'usd', label: '$' },
+      { id: 'eur', label: '€' },
+    ],
     loungeNote: 'Food included. Access is for the cardholder.',
     limitIncreaseNote: 'Subject to confirming the source of funds.',
     tiers: [
@@ -70,12 +82,12 @@ export const en: Translations = {
         name: 'Gold',
         annualFee: specs.gold.annualFee,
         dailyLimit: specs.gold.dailyLimit,
-        lounge: specs.lounge.goldEn,
-        personalManager: specs.personalManager.goldEn,
-        limitIncrease: specs.limitIncrease.goldEn,
+        lounge: specs.lounge.gold,
+        personalManager: specs.personalManager.gold,
+        limitIncrease: specs.limitIncrease.gold,
         expressIssue: specs.expressIssue.gold,
         minBalance: specs.minBalance.goldEn,
-        upgrades: [],
+        advantages: ['annualFee', 'minBalance'],
       },
       {
         id: 'platinum',
@@ -83,11 +95,11 @@ export const en: Translations = {
         annualFee: specs.platinum.annualFee,
         dailyLimit: specs.platinum.dailyLimit,
         lounge: specs.lounge.platinumEn,
-        personalManager: specs.personalManager.platinumEn,
-        limitIncrease: specs.limitIncrease.platinumEn,
+        personalManager: specs.personalManager.platinum,
+        limitIncrease: specs.limitIncrease.platinum,
         expressIssue: specs.expressIssue.platinum,
         minBalance: specs.minBalance.platinumEn,
-        upgrades: ['dailyLimit', 'lounge'],
+        advantages: ['dailyLimit', 'lounge', 'minBalance'],
       },
       {
         id: 'infinite',
@@ -99,7 +111,7 @@ export const en: Translations = {
         limitIncrease: specs.limitIncrease.infiniteEn,
         expressIssue: specs.expressIssue.infiniteEn,
         minBalance: specs.minBalance.infinite,
-        upgrades: ['dailyLimit', 'lounge', 'personalManager', 'limitIncrease', 'expressIssue'],
+        advantages: ['dailyLimit', 'lounge', 'personalManager', 'limitIncrease', 'expressIssue'],
       },
     ],
   },
@@ -132,7 +144,9 @@ export const en: Translations = {
   tiers: {
     heading: 'Plans',
     intro:
-      'Three versions of the card. All are multi-currency and all work with Apple Pay and Google Pay. Gold covers most needs; the higher plans raise the limits.',
+      'Three versions of the card from a licensed Kyrgyz bank operating since 1998. All are multi-currency and all work with Apple Pay and Google Pay. Gold covers most needs; the higher plans raise the limits.',
+    serviceFeeLabel: 'Our service fee',
+    annualFeeNote: 'Annual fee to the bank',
     unverifiedTitle: 'Some figures are not confirmed with the bank yet',
     unverifiedNotice:
       "The annual fee, withdrawal fee, express issue and minimum balance are confirmed against the bank's current published tariffs. Figures marked [VERIFY] are still being checked — we confirm the terms of your plan before you pay anything.",
@@ -145,7 +159,7 @@ export const en: Translations = {
     steps: [
       {
         title: 'You send two documents',
-        body: 'Your internal and foreign passports. Ten minutes.',
+        body: 'Your internal and foreign passports. It only takes ten minutes.',
       },
       {
         title: 'We handle it — the card already works online',
@@ -163,15 +177,15 @@ export const en: Translations = {
     items: [
       {
         q: 'Who can apply for the card?',
-        a: 'Russian citizens only. The bank requires an in-person meeting with the client, and it takes place at the bank’s representative office in Moscow — which is why we can only arrange this for Russian citizens. The service is not yet available to citizens of other countries: write to us and we will let you know if that changes.',
+        a: 'Russian citizens. The service is not yet available to citizens of other countries — write to us and we will let you know if that changes.',
       },
       {
         q: 'How many documents are needed?',
         a: 'Two. Your Russian internal passport — the photo page and the registration page. Your foreign passport — the title page. Plus a short form with your contact details and occupation. No proof of income, no proof of address, and no notarised paperwork.',
       },
       {
-        q: 'Do I have to travel to Kyrgyzstan?',
-        a: 'No. The bank requires one in-person meeting, and it happens at its representative office in Moscow. Everything else — the application, document checks, issuing — happens online.',
+        q: 'Do I have to travel anywhere?',
+        a: 'No. Not to Kyrgyzstan, not to a bank, not to a notary. The whole thing happens online: you send two documents, we file the application, the bank issues the card. There is no in-person meeting at any stage.',
       },
       {
         q: 'When can I start paying with the card?',
@@ -231,11 +245,11 @@ export const en: Translations = {
       },
     ],
     legalLines: [
-      `${legal.entityName} · INN ${legal.inn} · OGRN ${legal.ogrn}`,
-      `Registered address: ${legal.registeredAddress}`,
+      `${legal.entityName} · INN ${legal.inn} · OGRNIP ${legal.ogrnip}`,
+      `Account № ${legal.account} at ${legal.bankName} · BIC ${legal.bik} · Corr. account ${legal.corrAccount}`,
       `Payment methods: ${payment.methods}. Payment schedule: ${payment.schedule}.`,
       `Card issue time: ${timeline.toIssueEn}. Plastic delivery time: ${timeline.toDelivery}.`,
-      `Meeting at the bank's Moscow representative office: ${contacts.moscowOffice}. Available to Russian citizens.`,
+      'Available to Russian citizens. Every stage happens online.',
     ],
     copyright: '© 2026 getcard · getcard.kg',
     visaNote:

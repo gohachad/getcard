@@ -40,12 +40,15 @@ export const ru = {
       { label: 'Если вы в России', slogan: 'Снова платить за границей' },
       { label: 'Если вы за границей', slogan: 'Не терять связь с Россией' },
     ],
+    // Verifiable facts only: licensed, and the year it started operating. No
+    // superlatives about the bank, and it is still never named.
+    issuer: 'Карту выпускает лицензированный банк Кыргызстана, работающий с 1998 года',
     ctaPrimary: 'Оформить карту',
     ctaSecondary: 'Как это работает',
     tierSelectorLabel: 'Выберите тариф',
     cardAlt: 'Изображение карты VISA',
     comparisonLabel: 'Условия по тарифу',
-    upgradeLabel: 'Больше, чем в Gold',
+    advantageLabel: 'Преимущество тарифа',
   },
 
   // Shared by the hero comparison and the plans section, so a tier's terms are
@@ -74,6 +77,18 @@ export const ru = {
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
     },
+    // Three separate prices, not conversions from the ruble figure.
+    serviceFeeBy: {
+      rub: pricing.serviceFee,
+      usd: pricing.serviceFeeUsd,
+      eur: pricing.serviceFeeEur,
+    },
+    currencyLabel: 'Валюта оплаты',
+    currencies: [
+      { id: 'rub', label: '₽' },
+      { id: 'usd', label: '$' },
+      { id: 'eur', label: '€' },
+    ],
     loungeNote: 'Включая питание. Доступ предоставляется держателю карты.',
     limitIncreaseNote: 'При подтверждении происхождения средств.',
     tiers: [
@@ -87,8 +102,10 @@ export const ru = {
         limitIncrease: specs.limitIncrease.gold,
         expressIssue: specs.expressIssue.gold,
         minBalance: specs.minBalance.gold,
-        // Gold is the baseline every other tier is measured against.
-        upgrades: [] as string[],
+        // Gold's own advantages, not an empty list. It is the cheapest to keep
+        // and the only tier besides Platinum with no balance locked up — both
+        // real reasons to choose it over the tiers above.
+        advantages: ['annualFee', 'minBalance'] as string[],
       },
       {
         id: 'platinum',
@@ -100,7 +117,7 @@ export const ru = {
         limitIncrease: specs.limitIncrease.platinum,
         expressIssue: specs.expressIssue.platinum,
         minBalance: specs.minBalance.platinum,
-        upgrades: ['dailyLimit', 'lounge'] as string[],
+        advantages: ['dailyLimit', 'lounge', 'minBalance'] as string[],
       },
       {
         id: 'infinite',
@@ -112,7 +129,7 @@ export const ru = {
         limitIncrease: specs.limitIncrease.infinite,
         expressIssue: specs.expressIssue.infinite,
         minBalance: specs.minBalance.infinite,
-        upgrades: [
+        advantages: [
           'dailyLimit',
           'lounge',
           'personalManager',
@@ -151,7 +168,9 @@ export const ru = {
   tiers: {
     heading: 'Тарифы',
     intro:
-      'Три варианта карты. Все — многовалютные и работают в Apple Pay и Google Pay. Gold закрывает большинство задач; выше — больше лимиты.',
+      'Три варианта карты от лицензированного банка Кыргызстана, работающего с 1998 года. Все — многовалютные и работают в Apple Pay и Google Pay. Gold закрывает большинство задач; выше — больше лимиты.',
+    serviceFeeLabel: 'Стоимость нашей услуги',
+    annualFeeNote: 'Годовая плата банку',
     unverifiedTitle: 'Часть цифр ещё не подтверждена банком',
     unverifiedNotice:
       'Годовая плата, комиссия за снятие, срочный выпуск и неснижаемый остаток подтверждены по действующим тарифам банка. Цифры, отмеченные [VERIFY], мы ещё уточняем — перед оплатой мы подтвердим условия вашего тарифа.',
@@ -164,7 +183,7 @@ export const ru = {
     steps: [
       {
         title: 'Вы присылаете два документа',
-        body: 'Российский и загранпаспорт. Десять минут.',
+        body: 'Российский и загранпаспорт. Займет всего десять минут.',
       },
       {
         title: 'Мы оформляем — карта уже работает онлайн',
@@ -182,15 +201,15 @@ export const ru = {
     items: [
       {
         q: 'Кто может оформить карту?',
-        a: 'Только граждане России. Банк требует личной встречи с клиентом, и она проходит в представительстве банка в Москве — поэтому оформить карту через нас могут только граждане РФ. Для граждан других стран услуга пока недоступна: напишите нам, и мы сообщим, если это изменится.',
+        a: 'Граждане России. Для граждан других стран услуга пока недоступна — напишите нам, и мы сообщим, если это изменится.',
       },
       {
         q: 'Сколько документов нужно?',
         a: 'Два. Российский паспорт — страница с фотографией и страница с регистрацией. Загранпаспорт — титульная страница. Ещё короткая форма с контактами и профессией. Справки о доходах, подтверждение адреса и нотариальные документы не требуются.',
       },
       {
-        q: 'Нужно ли ехать в Кыргызстан?',
-        a: 'Нет. Банк требует одной личной встречи, и она проходит в его представительстве в Москве. Всё остальное — заявление, проверка документов, выпуск — происходит онлайн.',
+        q: 'Нужно ли куда-то ехать?',
+        a: 'Нет. Ни в Кыргызстан, ни в банк, ни к нотариусу. Всё оформление проходит онлайн: вы присылаете два документа, мы подаём заявление, банк выпускает карту. Личная встреча не нужна ни на одном этапе.',
       },
       {
         q: 'Когда картой можно начать платить?',
@@ -250,11 +269,11 @@ export const ru = {
       },
     ],
     legalLines: [
-      `${legal.entityName} · ИНН ${legal.inn} · ОГРН ${legal.ogrn}`,
-      `Адрес: ${legal.registeredAddress}`,
+      `${legal.entityName} · ИНН ${legal.inn} · ОГРНИП ${legal.ogrnip}`,
+      `р/с № ${legal.account} в ${legal.bankName} · БИК ${legal.bik} · Корсчёт ${legal.corrAccount}`,
       `Способы оплаты: ${payment.methods}. Порядок оплаты: ${payment.schedule}.`,
       `Срок выпуска карты: ${timeline.toIssue}. Срок доставки пластика: ${timeline.toDelivery}.`,
-      `Встреча в представительстве банка в Москве: ${contacts.moscowOffice}. Оформление доступно гражданам РФ.`,
+      'Оформление доступно гражданам РФ. Все этапы проходят онлайн.',
     ],
     copyright: '© 2026 getcard · getcard.kg',
     visaNote:
