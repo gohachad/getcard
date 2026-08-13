@@ -47,6 +47,16 @@ export const pricing = {
   serviceFeeEur: '€350',
 
   /**
+   * The same three prices with the sign split off, so the comparison row can
+   * make the currency sign itself the control that switches between them.
+   * Amount then sign is the normal order in Russian typography, so "380 $"
+   * reads correctly to this audience.
+   */
+  serviceFeeAmountRub: '29 000',
+  serviceFeeAmountUsd: '380',
+  serviceFeeAmountEur: '350',
+
+  /**
    * Open question: does 29 000 ₽ apply to all three tiers, or only to the
    * entry tier with the others priced above it?
    */

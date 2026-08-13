@@ -83,7 +83,13 @@ export const ru = {
       usd: pricing.serviceFeeUsd,
       eur: pricing.serviceFeeEur,
     },
+    serviceFeeAmountBy: {
+      rub: pricing.serviceFeeAmountRub,
+      usd: pricing.serviceFeeAmountUsd,
+      eur: pricing.serviceFeeAmountEur,
+    },
     currencyLabel: 'Валюта оплаты',
+    currencyToggleLabel: 'Сменить валюту оплаты',
     currencies: [
       { id: 'rub', label: '₽' },
       { id: 'usd', label: '$' },

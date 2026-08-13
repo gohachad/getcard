@@ -184,6 +184,18 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
 
     options.forEach((option, index) => option.addEventListener('click', () => select(index)));
 
+    // The currency sign in the hero comparison changes the same attribute, so
+    // mirror its choice here rather than letting the two controls disagree
+    // about which currency is checked.
+    document.addEventListener('currencychange', (event) => {
+      const chosen = (event as CustomEvent<string>).detail;
+      options.forEach((option) => {
+        const isChosen = option.dataset.currencyOption === chosen;
+        option.setAttribute('aria-checked', String(isChosen));
+        option.tabIndex = isChosen ? 0 : -1;
+      });
+    });
+
     group.addEventListener('keydown', (event) => {
       const current = options.findIndex((o) => o.tabIndex === 0);
       if (current < 0) return;

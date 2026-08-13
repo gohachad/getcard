@@ -68,7 +68,13 @@ export const en: Translations = {
       usd: pricing.serviceFeeUsd,
       eur: pricing.serviceFeeEur,
     },
+    serviceFeeAmountBy: {
+      rub: pricing.serviceFeeAmountRub,
+      usd: pricing.serviceFeeAmountUsd,
+      eur: pricing.serviceFeeAmountEur,
+    },
     currencyLabel: 'Payment currency',
+    currencyToggleLabel: 'Change payment currency',
     currencies: [
       { id: 'rub', label: '₽' },
       { id: 'usd', label: '$' },

@@ -121,14 +121,37 @@ const sharedRows = [
           shown, so there is no conversion happening at runtime. */}
       <div class="row row-fee">
         <dt>{comparison.labels.serviceFee}</dt>
-        <dd>
-          {
-            comparison.currencies.map((currency) => (
-              <span class="value value-fee" data-currency={currency.id}>
-                <Copy text={comparison.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur']} />
-              </span>
-            ))
-          }
+        {/* The currency sign is the control: tapping it moves to the next
+            currency. It stays in sync with the switch above the plans because
+            both only set data-currency on <html>. */}
+        <dd class="fee-cell">
+          <span class="fee-amounts">
+            {
+              comparison.currencies.map((currency) => (
+                <span class="value value-fee" data-currency={currency.id}>
+                  <Copy
+                    text={comparison.serviceFeeAmountBy[currency.id as 'rub' | 'usd' | 'eur']}
+                  />
+                </span>
+              ))
+            }
+          </span>
+
+          <button
+            type="button"
+            class="currency-toggle"
+            aria-label={comparison.currencyToggleLabel}
+            title={comparison.currencyToggleLabel}
+            data-currency-toggle
+          >
+            {
+              comparison.currencies.map((currency) => (
+                <span class="currency-sign" data-currency={currency.id}>
+                  {currency.label}
+                </span>
+              ))
+            }
+          </button>
         </dd>
       </div>
 
@@ -234,6 +257,20 @@ const sharedRows = [
 
     options.forEach((option, index) => {
       option.addEventListener('click', () => select(index));
+    });
+
+    // The currency sign next to our fee cycles to the next currency. It only
+    // sets the attribute on <html>; the switch above the plans listens for the
+    // event and re-syncs its own checked state, so the two controls can never
+    // disagree about which currency is showing.
+    const ORDER = ['rub', 'usd', 'eur'];
+    const toggle = document.querySelector<HTMLButtonElement>('[data-currency-toggle]');
+
+    toggle?.addEventListener('click', () => {
+      const current = document.documentElement.dataset.currency ?? ORDER[0];
+      const next = ORDER[(ORDER.indexOf(current) + 1) % ORDER.length];
+      document.documentElement.dataset.currency = next;
+      document.dispatchEvent(new CustomEvent('currencychange', { detail: next }));
     });
 
     group.addEventListener('keydown', (event) => {
@@ -461,7 +498,19 @@ const sharedRows = [
   }
 
   /* Our own fee is the decision, so it is set larger than the bank's terms. */
-  .row-fee dd .value {
+  .fee-cell {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .fee-amounts {
+    display: grid;
+    justify-items: end;
+  }
+
+  .row-fee .value {
     font-size: var(--text-heading-sm);
     line-height: var(--text-heading-sm--line-height);
     letter-spacing: var(--text-heading-sm--letter-spacing);
@@ -476,6 +525,44 @@ const sharedRows = [
   :global([data-currency='usd']) .value-fee[data-currency='usd'],
   :global([data-currency='eur']) .value-fee[data-currency='eur'] {
     opacity: 1;
+  }
+
+  /* The sign reads as the number's unit but behaves as a control: underlined
+     on hover, focusable, and large enough to tap. */
+  .currency-toggle {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 8px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-full);
+    background: var(--color-white);
+    font-family: inherit;
+    font-size: var(--text-heading-sm);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--color-link);
+    cursor: pointer;
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out;
+  }
+
+  .currency-toggle:hover {
+    background-color: var(--color-link);
+    color: var(--color-white);
+  }
+
+  .currency-sign {
+    grid-area: 1 / 1;
+    display: none;
+  }
+
+  :global([data-currency='rub']) .currency-sign[data-currency='rub'],
+  :global([data-currency='usd']) .currency-sign[data-currency='usd'],
+  :global([data-currency='eur']) .currency-sign[data-currency='eur'] {
+    display: block;
   }
 
   .value.is-upgrading {
