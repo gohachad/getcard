@@ -148,30 +148,31 @@ export const specs = {
 
   /** Premium benefits, confirmed from the same deck. */
   /**
-   * A benefit a tier does not carry renders as an em dash, never as "нет".
+   * An empty string means the tier does not carry this benefit, and the row is
+   * omitted for that tier entirely — not rendered as "нет", and not as a dash.
    *
-   * Gold is the card most people should take, and a column of the word "no"
-   * next to every line argues the opposite — it reads as a stripped-down
-   * version of something better rather than the sensible default. A dash is
-   * neutral: the row simply does not apply. Gold's own genuine advantages
-   * (cheapest annual fee, no minimum balance) are marked positively instead.
+   * A list of blanks is an argument against the card carrying it: Gold is what
+   * most people should buy, and a column of absences made it read as a
+   * stripped-down version of something better. Each plan now lists only what
+   * it actually gives you, and its own genuine advantages (cheapest annual
+   * fee, no minimum balance) are marked positively.
    */
   lounge: {
-    gold: '—',
+    gold: '',
     platinum: '2 раза в год',
     platinumEn: '2 visits a year',
     infinite: '6 раз в год',
     infiniteEn: '6 visits a year',
   },
   personalManager: {
-    gold: '—',
-    platinum: '—',
+    gold: '',
+    platinum: '',
     infinite: 'да',
     infiniteEn: 'yes',
   },
   limitIncrease: {
-    gold: '—',
-    platinum: '—',
+    gold: '',
+    platinum: '',
     infinite: 'до $50 000',
     infiniteEn: 'up to $50,000',
   },

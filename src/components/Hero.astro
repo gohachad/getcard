@@ -21,15 +21,27 @@ const baseline = tiers[0];
 // instead of being scattered down the list.
 // Our own fee leads: it is the number the visitor is actually deciding about,
 // and burying it under the bank's terms made them hunt for it.
+//
+// Rows every plan has come first, then the ones only the higher plans carry.
+// A plan that lacks a benefit does not show the row at all, so keeping the
+// variable rows last means the list grows downward as you move up the tiers
+// rather than reshuffling.
 const perTierRows = [
   'annualFee',
   'dailyLimit',
+  'expressIssue',
+  'minBalance',
   'lounge',
   'personalManager',
   'limitIncrease',
-  'expressIssue',
-  'minBalance',
 ] as const;
+
+/** Which tiers actually offer this row — the rest never render it. */
+const tiersWith = (row: (typeof perTierRows)[number]) =>
+  tiers
+    .filter((tier) => tier[row] !== '')
+    .map((tier) => tier.id)
+    .join(' ');
 const sharedRows = [
   'dailyTransactions',
   'atmFee',
@@ -122,10 +134,10 @@ const sharedRows = [
 
       {
         perTierRows.map((row) => (
-          <div class="row">
+          <div class="row" data-tiers={tiersWith(row)}>
             <dt>{comparison.labels[row]}</dt>
             <dd>
-              {tiers.map((tier) => (
+              {tiers.map((tier) => tier[row] !== '' && (
                 <span
                   class="value"
                   data-value={tier.id}
@@ -389,6 +401,15 @@ const sharedRows = [
 
   .row:last-child {
     border-bottom: 1px solid var(--color-hairline);
+  }
+
+  /* A plan that does not carry a benefit does not list it. Showing a blank or
+     a dash turns the cheapest plan into a column of absences, which argues
+     against the card we most want people to take. */
+  .hero[data-tier='gold'] .row[data-tiers]:not([data-tiers~='gold']),
+  .hero[data-tier='platinum'] .row[data-tiers]:not([data-tiers~='platinum']),
+  .hero[data-tier='infinite'] .row[data-tiers]:not([data-tiers~='infinite']) {
+    display: none;
   }
 
   dt {

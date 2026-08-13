@@ -6,13 +6,14 @@
  * card most people take. No plan is badged "recommended" — that decision is
  * not made yet, and a badge would make it for us.
  *
- * Values better than Gold read in --color-success with a check, the same
- * treatment the hero comparison uses, so an upgrade looks identical wherever
- * it appears. Nothing is highlighted on Gold itself: it is what the others are
- * measured against.
+ * Each plan lists only what it actually offers. A benefit a plan does not
+ * carry is omitted rather than shown as a blank or a dash — a column of
+ * absences reads as an argument against the cheapest plan, which is the one
+ * most people should take.
  *
- * Spec rows align across all three panels with subgrid rather than fixed
- * heights, so Russian copy that wraps moves the same row in every column.
+ * A plan's own advantages read in --color-success with a check, the same
+ * treatment the hero comparison uses, so a gain looks identical wherever it
+ * appears. Gold's are its annual fee and having no minimum balance.
  */
 import { t, type Locale } from '../i18n';
 import Copy from './Copy.astro';
@@ -27,20 +28,24 @@ const copy = t(locale);
 const { comparison } = copy;
 const { labels, shared } = comparison;
 
-const rowsFor = (tier: (typeof comparison.tiers)[number]) => [
-  { key: 'annualFee', label: labels.annualFee, value: tier.annualFee },
-  { key: 'dailyLimit', label: labels.dailyLimit, value: tier.dailyLimit },
-  { key: 'lounge', label: labels.lounge, value: tier.lounge },
-  { key: 'personalManager', label: labels.personalManager, value: tier.personalManager },
-  { key: 'limitIncrease', label: labels.limitIncrease, value: tier.limitIncrease },
-  { key: 'expressIssue', label: labels.expressIssue, value: tier.expressIssue },
-  { key: 'minBalance', label: labels.minBalance, value: tier.minBalance },
-  { key: 'dailyTransactions', label: labels.dailyTransactions, value: shared.dailyTransactions },
-  { key: 'atmFee', label: labels.atmFee, value: shared.atmFee },
-  { key: 'crossCurrency', label: labels.crossCurrency, value: shared.crossCurrency },
-  { key: 'currencies', label: labels.currencies, value: shared.currencies },
-  { key: 'wallets', label: labels.wallets, value: shared.wallets },
-];
+// A row whose value is empty means the plan does not carry that benefit, and
+// it is dropped rather than shown as a blank or a dash — a plan should list
+// what it gives you, not what it withholds.
+const rowsFor = (tier: (typeof comparison.tiers)[number]) =>
+  [
+    { key: 'annualFee', label: labels.annualFee, value: tier.annualFee },
+    { key: 'dailyLimit', label: labels.dailyLimit, value: tier.dailyLimit },
+    { key: 'expressIssue', label: labels.expressIssue, value: tier.expressIssue },
+    { key: 'minBalance', label: labels.minBalance, value: tier.minBalance },
+    { key: 'lounge', label: labels.lounge, value: tier.lounge },
+    { key: 'personalManager', label: labels.personalManager, value: tier.personalManager },
+    { key: 'limitIncrease', label: labels.limitIncrease, value: tier.limitIncrease },
+    { key: 'dailyTransactions', label: labels.dailyTransactions, value: shared.dailyTransactions },
+    { key: 'atmFee', label: labels.atmFee, value: shared.atmFee },
+    { key: 'crossCurrency', label: labels.crossCurrency, value: shared.crossCurrency },
+    { key: 'currencies', label: labels.currencies, value: shared.currencies },
+    { key: 'wallets', label: labels.wallets, value: shared.wallets },
+  ].filter((row) => row.value !== '');
 
 // Qualifiers that belong to a specific benefit, shown only on the panel that
 // actually carries it.
@@ -226,10 +231,12 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
     padding: 0;
   }
 
+  /* Flex rather than subgrid: the panels no longer share a row structure, so
+     there is nothing to align. Each lists only what its plan actually offers,
+     and the button is pushed to the bottom so all three still line up there. */
   .tier-panel {
-    display: grid;
-    gap: 0;
-    align-content: start;
+    display: flex;
+    flex-direction: column;
   }
 
   h3 {
@@ -366,35 +373,25 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
 
   .tier-panel > .pill-filled,
   .tier-panel > .pill-outlined {
+    /* auto pushes the button to the bottom of the panel whatever the row count,
+       so the three buttons stay on one line across the row. */
+    margin-top: auto;
+    padding-top: 11px;
+  }
+
+  .tier-panel > .panel-notes + .pill-filled,
+  .tier-panel > .panel-notes + .pill-outlined {
     margin-top: 24px;
-    align-self: end;
-    justify-self: stretch;
   }
 
   @media (min-width: 768px) {
-    /* 16 rows: name, fee, 12 spec rows, spacer, button. Panels and their spec
-       lists both inherit these tracks, so every row lines up across all three
-       columns however the copy wraps. */
+    /* No subgrid any more: the plans list different numbers of rows, so there
+       is no shared structure to align to. The panels still stretch to equal
+       height as grid items, and margin-top:auto on the button keeps the three
+       calls to action on one line. */
     .tiers-grid {
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto repeat(12, auto) 1fr auto;
       gap: 20px;
-    }
-
-    .tier-panel {
-      grid-row: 1 / -1;
-      grid-template-rows: subgrid;
-    }
-
-    .specs {
-      grid-row: span 12;
-      display: grid;
-      grid-template-rows: subgrid;
-    }
-
-    .tier-panel > .pill-filled,
-    .tier-panel > .pill-outlined {
-      grid-row: -2 / -1;
     }
   }
 </style>
