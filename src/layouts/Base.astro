@@ -15,8 +15,9 @@ const copy = t(locale);
 
 // Public identity of the page, which is the production domain — never the
 // GitHub Pages base path. See canonicalPath() in src/i18n.
-const absolute = (locale: Locale) =>
-  new URL(canonicalPath(locale), Astro.site ?? 'https://getcard.kg').href;
+const site = Astro.site ?? new URL('https://getcard.kg');
+const origin = site.origin;
+const absolute = (locale: Locale) => new URL(canonicalPath(locale), site).href;
 ---
 
 <!doctype html>
@@ -49,11 +50,38 @@ const absolute = (locale: Locale) =>
 
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
 
+    {/* Search console verification.
+        TODO: paste the code from Google Search Console into content="" below.
+        Verify the https://getcard.kg/ru/ URL-prefix property, or use DNS
+        verification for the whole domain — `/` answers with a 301, so a
+        meta tag placed there would never be seen by the verifier. */}
+    <meta name="google-site-verification" content="" />
+
+    {/* TODO: paste the code from Yandex Webmaster into content="" below.
+        Same note as above about which URL to verify. */}
+    <meta name="yandex-verification" content="" />
+
+    {/* Social preview. This is what Telegram and VK render when the link is
+        pasted into a chat, which is where most of this traffic will come from. */}
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="getcard" />
     <meta property="og:title" content={copy.meta.title} />
     <meta property="og:description" content={copy.meta.description} />
     <meta property="og:url" content={absolute(locale)} />
     <meta property="og:locale" content={locale === 'ru' ? 'ru_RU' : 'en_US'} />
+    <meta property="og:locale:alternate" content={locale === 'ru' ? 'en_US' : 'ru_RU'} />
+    {/* Absolute URL and explicit dimensions: Telegram and VK will not scale an
+        image they have to fetch and measure first. */}
+    <meta property="og:image" content={`${origin}/og.png`} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={copy.meta.ogImageAlt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={copy.meta.title} />
+    <meta name="twitter:description" content={copy.meta.description} />
+    <meta name="twitter:image" content={`${origin}/og.png`} />
   </head>
 
   <body>

@@ -1,0 +1,11 @@
+# getcard.kg — public marketing site.
+#
+# Everything here is public: two locale routes and their static assets. There
+# are no admin, api or auth paths on this host to exclude — the account area
+# lives on app.getcard.kg, which serves its own robots.txt disallowing all of
+# itself. Crawl rules do not cross subdomains, so nothing here covers it.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://getcard.kg/sitemap.xml

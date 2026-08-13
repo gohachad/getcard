@@ -18,6 +18,7 @@ export const ru = {
     title: 'getcard — карта VISA за два документа: Netflix, ChatGPT, Steam и оплата за границей',
     description:
       'Карта VISA от лицензированного банка Кыргызстана для граждан России. Два документа — и карта ваша. Оплата Netflix, Spotify, ChatGPT, Claude, Steam, App Store и покупок за границей. Доллары, евро, дирхамы и рубли. Работает онлайн ещё до доставки пластика.',
+    ogImageAlt: 'getcard — долларовая карта VISA и надпись «Два документа и карта у вас»',
     localeName: 'Русский',
     localeShort: 'RU',
   },

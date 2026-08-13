@@ -24,7 +24,11 @@ const copy = t(DEFAULT_LOCALE);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{copy.meta.title}</title>
-    <meta name="robots" content="noindex, follow" />
+    {/* No robots directive here on purpose. This stub used to carry
+        noindex, which also suppressed the homepage itself; the canonical
+        below is what tells search engines /ru/ is the page to index. In
+        production Caddy answers `/` with a 301 and this file is never
+        served — it remains as the fallback for hosts without that rule. */}
     <meta http-equiv="refresh" content={`0; url=${target}`} />
     <link rel="canonical" href={absolute(DEFAULT_LOCALE)} />
     {

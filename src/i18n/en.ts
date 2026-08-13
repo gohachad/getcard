@@ -11,6 +11,7 @@ export const en: Translations = {
     title: 'getcard — a VISA card for two documents: Netflix, ChatGPT, Steam and paying abroad',
     description:
       'A VISA card from a licensed Kyrgyz bank for Russian citizens. Two documents and the card is yours. Pay for Netflix, Spotify, ChatGPT, Claude, Steam, the App Store and purchases abroad. Dollars, euros, dirhams and rubles. Works online before the plastic arrives.',
+    ogImageAlt: 'getcard — a VISA card, captioned “Two documents and the card is yours”',
     localeName: 'English',
     localeShort: 'EN',
   },
