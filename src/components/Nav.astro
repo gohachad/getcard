@@ -30,11 +30,13 @@ const otherCopy = t(other);
         <span class="lang-code">{otherCopy.meta.localeShort}</span>
       </a>
 
-      {/* The account area is a separate app on its own subdomain, so this is a
-          full URL rather than a route in this build. */}
-      <a class="pill-outlined nav-signin" href="https://app.getcard.kg/">{copy.nav.signIn}</a>
+      {/* Tracking is a separate app on its own subdomain, so this is a full URL
+          rather than a route in this build. There is no account to sign into:
+          an order returns a tracking number, and that number is the only key. */}
+      <a class="pill-outlined nav-track" href="https://app.getcard.kg/track">{copy.nav.track}</a>
 
-      <a class="pill-filled nav-cta" href="#process">{copy.nav.cta}</a>
+      {/* The first decision is which plan, so the primary action goes there. */}
+      <a class="pill-filled nav-cta" href="#tiers">{copy.nav.cta}</a>
     </div>
   </div>
 </header>
@@ -114,7 +116,7 @@ const otherCopy = t(other);
   /* Below 420px the primary action alone is worth the space; sign in stays
      reachable from the page itself once auth exists. */
   @media (max-width: 420px) {
-    .nav-signin {
+    .nav-track {
       display: none;
     }
 

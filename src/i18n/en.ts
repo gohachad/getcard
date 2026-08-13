@@ -18,7 +18,7 @@ export const en: Translations = {
 
   nav: {
     wordmark: 'getcard',
-    signIn: 'Sign in',
+    track: 'Track my order',
     cta: 'Get a card',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',

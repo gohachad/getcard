@@ -145,7 +145,14 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
               ))}
             </p>
 
-            <a class={index === 0 ? 'pill-filled' : 'pill-outlined'} href="#process">
+            {/* Carries the chosen plan into the order so the first screen does
+                not ask again for a decision already made. Ordering lives on the
+                app subdomain because it needs a server; the marketing site
+                stays static. */}
+            <a
+              class={index === 0 ? 'pill-filled' : 'pill-outlined'}
+              href={`https://app.getcard.kg/order?tier=${tier.id}&lang=${locale}`}
+            >
               {copy.tiers.cta}
             </a>
           </li>

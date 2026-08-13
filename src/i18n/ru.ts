@@ -25,7 +25,7 @@ export const ru = {
 
   nav: {
     wordmark: 'getcard',
-    signIn: 'Войти',
+    track: 'Отследить заказ',
     cta: 'Оформить карту',
     openMenu: 'Открыть меню',
     closeMenu: 'Закрыть меню',
