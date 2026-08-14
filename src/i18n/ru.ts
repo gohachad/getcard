@@ -17,7 +17,7 @@ export const ru = {
   meta: {
     title: 'getcard — карта VISA за два документа: Netflix, ChatGPT, Steam и оплата за границей',
     description:
-      'Карта VISA от лицензированного банка Кыргызстана для граждан России. Два документа — и карта ваша. Оплата Netflix, Spotify, ChatGPT, Claude, Steam, App Store и покупок за границей. Доллары, евро, дирхамы и рубли. Работает онлайн ещё до доставки пластика.',
+      'Карта VISA от ведущего киргизского банка для граждан России. Два документа — и карта ваша. Оплата Netflix, Spotify, ChatGPT, Claude, Steam, App Store и покупок за границей. Доллары, евро, дирхамы и рубли. Работает онлайн ещё до доставки пластика.',
     ogImageAlt: 'getcard — долларовая карта VISA и надпись «Два документа и карта у вас»',
     localeName: 'Русский',
     localeShort: 'RU',
@@ -41,9 +41,33 @@ export const ru = {
       { label: 'Если вы в России', slogan: 'Снова платить за границей' },
       { label: 'Если вы за границей', slogan: 'Не терять связь с Россией' },
     ],
-    // Verifiable facts only: licensed, and the year it started operating. No
-    // superlatives about the bank, and it is still never named.
-    issuer: 'Карту выпускает лицензированный банк Кыргызстана, работающий с 1998 года',
+    issuer: 'Карту выпускает ведущий киргизский банк, работающий с 1998 года',
+
+    // The four reasons to keep reading, shown before anything else. Each one
+    // is a claim the visitor can check against the plans further down, which
+    // is what stops a colourful row of tiles reading as noise.
+    sellingPoints: [
+      {
+        id: 'plastic',
+        title: 'Настоящий пластик',
+        body: 'Физическая карта, а не только виртуальный номер',
+      },
+      {
+        id: 'currencies',
+        title: 'Четыре валюты',
+        body: 'Евро, рубли, доллары и дирхамы на одном счёте',
+      },
+      {
+        id: 'transfers',
+        title: 'Переводы по реквизитам',
+        body: 'Отправляйте и принимайте деньги на банковские реквизиты',
+      },
+      {
+        id: 'rates',
+        title: 'Выгодная конвертация',
+        body: 'Привлекательные курсы при обмене валют',
+      },
+    ],
     ctaPrimary: 'Оформить карту',
     ctaSecondary: 'Как это работает',
     tierSelectorLabel: 'Выберите тариф',
@@ -175,7 +199,7 @@ export const ru = {
   tiers: {
     heading: 'Тарифы',
     intro:
-      'Три варианта карты от лицензированного банка Кыргызстана, работающего с 1998 года. Все — многовалютные и работают в Apple Pay и Google Pay. Gold закрывает большинство задач; выше — больше лимиты.',
+      'Три варианта карты от ведущего киргизского банка, работающего с 1998 года. Все — многовалютные и работают в Apple Pay и Google Pay. Gold закрывает большинство задач; выше — больше лимиты.',
     serviceFeeLabel: 'Стоимость нашей услуги',
     annualFeeNote: 'Годовая плата банку',
     unverifiedTitle: 'Часть цифр ещё не подтверждена банком',

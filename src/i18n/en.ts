@@ -10,7 +10,7 @@ export const en: Translations = {
   meta: {
     title: 'getcard — a VISA card for two documents: Netflix, ChatGPT, Steam and paying abroad',
     description:
-      'A VISA card from a licensed Kyrgyz bank for Russian citizens. Two documents and the card is yours. Pay for Netflix, Spotify, ChatGPT, Claude, Steam, the App Store and purchases abroad. Dollars, euros, dirhams and rubles. Works online before the plastic arrives.',
+      'A VISA card from a leading Kyrgyz bank for Russian citizens. Two documents and the card is yours. Pay for Netflix, Spotify, ChatGPT, Claude, Steam, the App Store and purchases abroad. Dollars, euros, dirhams and rubles. Works online before the plastic arrives.',
     ogImageAlt: 'getcard — a VISA card, captioned “Two documents and the card is yours”',
     localeName: 'English',
     localeShort: 'EN',
@@ -31,7 +31,30 @@ export const en: Translations = {
       { label: "If you're in Russia", slogan: 'Paying abroad works again' },
       { label: "If you're abroad", slogan: 'Keep your link to Russia' },
     ],
-    issuer: 'The card is issued by a licensed Kyrgyz bank, operating since 1998',
+    issuer: 'The card is issued by a leading Kyrgyz bank, operating since 1998',
+
+    sellingPoints: [
+      {
+        id: 'plastic',
+        title: 'Real plastic',
+        body: 'A physical card, not just a virtual number',
+      },
+      {
+        id: 'currencies',
+        title: 'Four currencies',
+        body: 'Euros, rubles, dollars and dirhams on one account',
+      },
+      {
+        id: 'transfers',
+        title: 'Transfers by bank details',
+        body: 'Send and receive money using bank details',
+      },
+      {
+        id: 'rates',
+        title: 'Good conversion',
+        body: 'Attractive rates when exchanging currencies',
+      },
+    ],
     ctaPrimary: 'Get a card',
     ctaSecondary: 'How it works',
     tierSelectorLabel: 'Choose a plan',
@@ -151,7 +174,7 @@ export const en: Translations = {
   tiers: {
     heading: 'Plans',
     intro:
-      'Three versions of the card from a licensed Kyrgyz bank operating since 1998. All are multi-currency and all work with Apple Pay and Google Pay. Gold covers most needs; the higher plans raise the limits.',
+      'Three versions of the card from a leading Kyrgyz bank operating since 1998. All are multi-currency and all work with Apple Pay and Google Pay. Gold covers most needs; the higher plans raise the limits.',
     serviceFeeLabel: 'Our service fee',
     annualFeeNote: 'Annual fee to the bank',
     unverifiedTitle: 'Some figures are not confirmed with the bank yet',
