@@ -42,7 +42,7 @@ export const en: Translations = {
       {
         id: 'currencies',
         title: 'Four currencies',
-        body: 'Euros, rubles, dollars and dirhams on one account',
+        body: 'Euros, rubles, dollars and dirhams — four separate accounts',
       },
       {
         id: 'transfers',
@@ -162,7 +162,7 @@ export const en: Translations = {
       {
         title: 'You live abroad and stay connected to Russia',
         items: [
-          'An account in several currencies: dollars, euros, dirhams and rubles.',
+          'Four separate accounts: dollars, euros, dirhams and rubles.',
           'Ruble transfers — both sending and receiving.',
           'Paying for Russian services from abroad.',
           'One card that works on both sides.',
@@ -222,8 +222,8 @@ export const en: Translations = {
         a: 'As soon as it is issued, without waiting for the plastic. The account and card are active, you have the details, and you can add the card to Apple Pay or Google Pay and pay from that moment.',
       },
       {
-        q: 'Which currencies does the account work in?',
-        a: 'Dollars, euros, dirhams and rubles. The account is multi-currency: you can hold and spend in any of them, and the ruble support is what makes the card useful to people living abroad who stay connected to Russia.',
+        q: 'Which currencies do the accounts work in?',
+        a: 'Dollars, euros, dirhams and rubles — four separate accounts rather than one multi-currency one. You can hold and spend in any of them, and the ruble account is what makes the card useful to people living abroad who stay connected to Russia.',
       },
       {
         q: 'Does the card work inside Russia?',
