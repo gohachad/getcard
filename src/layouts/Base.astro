@@ -48,6 +48,12 @@ const absolute = (locale: Locale) => new URL(canonicalPath(locale), site).href;
       )
     }
 
+    {/* The mark from the logo, cropped out of the lockup and trimmed to its
+        own ink — the 512 master has margins that would shrink it to nothing at
+        tab size. The old favicon.svg stays as the last fallback. */}
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon-32.png`} sizes="32x32" type="image/png" />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon-512.png`} sizes="512x512" type="image/png" />
+    <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
 
     {/* Search console verification.

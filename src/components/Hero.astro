@@ -335,12 +335,15 @@ const sharedRows = [
   .hero {
     text-align: center;
     overflow-x: clip;
+    /* The logo's three colours, at wash strength: red low and central where
+       the card sits, gold top-left, blue top-right. Held deliberately faint —
+       the tiles below are the loud thing, and two loud layers cancel out. */
     background:
-      radial-gradient(58rem 30rem at 50% 88%, rgba(0, 113, 227, 0.22), transparent 64%),
-      radial-gradient(40rem 24rem at 8% -6%, rgba(201, 163, 92, 0.34), transparent 62%),
-      radial-gradient(42rem 24rem at 94% 4%, rgba(41, 151, 255, 0.28), transparent 62%),
-      radial-gradient(34rem 20rem at 78% 52%, rgba(60, 63, 102, 0.12), transparent 65%),
-      linear-gradient(#ffffff 0%, #f2f6fc 45%, var(--color-canvas) 100%);
+      radial-gradient(58rem 30rem at 50% 88%, rgba(120, 3, 3, 0.16), transparent 64%),
+      radial-gradient(40rem 24rem at 8% -6%, rgba(218, 165, 75, 0.32), transparent 62%),
+      radial-gradient(42rem 24rem at 94% 4%, rgba(15, 92, 148, 0.22), transparent 62%),
+      radial-gradient(34rem 20rem at 78% 52%, rgba(120, 3, 3, 0.08), transparent 65%),
+      linear-gradient(#ffffff 0%, #faf5f2 45%, var(--color-canvas) 100%);
   }
 
   /* Selling points — four colour fields.
@@ -461,17 +464,25 @@ const sharedRows = [
   /* Every --tile below is measured, not picked by eye: white title type and
      body copy at 0.94 both clear 4.5:1 against it with the corner highlight
      composited on top. Darken --tile if you ever lighten that highlight. */
+  /* Straight off the logo. The physical card leads in the brand red, because
+     the logo's card is that exact colour; currencies take the logo blue.
+
+     The chip gold (#daa54b) cannot be a ground — white type on it is 2.22:1 —
+     so the third tile uses the same hue taken down until it holds white type,
+     and the fourth stays neutral so three warm tiles do not run together.
+     Every --tile below is measured: white title and body at 0.94 both clear
+     4.5:1 with the corner highlight composited on. */
   [data-point='plastic'] {
-    --tile: #785b28;
-    --tile-deep: #5a4319;
+    --tile: #780303;
+    --tile-deep: #560101;
   }
   [data-point='currencies'] {
-    --tile: #0060c4;
-    --tile-deep: #00479a;
+    --tile: #0f5c94;
+    --tile-deep: #0a4370;
   }
   [data-point='transfers'] {
-    --tile: #186b2c;
-    --tile-deep: #0f4f1f;
+    --tile: #7a5c1f;
+    --tile-deep: #5c4415;
   }
   [data-point='rates'] {
     --tile: #34375c;

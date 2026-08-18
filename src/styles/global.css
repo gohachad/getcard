@@ -32,10 +32,24 @@
    --------------------------------------------------------------------------- */
 
 @theme {
-  /* Core colour ----------------------------------------------------------- */
-  --color-action: #0071e3;
-  --color-link: #0066cc;
-  --color-signal: #2997ff;
+  /* Core colour -----------------------------------------------------------
+     Taken from the getcard logo by sampling the artwork, not by eye:
+     #780303 is the card and the word "get", #0f5c94 is the word "card",
+     #daa54b is the chip.
+
+     Red is the brand and carries the primary action. It measures 11.58:1
+     against white — the Apple blue it replaces was 4.70:1, so every filled
+     button and every focus ring got substantially more legible, not less.
+
+     Blue stays the link colour. Links have been blue for thirty years and it
+     is in the logo anyway, so the convention costs the brand nothing.
+
+     Gold is decoration only and must never carry text: at 2.22:1 on white it
+     fails every text threshold there is. Hairlines, the chip, washes. */
+  --color-action: #780303;
+  --color-link: #0f5c94;
+  --color-signal: #2b7fbd;
+  --color-brand-gold: #daa54b;
   --color-ink: #1d1d1f;
   --color-canvas: #f5f5f7;
   --color-wash: #f4f8fb;

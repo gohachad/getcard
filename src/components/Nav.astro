@@ -8,7 +8,9 @@
  * single uncluttered line at every width — which also means no hamburger is
  * needed and no nav JavaScript ships at all.
  */
+import { Image } from 'astro:assets';
 import { t, otherLocale, localePath, type Locale } from '../i18n';
+import logo from '../assets/logo-lockup.png';
 
 interface Props {
   locale: Locale;
@@ -22,7 +24,13 @@ const otherCopy = t(other);
 
 <header class="nav">
   <div class="nav-inner">
-    <a class="wordmark" href={localePath(locale)}>{copy.nav.wordmark}</a>
+    {/* The lockup carries the word "getcard" as artwork, so alt does the
+        naming — it is read aloud and is what shows if the image never loads.
+        No extra visually-hidden label: that made it announce twice.
+        densities={[1, 2]} ships a 2x file for retina. */}
+    <a class="wordmark" href={localePath(locale)}>
+      <Image src={logo} alt={copy.nav.wordmark} densities={[1, 2]} loading="eager" />
+    </a>
 
     <div class="nav-actions">
       <a class="lang-switch" href={localePath(other)} hreflang={other} lang={other}>
@@ -59,13 +67,25 @@ const otherCopy = t(other);
   }
 
   .wordmark {
-    font-family: var(--font-display);
-    font-size: var(--text-subheading);
-    font-weight: 600;
-    color: var(--color-ink);
-    text-decoration: none;
-    letter-spacing: -0.4px;
+    display: inline-flex;
+    align-items: center;
     flex: 0 0 auto;
+    text-decoration: none;
+  }
+
+  /* Height-locked: the lockup is a fixed band in the header and the width
+     follows from the artwork, so the header never reflows when the image
+     lands. */
+  .wordmark img {
+    height: 30px;
+    width: auto;
+    display: block;
+  }
+
+  @media (max-width: 520px) {
+    .wordmark img {
+      height: 24px;
+    }
   }
 
   .nav-actions {
