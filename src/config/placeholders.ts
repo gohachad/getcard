@@ -45,6 +45,7 @@ export const pricing = {
   serviceFee: '29 000 ₽',
   serviceFeeUsd: '$380',
   serviceFeeEur: '€350',
+  serviceFeeAed: '1400 AED',
 
   /**
    * The same three prices with the sign split off, so the comparison row can
@@ -55,6 +56,7 @@ export const pricing = {
   serviceFeeAmountRub: '29 000',
   serviceFeeAmountUsd: '380',
   serviceFeeAmountEur: '350',
+  serviceFeeAmountAed: '1400',
 
   /**
    * Open question: does 29 000 ₽ apply to all three tiers, or only to the
@@ -88,11 +90,16 @@ export const payment = {
    ------------------------------------------------------------------------- */
 
 export const timeline = {
-  /** Confirmed: the bank's own deck states issue takes about three weeks. */
-  toIssue: 'около 3 недель',
-  toIssueEn: 'about 3 weeks',
-  /** From the accounts going live to the physical card arriving. */
-  toDelivery: TBD,
+  /**
+   * Issue time as the business now quotes it.
+   *
+   * NOTE: the bank's own product deck says about three weeks. This shorter
+   * figure is the operator's, not the bank's, and nothing in this repository
+   * verifies it — if the deck is still the governing document, this is the
+   * line that contradicts it.
+   */
+  toIssue: '1 неделя',
+  toIssueEn: '1 week',
 } as const;
 
 /* -------------------------------------------------------------------------
@@ -207,8 +214,6 @@ export const specs = {
   shared: {
     atmFee: '1%, минимум $3',
     atmFeeEn: '1%, minimum $3',
-    crossCurrency: verify('1,5%'),
-    crossCurrencyEn: verify('1.5%'),
     validity: verify('5 лет'),
     validityEn: verify('5 years'),
   },

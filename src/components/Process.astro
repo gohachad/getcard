@@ -7,6 +7,16 @@
  * Anything that needs a paragraph belongs in the FAQ, not here.
  *
  * Step 2 carries the payoff: the card works before the plastic arrives.
+ *
+ * Each step is drawn as well as numbered. A bare numeral in a filled circle
+ * said only "this is step two"; the icon says what actually happens in it, and
+ * it costs no extra height because it replaces the numeral in the same chip
+ * rather than sitting beside it. The numbering stays because the order here is
+ * real — you cannot get the plastic before the documents are sent — and it is
+ * demoted to a gold eyebrow so the drawing leads.
+ *
+ * The chips, the hairlines and the gold are the hero's, so the section reads
+ * as part of the same object rather than as a different page.
  */
 import { t, type Locale } from '../i18n';
 import Copy from './Copy.astro';
@@ -27,8 +37,31 @@ const copy = t(locale);
       {
         copy.process.steps.map((step, index) => (
           <li class="step">
-            <span class="marker" aria-hidden="true">
-              {index + 1}
+            <span class="chip" aria-hidden="true">
+              <b class="ord">{index + 1}</b>
+              {index === 0 && (
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="2.5" width="12" height="16" rx="2" />
+                  <path d="M6.5 7h5M6.5 10.5h5M6.5 14h3" />
+                  <path d="M9 21.5h10a2 2 0 0 0 2-2V8" />
+                </svg>
+              )}
+              {index === 1 && (
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5.5" width="15" height="11" rx="2" />
+                  <path d="M2 9.5h15" />
+                  <path d="M19 8.5a5 5 0 0 1 0 7M21.5 6a8.5 8.5 0 0 1 0 12" />
+                </svg>
+              )}
+              {index === 2 && (
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2.5" y="4" width="19" height="12" rx="2" />
+                  <path d="M2.5 8h19" />
+                  <path d="M6 12.5h4" />
+                  <path d="M7 20.5h10" />
+                  <path d="M12 17v3.5" />
+                </svg>
+              )}
             </span>
             <h3>{step.title}</h3>
             <p>
@@ -61,40 +94,62 @@ const copy = t(locale);
 
   .step {
     position: relative;
-    padding-left: 52px;
+    padding-left: 68px;
   }
 
-  .marker {
+  /* Same 48px round chip as the hero pills, in the same gold, so the two
+     sections read as one system. */
+  .chip {
     position: absolute;
     left: 0;
     top: 0;
     display: grid;
     place-items: center;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     border-radius: var(--radius-full);
-    background-color: var(--color-action);
+    background: rgba(218, 165, 75, 0.12);
+    border: 1px solid rgba(218, 165, 75, 0.55);
+    color: #8a6a2f;
+  }
+
+  /* The number is still here — the order is real, you cannot get the plastic
+     before sending the documents — but it rides on the chip rather than taking
+     a line of its own. A separate row for it cost 80px against the version
+     this replaced, and the brief was to gain none. */
+  .ord {
+    position: absolute;
+    right: -3px;
+    bottom: -3px;
+    display: grid;
+    place-items: center;
+    width: 19px;
+    height: 19px;
+    border-radius: var(--radius-full);
+    background: #8a6a2f;
     color: var(--color-white);
-    font-size: var(--text-body);
+    font-size: 11px;
     font-weight: 600;
+    font-style: normal;
     letter-spacing: 0;
+    border: 2px solid var(--color-canvas);
   }
 
   .step:not(:last-child)::before {
     content: '';
     position: absolute;
-    left: 18px;
-    top: 44px;
+    left: 24px;
+    top: 56px;
     bottom: -32px;
-    border-left: 1px solid var(--color-hairline);
+    border-left: 1px solid rgba(218, 165, 75, 0.42);
   }
 
   h3 {
     font-size: var(--text-subheading);
-    line-height: 36px;
+    line-height: 1.25;
     letter-spacing: var(--text-subheading--letter-spacing);
     font-weight: 600;
-    margin: 0;
+    margin: 2px 0 0;
   }
 
   .step p {
@@ -105,32 +160,31 @@ const copy = t(locale);
   @media (min-width: 768px) {
     .steps {
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: auto auto;
-      gap: 32px;
+      /* chip · title · body — three subgrid rows, so all three columns align
+         on every line even when a title wraps and its neighbours do not. */
+      grid-template-rows: auto auto auto;
+      gap: 20px 32px;
     }
 
-    /* Titles wrap to two lines in some columns and one in others, so bodies
-       are subgrid rows and every description starts on the same line. */
     .step {
       padding-left: 0;
-      padding-top: 52px;
       display: grid;
       grid-template-rows: subgrid;
-      grid-row: span 2;
+      grid-row: span 3;
       align-content: start;
     }
 
-    .step:not(:last-child)::before {
-      left: 44px;
-      right: -32px;
-      top: 18px;
-      bottom: auto;
-      border-left: none;
-      border-top: 1px solid var(--color-hairline);
+    .chip {
+      position: relative;
     }
 
-    h3 {
-      line-height: var(--text-subheading--line-height);
+    .step:not(:last-child)::before {
+      left: 60px;
+      right: -32px;
+      top: 24px;
+      bottom: auto;
+      border-left: none;
+      border-top: 1px solid rgba(218, 165, 75, 0.42);
     }
   }
 </style>

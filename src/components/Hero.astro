@@ -60,7 +60,6 @@ const GUILLOCHE = Array.from({ length: 40 }, (_, i) => {
 const sharedRows = [
   'dailyTransactions',
   'atmFee',
-  'crossCurrency',
   'currencies',
   'wallets',
 ] as const;
@@ -80,15 +79,9 @@ const sharedRows = [
 
     <p class="tagline">{copy.hero.tagline}</p>
 
-    {/* Four colour fields, not four white boxes.
-
-        Each one carries a colour already in the system — the card render's own
-        gold, the action blue, the success green, the Infinite card's indigo —
-        but at full saturation rather than as a pastel wash behind an icon. A
-        row of white cards with tinted squares reads as a spec table however
-        the copy is written; this reads as four claims. They stagger in on load
-        and lift under the cursor, so the row is the first thing on the page
-        that answers back. */}
+    {/* Four pills on one material, differing only in what they say. They
+        stagger in on load and lift under the cursor, so the row is the first
+        thing on the page that answers back. */}
     <ul class="selling-points">
       {
         copy.hero.sellingPoints.map((point, index) => (
@@ -175,6 +168,33 @@ const sharedRows = [
       }
     </div>
 
+    {/* The currency control sits above the table rather than inside the fee
+        cell. As the bare sign next to the number it read as the number's unit
+        and nobody could tell it was pressable; in the cell with a label it
+        overlapped the row's own heading. Here it is unmistakably a control and
+        it crowds nothing. It only sets data-currency on <html>, so the plan
+        panels further down follow the same choice. */}
+    <button
+      type="button"
+      class="currency-toggle"
+      title={comparison.currencyToggleLabel}
+      data-currency-toggle
+    >
+      <span class="currency-signs">
+        {
+          comparison.currencies.map((currency) => (
+            <span class="currency-sign" data-currency={currency.id}>
+              {currency.label}
+            </span>
+          ))
+        }
+      </span>
+      <svg class="swap-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 8h13l-3-3M20 16H7l3 3" />
+      </svg>
+      <span class="currency-toggle-label">{comparison.currencyToggleLabel}</span>
+    </button>
+
     {/* Every tier's terms are in the DOM at build time, so without JS the
         baseline plan still renders completely and the section still reads. */}
     <dl class="comparison" aria-label={copy.hero.comparisonLabel}>
@@ -183,37 +203,16 @@ const sharedRows = [
           shown, so there is no conversion happening at runtime. */}
       <div class="row row-fee">
         <dt>{comparison.labels.serviceFee}</dt>
-        {/* The currency sign is the control: tapping it moves to the next
-            currency. It stays in sync with the switch above the plans because
-            both only set data-currency on <html>. */}
         <dd class="fee-cell">
           <span class="fee-amounts">
             {
               comparison.currencies.map((currency) => (
                 <span class="value value-fee" data-currency={currency.id}>
-                  <Copy
-                    text={comparison.serviceFeeAmountBy[currency.id as 'rub' | 'usd' | 'eur']}
-                  />
+                  <Copy text={comparison.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur' | 'aed']} />
                 </span>
               ))
             }
           </span>
-
-          <button
-            type="button"
-            class="currency-toggle"
-            aria-label={comparison.currencyToggleLabel}
-            title={comparison.currencyToggleLabel}
-            data-currency-toggle
-          >
-            {
-              comparison.currencies.map((currency) => (
-                <span class="currency-sign" data-currency={currency.id}>
-                  {currency.label}
-                </span>
-              ))
-            }
-          </button>
         </dd>
       </div>
 
@@ -325,7 +324,7 @@ const sharedRows = [
     // sets the attribute on <html>; the switch above the plans listens for the
     // event and re-syncs its own checked state, so the two controls can never
     // disagree about which currency is showing.
-    const ORDER = ['rub', 'usd', 'eur'];
+    const ORDER = ['rub', 'usd', 'eur', 'aed'];
     const toggle = document.querySelector<HTMLButtonElement>('[data-currency-toggle]');
 
     toggle?.addEventListener('click', () => {
@@ -822,34 +821,71 @@ const sharedRows = [
 
   :global([data-currency='rub']) .value-fee[data-currency='rub'],
   :global([data-currency='usd']) .value-fee[data-currency='usd'],
-  :global([data-currency='eur']) .value-fee[data-currency='eur'] {
+  :global([data-currency='eur']) .value-fee[data-currency='eur'],
+  :global([data-currency='aed']) .value-fee[data-currency='aed'] {
     opacity: 1;
   }
 
-  /* The sign reads as the number's unit but behaves as a control: underlined
-     on hover, focusable, and large enough to tap. */
+  /* Reads as a control, because it is one.
+
+     It used to be the bare currency sign with an aria-label — visually just
+     the number's unit, so there was nothing to suggest it could be pressed.
+     It now carries the sign, a swap glyph and its own words. */
   .currency-toggle {
-    display: grid;
-    place-items: center;
-    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     min-height: 44px;
-    padding: 0 8px;
-    border: 1px solid rgba(218, 165, 75, 0.35);
+    padding: 0 14px;
+    border: 1px solid rgba(218, 165, 75, 0.55);
     border-radius: var(--radius-full);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(218, 165, 75, 0.10);
     font-family: inherit;
-    font-size: var(--text-heading-sm);
+    font-size: var(--text-body-sm);
     font-weight: 600;
     line-height: 1;
     color: var(--color-brand-gold);
+    white-space: nowrap;
     cursor: pointer;
     transition:
       background-color 150ms ease-out,
-      color 150ms ease-out;
+      color 150ms ease-out,
+      border-color 150ms ease-out;
+  }
+
+  /* All four signs stack in one cell so the button's width never jumps as the
+     currency changes — "AED" is three characters where the others are one. */
+  .currency-signs {
+    display: grid;
+    place-items: center;
+    min-width: 3.4ch;
+    font-size: var(--text-body);
+  }
+
+  .swap-icon {
+    opacity: 0.75;
+  }
+
+  @media (max-width: 560px) {
+    /* The words come off the narrow layout, but they are clipped rather than
+       display:none — the label is the button's accessible name, and hiding it
+       outright left screen readers announcing a lone currency sign. */
+    .currency-toggle-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border: 0;
+    }
   }
 
   .currency-toggle:hover {
     background-color: var(--color-brand-gold);
+    border-color: var(--color-brand-gold);
     color: #17090a;
   }
 
@@ -858,9 +894,14 @@ const sharedRows = [
     display: none;
   }
 
+  .currency-toggle {
+    margin: 14px auto 0;
+  }
+
   :global([data-currency='rub']) .currency-sign[data-currency='rub'],
   :global([data-currency='usd']) .currency-sign[data-currency='usd'],
-  :global([data-currency='eur']) .currency-sign[data-currency='eur'] {
+  :global([data-currency='eur']) .currency-sign[data-currency='eur'],
+  :global([data-currency='aed']) .currency-sign[data-currency='aed'] {
     display: block;
   }
 

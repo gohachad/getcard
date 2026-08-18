@@ -17,7 +17,6 @@
  */
 import { t, type Locale } from '../i18n';
 import Copy from './Copy.astro';
-import NoticeCallout from './NoticeCallout.astro';
 
 interface Props {
   locale: Locale;
@@ -42,7 +41,6 @@ const rowsFor = (tier: (typeof comparison.tiers)[number]) =>
     { key: 'limitIncrease', label: labels.limitIncrease, value: tier.limitIncrease },
     { key: 'dailyTransactions', label: labels.dailyTransactions, value: shared.dailyTransactions },
     { key: 'atmFee', label: labels.atmFee, value: shared.atmFee },
-    { key: 'crossCurrency', label: labels.crossCurrency, value: shared.crossCurrency },
     { key: 'currencies', label: labels.currencies, value: shared.currencies },
     { key: 'wallets', label: labels.wallets, value: shared.wallets },
   ].filter((row) => row.value !== '');
@@ -80,14 +78,6 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
       }
     </div>
 
-    {/* Above the figures, not below: someone who reads the numbers and stops
-        should already know which of them are provisional. */}
-    <div class="notice">
-      <NoticeCallout title={copy.tiers.unverifiedTitle} variant="warning">
-        <Copy text={copy.tiers.unverifiedNotice} />
-      </NoticeCallout>
-    </div>
-
     <ul class="tiers-grid">
       {
         comparison.tiers.map((tier, index) => (
@@ -103,7 +93,7 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
             <p class="fee">
               {comparison.currencies.map((currency) => (
                 <span class="fee-value" data-currency={currency.id}>
-                  <Copy text={comparison.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur']} />
+                  <Copy text={comparison.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur' | 'aed']} />
                 </span>
               ))}
               <span class="fee-unit">{copy.tiers.serviceFeeLabel}</span>
@@ -321,7 +311,8 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
 
   :global([data-currency='rub']) .fee-value[data-currency='rub'],
   :global([data-currency='usd']) .fee-value[data-currency='usd'],
-  :global([data-currency='eur']) .fee-value[data-currency='eur'] {
+  :global([data-currency='eur']) .fee-value[data-currency='eur'],
+  :global([data-currency='aed']) .fee-value[data-currency='aed'] {
     display: inline;
   }
 

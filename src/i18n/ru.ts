@@ -1,4 +1,4 @@
-import { pricing, payment, timeline, legal, contacts, specs } from '../config/placeholders';
+import { pricing, timeline, legal, specs } from '../config/placeholders';
 
 /**
  * Russian copy — written first. English is translated from this file.
@@ -26,7 +26,7 @@ export const ru = {
   nav: {
     wordmark: 'getcard',
     track: 'Отследить заказ',
-    cta: 'Оформить карту',
+    cta: 'Выбрать тариф',
     openMenu: 'Открыть меню',
     closeMenu: 'Закрыть меню',
     languageLabel: 'Язык сайта:',
@@ -67,7 +67,7 @@ export const ru = {
         body: 'Привлекательные курсы при обмене валют',
       },
     ],
-    ctaPrimary: 'Оформить карту',
+    ctaPrimary: 'Выбрать тариф',
     ctaSecondary: 'Как это работает',
     tierSelectorLabel: 'Выберите тариф',
     cardAlt: 'Изображение карты VISA',
@@ -88,7 +88,6 @@ export const ru = {
       minBalance: 'Неснижаемый остаток',
       dailyTransactions: 'Операций в сутки',
       atmFee: 'Комиссия за снятие',
-      crossCurrency: 'Кросс-курсовая комиссия',
       currencies: 'Валюты счетов',
       wallets: 'Бесконтактная оплата',
       serviceFee: 'Стоимость услуги getcard',
@@ -96,7 +95,6 @@ export const ru = {
     shared: {
       dailyTransactions: specs.dailyTransactions,
       atmFee: specs.shared.atmFee,
-      crossCurrency: specs.shared.crossCurrency,
       currencies: 'Доллары, евро, дирхамы, рубли',
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
@@ -106,18 +104,22 @@ export const ru = {
       rub: pricing.serviceFee,
       usd: pricing.serviceFeeUsd,
       eur: pricing.serviceFeeEur,
+      aed: pricing.serviceFeeAed,
     },
     serviceFeeAmountBy: {
       rub: pricing.serviceFeeAmountRub,
       usd: pricing.serviceFeeAmountUsd,
       eur: pricing.serviceFeeAmountEur,
+      aed: pricing.serviceFeeAmountAed,
     },
     currencyLabel: 'Валюта оплаты',
-    currencyToggleLabel: 'Сменить валюту оплаты',
+    currencyToggleLabel: 'Сменить валюту',
     currencies: [
       { id: 'rub', label: '₽' },
       { id: 'usd', label: '$' },
       { id: 'eur', label: '€' },
+      // The dirham has no single glyph in common use, so the code carries it.
+      { id: 'aed', label: 'AED' },
     ],
     loungeNote: 'Включая питание. Доступ предоставляется держателю карты.',
     limitIncreaseNote: 'При подтверждении происхождения средств.',
@@ -201,9 +203,6 @@ export const ru = {
       'Три варианта карты от ведущего киргизского банка, работающего с 1998 года. Все — многовалютные и работают в Apple Pay и Google Pay. Gold закрывает большинство задач; выше — больше лимиты.',
     serviceFeeLabel: 'Стоимость нашей услуги',
     annualFeeNote: 'Годовая плата банку',
-    unverifiedTitle: 'Часть цифр ещё не подтверждена банком',
-    unverifiedNotice:
-      'Годовая плата, комиссия за снятие, срочный выпуск и неснижаемый остаток подтверждены по действующим тарифам банка. Цифры, отмеченные [VERIFY], мы ещё уточняем — перед оплатой мы подтвердим условия вашего тарифа.',
     cta: 'Оформить',
     baselineLabel: 'Базовый тариф',
   },
@@ -217,7 +216,7 @@ export const ru = {
       },
       {
         title: 'Мы оформляем — карта уже работает онлайн',
-        body: `Выпуск занимает ${timeline.toIssue}. Дальше платите в интернете и через Apple Pay или Google Pay, не дожидаясь пластика.`,
+        body: `Срок выпуска — ${timeline.toIssue}. Дальше платите в интернете и через Apple Pay или Google Pay, не дожидаясь пластика.`,
       },
       {
         title: 'Вы получаете пластик',
@@ -259,7 +258,7 @@ export const ru = {
   closing: {
     heading: 'Начните с двух документов',
     body: 'Загрузить документы — минут десять. Мы проверим комплект и скажем, что дальше, до всякой оплаты.',
-    ctaPrimary: 'Оформить карту',
+    ctaPrimary: 'Выбрать тариф',
     ctaSecondary: 'Задать вопрос',
   },
 
@@ -289,20 +288,11 @@ export const ru = {
           { label: 'Реквизиты', href: '#' },
         ],
       },
-      {
-        title: 'Контакты',
-        links: [
-          { label: `Telegram: ${contacts.telegram}`, href: '#' },
-          { label: `Почта: ${contacts.email}`, href: '#' },
-          { label: `Телефон: ${contacts.phone}`, href: '#' },
-        ],
-      },
     ],
     legalLines: [
       `${legal.entityName} · ИНН ${legal.inn} · ОГРНИП ${legal.ogrnip}`,
       `р/с № ${legal.account} в ${legal.bankName} · БИК ${legal.bik} · Корсчёт ${legal.corrAccount}`,
-      `Способы оплаты: ${payment.methods}. Порядок оплаты: ${payment.schedule}.`,
-      `Срок выпуска карты: ${timeline.toIssue}. Срок доставки пластика: ${timeline.toDelivery}.`,
+      `Срок выпуска карты: ${timeline.toIssue}.`,
       'Оформление доступно гражданам РФ. Все этапы проходят онлайн.',
     ],
     copyright: '© 2026 getcard · getcard.kg',

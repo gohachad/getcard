@@ -1,5 +1,5 @@
 import type { Translations } from './types';
-import { pricing, payment, timeline, legal, contacts, specs } from '../config/placeholders';
+import { pricing, timeline, legal, specs } from '../config/placeholders';
 
 /**
  * English — translated from ru.ts, which is the source of truth for meaning.
@@ -19,7 +19,7 @@ export const en: Translations = {
   nav: {
     wordmark: 'getcard',
     track: 'Track my order',
-    cta: 'Get a card',
+    cta: 'Choose a plan',
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
     languageLabel: 'Site language:',
@@ -52,7 +52,7 @@ export const en: Translations = {
         body: 'Attractive rates when exchanging currencies',
       },
     ],
-    ctaPrimary: 'Get a card',
+    ctaPrimary: 'Choose a plan',
     ctaSecondary: 'How it works',
     tierSelectorLabel: 'Choose a plan',
     cardAlt: 'Illustration of a VISA card',
@@ -71,7 +71,6 @@ export const en: Translations = {
       minBalance: 'Minimum balance',
       dailyTransactions: 'Transactions per day',
       atmFee: 'ATM withdrawal fee',
-      crossCurrency: 'Cross-currency fee',
       currencies: 'Account currencies',
       wallets: 'Contactless payment',
       serviceFee: 'getcard service fee',
@@ -79,7 +78,6 @@ export const en: Translations = {
     shared: {
       dailyTransactions: specs.dailyTransactionsEn,
       atmFee: specs.shared.atmFeeEn,
-      crossCurrency: specs.shared.crossCurrencyEn,
       currencies: 'Dollars, euros, dirhams, rubles',
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
@@ -88,18 +86,21 @@ export const en: Translations = {
       rub: pricing.serviceFee,
       usd: pricing.serviceFeeUsd,
       eur: pricing.serviceFeeEur,
+      aed: pricing.serviceFeeAed,
     },
     serviceFeeAmountBy: {
       rub: pricing.serviceFeeAmountRub,
       usd: pricing.serviceFeeAmountUsd,
       eur: pricing.serviceFeeAmountEur,
+      aed: pricing.serviceFeeAmountAed,
     },
     currencyLabel: 'Payment currency',
-    currencyToggleLabel: 'Change payment currency',
+    currencyToggleLabel: 'Switch currency',
     currencies: [
       { id: 'rub', label: '₽' },
       { id: 'usd', label: '$' },
       { id: 'eur', label: '€' },
+      { id: 'aed', label: 'AED' },
     ],
     loungeNote: 'Food included. Access is for the cardholder.',
     limitIncreaseNote: 'Subject to confirming the source of funds.',
@@ -174,9 +175,6 @@ export const en: Translations = {
       'Three versions of the card from a leading Kyrgyz bank operating since 1998. All are multi-currency and all work with Apple Pay and Google Pay. Gold covers most needs; the higher plans raise the limits.',
     serviceFeeLabel: 'Our service fee',
     annualFeeNote: 'Annual fee to the bank',
-    unverifiedTitle: 'Some figures are not confirmed with the bank yet',
-    unverifiedNotice:
-      "The annual fee, withdrawal fee, express issue and minimum balance are confirmed against the bank's current published tariffs. Figures marked [VERIFY] are still being checked — we confirm the terms of your plan before you pay anything.",
     cta: 'Get this card',
     baselineLabel: 'Baseline plan',
   },
@@ -232,7 +230,7 @@ export const en: Translations = {
   closing: {
     heading: 'Start with two documents',
     body: 'Uploading them takes about ten minutes. We check the set and tell you what comes next, before any payment.',
-    ctaPrimary: 'Get a card',
+    ctaPrimary: 'Choose a plan',
     ctaSecondary: 'Ask a question',
   },
 
@@ -262,20 +260,11 @@ export const en: Translations = {
           { label: 'Company details', href: '#' },
         ],
       },
-      {
-        title: 'Contact',
-        links: [
-          { label: `Telegram: ${contacts.telegram}`, href: '#' },
-          { label: `Email: ${contacts.email}`, href: '#' },
-          { label: `Phone: ${contacts.phone}`, href: '#' },
-        ],
-      },
     ],
     legalLines: [
       `${legal.entityName} · INN ${legal.inn} · OGRNIP ${legal.ogrnip}`,
       `Account № ${legal.account} at ${legal.bankName} · BIC ${legal.bik} · Corr. account ${legal.corrAccount}`,
-      `Payment methods: ${payment.methods}. Payment schedule: ${payment.schedule}.`,
-      `Card issue time: ${timeline.toIssueEn}. Plastic delivery time: ${timeline.toDelivery}.`,
+      `Card issue time: ${timeline.toIssueEn}.`,
       'Available to Russian citizens. Every stage happens online.',
     ],
     copyright: '© 2026 getcard · getcard.kg',
