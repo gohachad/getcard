@@ -27,34 +27,37 @@ export const en: Translations = {
 
   hero: {
     headline: 'Two documents and the card is yours',
-    audiences: [
-      { label: "If you're in Russia", slogan: 'Paying abroad works again' },
-      { label: "If you're abroad", slogan: 'Keep your link to Russia' },
-    ],
-    issuer: 'The card is issued by a leading Kyrgyz bank, operating since 1998',
+    tagline: 'A card from a leading bank in Kyrgyzstan',
+    issuer: 'The bank has been operating since 1998',
 
-    sellingPoints: [
-      {
-        id: 'plastic',
+    highlights: {
+      lead: {
+        pill: 'The difference',
         title: 'Real plastic',
-        body: 'A physical card, not just a virtual number',
+        body: 'A physical Visa card delivered worldwide — not a virtual number that gets declined at the till.',
+        mediaAlt: 'The physical Visa card issued by the partner bank',
       },
-      {
-        id: 'currencies',
-        title: 'Four currencies',
-        body: 'Euros, rubles, dollars and dirhams — four separate accounts',
-      },
-      {
-        id: 'transfers',
-        title: 'Transfers by bank details',
-        body: 'Send and receive money using bank details',
-      },
-      {
-        id: 'rates',
-        title: 'Good conversion',
-        body: 'Attractive rates when exchanging currencies',
-      },
-    ],
+      stats: [
+        {
+          id: 'currencies',
+          figure: '4',
+          label: 'currencies, 4 accounts',
+          note: '€ · ₽ · $ · AED',
+        },
+        {
+          id: 'rates',
+          figure: specs.shared.crossCurrencyRateEn,
+          label: 'conversion',
+          note: 'no hidden mark-up',
+        },
+        {
+          id: 'transfers',
+          figure: 'SWIFT',
+          label: 'transfers by bank details',
+          note: 'incoming and outgoing',
+        },
+      ],
+    },
     ctaPrimary: 'Get a card',
     ctaSecondary: 'How it works',
     tierSelectorLabel: 'Choose a plan',

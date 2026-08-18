@@ -207,6 +207,17 @@ export const specs = {
   shared: {
     atmFee: '1%, минимум $3',
     atmFeeEn: '1%, minimum $3',
+    /**
+     * The bare rate, without the marker, because the hero sets it as a display
+     * numeral where "[VERIFY]" cannot sit inside the figure. The hero carries
+     * the marker on the line beneath instead — the claim is still marked, and
+     * both places read the same number because both come from here.
+     *
+     * Decimal comma in Russian, point in English: this is a typographic
+     * convention, not a different value.
+     */
+    crossCurrencyRate: '1,5%',
+    crossCurrencyRateEn: '1.5%',
     crossCurrency: verify('1,5%'),
     crossCurrencyEn: verify('1.5%'),
     validity: verify('5 лет'),

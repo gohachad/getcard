@@ -216,6 +216,23 @@
    --------------------------------------------------------------------------- */
 
 @layer components {
+  /* Small accent pill — a label, never a control. Outlined in --color-signal
+     so it reads as an aside rather than something to press; the two pill
+     classes below are the only things on the page that look tappable.
+
+     Promoted out of Tiers.astro when the hero needed the same treatment: one
+     recipe in one place beats two copies drifting apart. */
+  .badge {
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-graphite);
+    border: 1px solid var(--color-signal);
+    border-radius: var(--radius-full);
+    padding: 2px 10px;
+    white-space: nowrap;
+  }
+
   /* Filled pill — primary action. The only filled interactive element.
      White text, not --color-wash: 4.70:1 against the action fill rather than
      4.40:1. Now recorded in DESIGN.md §6 rather than being a local deviation. */
