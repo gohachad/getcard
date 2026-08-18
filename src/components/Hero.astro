@@ -644,6 +644,25 @@ const sharedRows = [
     margin-block: clamp(32px, 11vw, 100px);
   }
 
+  /* Desktop only.
+
+     On a phone the card is already sized by 92vw and is the right size; it is
+     on a wide screen that the 820px cap applied and the card ate most of a
+     laptop screen — roughly 516px of card plus ~97px of rotation overhang top
+     and bottom — while carrying no information the reader needs. Below 1024px
+     nothing here applies and the mobile rendering is untouched.
+
+     The margin is recomputed from the same overhang formula rather than left
+     at 100px: at 480px wide the corners only reach ~57px past the box, so the
+     old value would have kept the empty space the smaller card was meant to
+     give back. */
+  @media (min-width: 1024px) {
+    .card-tilt {
+      width: min(480px, 92vw);
+      margin-block: 60px;
+    }
+  }
+
   .card-slot {
     position: absolute;
     inset: 0;
