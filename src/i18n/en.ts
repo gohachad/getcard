@@ -27,37 +27,31 @@ export const en: Translations = {
 
   hero: {
     headline: 'Two documents and the card is yours',
-    tagline: 'A card from a leading bank in Kyrgyzstan',
+    tagline: 'A card from a leading Kyrgyz bank',
     issuer: 'The bank has been operating since 1998',
 
-    highlights: {
-      lead: {
-        pill: 'The difference',
+    sellingPoints: [
+      {
+        id: 'plastic',
         title: 'Real plastic',
-        body: 'A physical Visa card delivered worldwide — not a virtual number that gets declined at the till.',
-        mediaAlt: 'The physical Visa card issued by the partner bank',
+        body: 'A physical card, not just a virtual number',
       },
-      stats: [
-        {
-          id: 'currencies',
-          figure: '4',
-          label: 'currencies, 4 accounts',
-          note: '€ · ₽ · $ · AED',
-        },
-        {
-          id: 'rates',
-          figure: specs.shared.crossCurrencyRateEn,
-          label: 'conversion',
-          note: 'no hidden mark-up',
-        },
-        {
-          id: 'transfers',
-          figure: 'SWIFT',
-          label: 'transfers by bank details',
-          note: 'incoming and outgoing',
-        },
-      ],
-    },
+      {
+        id: 'currencies',
+        title: 'Four currencies',
+        body: 'Euros, rubles, dollars and dirhams — four separate accounts',
+      },
+      {
+        id: 'transfers',
+        title: 'Transfers by bank details',
+        body: 'Send and receive money using bank details',
+      },
+      {
+        id: 'rates',
+        title: 'Good conversion',
+        body: 'Attractive rates when exchanging currencies',
+      },
+    ],
     ctaPrimary: 'Get a card',
     ctaSecondary: 'How it works',
     tierSelectorLabel: 'Choose a plan',

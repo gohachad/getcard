@@ -34,52 +34,39 @@ export const ru = {
 
   hero: {
     headline: 'Два документа и карта у вас',
-    // One line under the headline instead of the two audience pairs. Four
-    // lines of "если вы…" made the reader sort themselves into a bucket before
-    // being told what the product is; this just says what it is.
-    tagline: 'Карта от ведущего банка Кыргызстана',
+    // One line, straight under the headline. The two "если вы…" pairs made
+    // the reader sort themselves into a bucket before being told what the
+    // product even was; this just says what it is.
+    tagline: 'Карта от ведущего киргизского банка',
     // The tagline now carries who issues it, so the fine print is only the
-    // part it does not say. The bank's age is reassurance, not a reason to
-    // buy, which is why it is down here and not in a highlight slot.
+    // part it does not say.
     issuer: 'Банк работает с 1998 года',
 
-    // One argument, then the evidence for it.
-    //
-    // Four equal tiles gave the physical card — the entire reason this product
-    // exists — the same weight as the conversion rate. It leads now, at the
-    // size the claim deserves and with room for a photograph of the thing
-    // itself; the rest are reduced to figures, which is all they ever were.
-    highlights: {
-      lead: {
-        pill: 'Главное отличие',
+    // The four reasons to keep reading, shown before anything else. Each one
+    // is a claim the visitor can check against the plans further down, which
+    // is what stops a colourful row of tiles reading as noise.
+    sellingPoints: [
+      {
+        id: 'plastic',
         title: 'Настоящий пластик',
-        body: 'Физическая карта Visa с доставкой по всему миру — не виртуальный номер, который отклонят на кассе.',
-        mediaAlt: 'Физическая карта Visa, выпущенная банком-партнёром',
+        body: 'Физическая карта, а не только виртуальный номер',
       },
-      // Figure first, then what it counts. Each is checkable against the plans
-      // further down — which is what keeps three big numerals from reading as
-      // decoration.
-      stats: [
-        {
-          id: 'currencies',
-          figure: '4',
-          label: 'валюты, 4 счёта',
-          note: '€ · ₽ · $ · AED',
-        },
-        {
-          id: 'rates',
-          figure: specs.shared.crossCurrencyRate,
-          label: 'конвертация',
-          note: 'без скрытых наценок',
-        },
-        {
-          id: 'transfers',
-          figure: 'SWIFT',
-          label: 'переводы по реквизитам',
-          note: 'входящие и исходящие',
-        },
-      ],
-    },
+      {
+        id: 'currencies',
+        title: 'Четыре валюты',
+        body: 'Евро, рубли, доллары и дирхамы — четыре отдельных счёта',
+      },
+      {
+        id: 'transfers',
+        title: 'Переводы по реквизитам',
+        body: 'Отправляйте и принимайте деньги на банковские реквизиты',
+      },
+      {
+        id: 'rates',
+        title: 'Выгодная конвертация',
+        body: 'Привлекательные курсы при обмене валют',
+      },
+    ],
     ctaPrimary: 'Оформить карту',
     ctaSecondary: 'Как это работает',
     tierSelectorLabel: 'Выберите тариф',

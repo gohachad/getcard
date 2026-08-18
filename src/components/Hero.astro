@@ -10,7 +10,6 @@ interface Props {
 const { locale } = Astro.props;
 const copy = t(locale);
 const { comparison } = copy;
-const { highlights } = copy.hero;
 
 // Gold is the baseline and the card most people take, so it is what the page
 // opens on. Every other tier is presented as a change from it.
@@ -58,55 +57,58 @@ const sharedRows = [
 
     <p class="tagline">{copy.hero.tagline}</p>
 
-    {/* The argument, then the evidence. Four equal tiles gave the physical
-        card the same weight as the conversion rate; it leads now, with room
-        for a photograph of the thing itself, and the other claims are reduced
-        to the figures they always were. */}
-    <div class="highlights">
-      <article class="highlight-lead" aria-labelledby="highlight-lead-heading">
-        <p class="badge highlight-pill">{highlights.lead.pill}</p>
-        <h2 id="highlight-lead-heading">{highlights.lead.title}</h2>
-        <p class="highlight-body">{highlights.lead.body}</p>
+    {/* Four colour fields, not four white boxes.
 
-        {/* The point of the block, so it gets real height rather than a
-            thumbnail. Neutral surface until the photograph exists — the same
-            habit as the [TBD] markers: show the gap, do not invent a filler.
+        Each one carries a colour already in the system — the card render's own
+        gold, the action blue, the success green, the Infinite card's indigo —
+        but at full saturation rather than as a pastel wash behind an icon. A
+        row of white cards with tinted squares reads as a spec table however
+        the copy is written; this reads as four claims. They stagger in on load
+        and lift under the cursor, so the row is the first thing on the page
+        that answers back. */}
+    <ul class="selling-points">
+      {
+        copy.hero.sellingPoints.map((point, index) => (
+          <li data-point={point.id} style={`--stagger: ${index * 70}ms`}>
+            <span class="sp-icon" aria-hidden="true">
+              {point.id === 'plastic' && (
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="3" />
+                  <path d="M2 10h20" />
+                  <path d="M6 15h4" />
+                </svg>
+              )}
+              {point.id === 'currencies' && (
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v10M9.5 9.5h5M9.5 14.5h5" />
+                </svg>
+              )}
+              {point.id === 'transfers' && (
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 9h13l-3-3M20 15H7l3 3" />
+                </svg>
+              )}
+              {point.id === 'rates' && (
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 17l5-5 3 3 7-7" />
+                  <path d="M15 8h5v5" />
+                </svg>
+              )}
+            </span>
+            <strong>{point.title}</strong>
+            <span class="sp-body">{point.body}</span>
+          </li>
+        ))
+      }
+    </ul>
 
-            To swap in the real photograph:
-              import { Image } from 'astro:assets';
-              import plastic from '../assets/plastic-card.jpg';
-              <Image src={plastic} alt={highlights.lead.mediaAlt} widths={[480, 720, 960]}
-                     sizes="(min-width: 1024px) 42vw, 92vw" class="highlight-photo" /> */}
-        <figure class="highlight-media">
-          <div class="highlight-placeholder" role="img" aria-label={highlights.lead.mediaAlt}></div>
-        </figure>
-      </article>
-
-      <ul class="stats">
-        {
-          highlights.stats.map((stat) => (
-            <li data-stat={stat.id}>
-              <span class="stat-figure">{stat.figure}</span>
-              <span class="stat-text">
-                <strong class="stat-label">{stat.label}</strong>
-                <span class="stat-note">
-                  <Copy text={stat.note} />
-                </span>
-              </span>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
+    <p class="issuer">{copy.hero.issuer}</p>
 
     <div class="hero-actions">
       <a class="pill-filled" href="#tiers">{copy.hero.ctaPrimary}</a>
       <a class="pill-outlined" href="#process">{copy.hero.ctaSecondary}</a>
     </div>
-
-    {/* Issuer disclosure, kept in the section but out of the way: 1998 is in
-        the third statistic now, so this no longer repeats it. */}
-    <p class="issuer">{copy.hero.issuer}</p>
   </div>
 
   <div class="card-stage">
@@ -341,246 +343,192 @@ const sharedRows = [
       linear-gradient(#ffffff 0%, #f2f6fc 45%, var(--color-canvas) 100%);
   }
 
-  /* Highlights — one lead claim, three supporting figures.
-     Single column by default; the asymmetric split only appears once there is
-     room for the photograph to be worth showing. */
-  .highlights {
+  /* Selling points — four colour fields.
+
+     The old row was four white cards each holding a small pastel square. On a
+     near-white page that reads as a table of specifications no matter what the
+     copy says, because nothing on it is louder than the background. These are
+     saturated blocks with white type: the colour is the card, not a detail
+     inside it.
+
+     Every colour is one the page already uses — the card render's gold, the
+     action blue, the success green, the Infinite card's indigo — so the row is
+     loud without widening the palette. All four clear 4.5:1 with white type.
+     --------------------------------------------------------------------- */
+  .selling-points {
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
+    list-style: none;
     max-width: 940px;
     margin: 26px auto 0;
+    padding: 0;
     text-align: left;
   }
 
-  /* The lead card is the one loud thing on this screen.
-
-     Four white boxes on a near-white wash gave the page no focal point at all,
-     and the product's own material — a gold Visa on a dark face — was sitting
-     unused two hundred pixels below. So the lead claim is set as a card face:
-     graphite ground, gold hairline, gold eyebrow. The three figures beside it
-     stay white and quiet, which is what makes the split read as deliberate
-     rather than as two columns that happen to differ in width.
-
-     Both colours are already on this page — the gold is the card render's own,
-     the graphite is --color-ink. Nothing new enters the palette. */
-  .highlight-lead {
-    --gold: #c9a35c;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px;
-    border-radius: var(--radius-card);
-    border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
-    background:
-      radial-gradient(26rem 15rem at 92% -14%, rgba(201, 163, 92, 0.34), transparent 66%),
-      linear-gradient(160deg, #262931 0%, var(--color-ink) 58%, #161719 100%);
-    /* Deeper than the stats' lift: this one is meant to sit above the page the
-       way the card render does, without borrowing --shadow-xl outright. */
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.06),
-      0 18px 40px -24px rgba(29, 29, 31, 0.55);
-  }
-
-  .stats li {
-    background: var(--color-white);
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius-card);
-    /* Not --shadow-xl: that one belongs to the card render alone. This is a
-       far softer lift, just enough to separate the cards from the wash. */
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  }
-
-  /* A label, not a control. Takes the global .badge shape and recolours it for
-     the dark ground — 6.9:1 on this background. */
-  .highlight-pill.badge {
-    align-self: start;
-    margin: 0;
-    color: var(--gold);
-    border-color: color-mix(in srgb, var(--gold) 55%, transparent);
-    background: rgba(201, 163, 92, 0.09);
-  }
-
-  .highlight-lead h2 {
-    margin: 0;
-    font-size: var(--text-heading-sm);
-    line-height: var(--text-heading-sm--line-height);
-    letter-spacing: var(--text-heading-sm--letter-spacing);
-    font-weight: 600;
-    color: var(--color-white);
-  }
-
-  .highlight-body {
-    margin: 0;
-    max-width: 44ch;
-    font-size: var(--text-body-sm);
-    line-height: var(--text-body-sm--line-height);
-    color: #b9bcc3;
-  }
-
-  /* The photograph is the argument, so it takes the remaining height rather
-     than a fixed one — on tall viewports the card grows into the column
-     instead of leaving a gap under it. */
-  .highlight-media {
-    margin: 2px 0 0;
-    flex: 1;
-    display: flex;
-  }
-
-  .highlight-placeholder {
-    width: 100%;
-    /* 16:9 at every width. A 4:3 slot on a phone pushed everything below it
-       off the first screen, and the card itself is a wide object anyway. */
-    min-height: 132px;
-    /* Capped, not just proportioned. Left to the aspect ratio alone the slot
-       grew with the column and pushed the CTAs off the first screen — which is
-       the opposite of what a hero is for. Still a photograph, not a thumbnail. */
-    max-height: 150px;
-    aspect-ratio: 16 / 9;
-    border-radius: var(--radius-card);
-    /* Deliberately empty, the same habit as the [TBD] markers: show the gap
-       rather than dress it with a stock photo. Cut into the card face rather
-       than laid on top, so an unfilled slot reads as part of the design
-       instead of a missing image. */
-    background:
-      radial-gradient(20rem 10rem at 50% 120%, rgba(201, 163, 92, 0.13), transparent 70%),
-      repeating-linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.018) 0 14px,
-        rgba(255, 255, 255, 0.038) 14px 28px
-      );
-    border: 1px solid rgba(201, 163, 92, 0.18);
-    box-shadow: inset 0 1px 14px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Three compact rows. The numeral is what makes them scannable, so it keeps
-     its own fixed track at every width — it never stacks above the label. */
-  .stats {
+  .selling-points li {
+    position: relative;
+    overflow: hidden;
     display: grid;
-    gap: 12px;
-    grid-auto-rows: 1fr;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    /* One gutter for all three rows, in a length that does not depend on any
-       row's own font size — `ch` did, so the smaller SWIFT row pulled its
-       label 12px left of the other two. */
-    --stat-gutter: 72px;
-  }
-
-  .stats li {
-    display: flex;
+    grid-template-columns: 44px 1fr;
+    grid-template-areas: 'icon title' 'icon body';
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
+    gap: 2px 14px;
+    padding: 16px 18px;
+    border-radius: var(--radius-card);
+    /* No stop lighter than --tile, and only a whisper of white in the corner:
+       both were lifting the ground until white type fell under 4.5:1. --tile is
+       therefore the lightest pixel on the card, and it is the value measured. */
+    background:
+      radial-gradient(20rem 12rem at 100% 0%, rgba(255, 255, 255, 0.08), transparent 62%),
+      linear-gradient(150deg, var(--tile) 0%, var(--tile-deep) 100%);
+    color: var(--color-white);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    transform: translateZ(0);
     transition:
-      transform 200ms ease-out,
-      border-color 200ms ease-out;
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 220ms ease-out;
   }
 
-  .stats li:hover {
-    transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--color-action) 40%, var(--color-hairline));
+  /* The row answers back. Lift plus a deeper shadow in the tile's own colour,
+     so the feedback belongs to the card rather than being a generic grey drop. */
+  .selling-points li:hover,
+  .selling-points li:focus-within {
+    transform: translateY(-4px);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.06),
+      0 18px 34px -18px var(--tile-deep);
   }
 
-  /* The figures are the reason anyone stops on this block, so they are set at
-     the heading step in the action blue rather than as bold body text. At 28px
-     and ink they read as a spec table; this reads as a claim. */
-  .stat-figure {
-    flex: none;
-    min-width: var(--stat-gutter);
-    font-size: var(--text-heading-sm);
-    line-height: 1;
-    letter-spacing: var(--text-heading-sm--letter-spacing);
-    font-weight: 600;
-    color: var(--color-action);
-    font-variant-numeric: tabular-nums;
+  /* A slow sheen crossing the tile on hover — the one moving decoration on the
+     first screen, and it only exists while the cursor is on the card. */
+  .selling-points li::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.16) 50%, transparent 62%);
+    transform: translateX(-120%);
+    transition: transform 620ms ease-out;
+    pointer-events: none;
   }
 
-  /* SWIFT is a word, not a figure. At the numeral size it takes half the row
-     and the gutter it forces would push the other two labels far right, so it
-     drops a step and reads as the token it is. */
-  [data-stat='transfers'] .stat-figure {
-    font-size: var(--text-subheading);
-    letter-spacing: 0;
+  .selling-points li:hover::after,
+  .selling-points li:focus-within::after {
+    transform: translateX(120%);
   }
 
-  .stat-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    /* Without this a long note refuses to wrap and pushes the row wider than
-       its column — the 360px failure mode. */
-    min-width: 0;
+  .sp-icon {
+    grid-area: icon;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-card);
+    color: var(--color-white);
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    transition:
+      background-color 220ms ease-out,
+      color 220ms ease-out;
   }
 
-  .stat-label {
-    font-size: var(--text-body-sm);
+  /* On hover the chip inverts: solid white, icon in the tile's colour. */
+  .selling-points li:hover .sp-icon,
+  .selling-points li:focus-within .sp-icon {
+    background: var(--color-white);
+    color: var(--tile-deep);
+  }
+
+  .selling-points strong {
+    grid-area: title;
+    font-size: var(--text-body);
     line-height: 1.3;
     font-weight: 600;
-    color: var(--color-ink);
   }
 
-  .stat-note {
-    font-size: var(--text-caption);
-    line-height: var(--text-caption--line-height);
-    color: var(--color-ash);
-    overflow-wrap: anywhere;
+  .sp-body {
+    grid-area: body;
+    font-size: var(--text-body-sm);
+    line-height: 1.35;
+    /* Not --color-ash: on a saturated ground a grey goes muddy. White held
+       back instead — but only slightly. At 0.82 the body copy measured 2.9:1
+       and failed outright; 0.94 keeps the softer look and clears AA. */
+    color: rgba(255, 255, 255, 0.94);
   }
 
-  @media (min-width: 1024px) {
-    /* The asymmetric split. The lead card takes the wider track because it is
-       carrying a photograph; the figures need only their own width. */
-    .highlights {
-      grid-template-columns: 1.25fr 1fr;
-      align-items: stretch;
+  /* One colour per tile. --tile is the ground, --tile-lift the top-left
+     highlight, --tile-deep the bottom shadow and the hover glow. */
+  /* Every --tile below is measured, not picked by eye: white title type and
+     body copy at 0.94 both clear 4.5:1 against it with the corner highlight
+     composited on top. Darken --tile if you ever lighten that highlight. */
+  [data-point='plastic'] {
+    --tile: #785b28;
+    --tile-deep: #5a4319;
+  }
+  [data-point='currencies'] {
+    --tile: #0060c4;
+    --tile-deep: #00479a;
+  }
+  [data-point='transfers'] {
+    --tile: #186b2c;
+    --tile-deep: #0f4f1f;
+  }
+  [data-point='rates'] {
+    --tile: #34375c;
+    --tile-deep: #24263f;
+  }
+
+  /* Staggered entrance: the row arrives a beat after the headline, left to
+     right, so the first screen resolves in an order rather than all at once.
+     --stagger is set per item in the markup. */
+  @media (prefers-reduced-motion: no-preference) {
+    .selling-points li {
+      animation: tile-in 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: calc(160ms + var(--stagger, 0ms));
+    }
+  }
+
+  @keyframes tile-in {
+    from {
+      opacity: 0;
+      transform: translateY(14px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @media (min-width: 700px) {
+    .selling-points {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1040px) {
+    .selling-points {
+      grid-template-columns: repeat(4, 1fr);
     }
 
-    .highlight-lead {
-      padding: 20px;
-    }
-
-    .highlight-placeholder {
-      min-height: 170px;
-      max-height: 190px;
-    }
-
-    /* Full size only where there is room for it. The figure carries the row,
-       so it gets the heading step rather than the one below it. */
-    .stats {
-      --stat-gutter: 92px;
-    }
-
-    .stat-figure {
-      font-size: var(--text-heading);
-      letter-spacing: var(--text-heading--letter-spacing);
-    }
-
-    [data-stat='transfers'] .stat-figure {
-      font-size: var(--text-heading-sm);
-    }
-
-    .stat-label {
-      font-size: var(--text-body);
+    /* Four across is tight, so the icon moves above the text rather than
+       squeezing the Russian strings into two words per line. */
+    .selling-points li {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'icon' 'title' 'body';
+      align-items: start;
+      gap: 12px 0;
+      padding: 20px 18px;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .stats li:hover {
+    .selling-points li:hover,
+    .selling-points li:focus-within {
       transform: none;
     }
-  }
 
-  @media (max-width: 380px) {
-    /* Only the padding gives, never the layout: the horizontal read of
-       figure-then-label is the whole point of these rows. */
-    .stats li {
-      gap: 10px;
-      padding: 14px;
-    }
-
-    .highlight-lead {
-      padding: 16px;
+    .selling-points li::after {
+      display: none;
     }
   }
 
@@ -592,12 +540,11 @@ const sharedRows = [
     margin: 0;
   }
 
-  /* One line under the headline, in the whisper weight the system reserves for
-     taglines (DESIGN.md §3). */
+  /* One line under the headline, in the whisper weight the system reserves
+     for taglines (DESIGN.md §3). It states what the product is before the
+     reader is asked to sort themselves into an audience. */
   .tagline {
     margin: 16px auto 0;
-    /* Wide enough that the line does not break mid-phrase on a desktop; it
-       still wraps naturally on a phone, where it has to. */
     max-width: 42ch;
     font-size: var(--text-subheading);
     line-height: var(--text-subheading--line-height);
@@ -606,10 +553,8 @@ const sharedRows = [
     color: var(--color-ink);
   }
 
-  /* Now sits under the actions rather than above them, so it reads as fine
-     print about the offer instead of a caption on the cards. */
   .issuer {
-    margin: 18px auto 0;
+    margin: 14px auto 0;
     max-width: 46ch;
     font-size: var(--text-body-sm);
     line-height: var(--text-body-sm--line-height);
