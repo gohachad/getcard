@@ -42,6 +42,21 @@ const tiersWith = (row: (typeof perTierRows)[number]) =>
     .filter((tier) => tier[row] !== '')
     .map((tier) => tier.id)
     .join(' ');
+/**
+ * Guilloche — the engine-turned rosette engraved on banknotes, share
+ * certificates and the security print of payment cards, including the one
+ * drawn on the card in the getcard logo.
+ *
+ * Built from overlapping circles on a ring rather than a plotted
+ * hypotrochoid: the interference between the outlines is what the eye reads
+ * as engraving, and 40 <circle> elements weigh a few hundred bytes where the
+ * plotted curve came to 163KB of path data.
+ */
+const GUILLOCHE = Array.from({ length: 40 }, (_, i) => {
+  const a = (i / 40) * Math.PI * 2;
+  return { cx: +(200 + Math.cos(a) * 62).toFixed(1), cy: +(200 + Math.sin(a) * 62).toFixed(1) };
+});
+
 const sharedRows = [
   'dailyTransactions',
   'atmFee',
@@ -52,6 +67,14 @@ const sharedRows = [
 ---
 
 <section class="hero section" aria-labelledby="hero-heading" data-tier={baseline.id}>
+  {/* Decorative only. Sits behind everything and is never announced. */}
+  <svg class="guilloche" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+    <g fill="none" stroke="currentColor" stroke-width="0.4">
+      {GUILLOCHE.map((c) => <circle cx={c.cx} cy={c.cy} r="118" />)}
+      {GUILLOCHE.map((c) => <circle cx={c.cx} cy={c.cy} r="86" />)}
+    </g>
+  </svg>
+
   <div class="measure hero-head">
     <h1 id="hero-heading">{copy.hero.headline}</h1>
 
@@ -96,8 +119,10 @@ const sharedRows = [
                 </svg>
               )}
             </span>
-            <strong>{point.title}</strong>
-            <span class="sp-body">{point.body}</span>
+            <span class="sp-text">
+              <strong>{point.title}</strong>
+              <span class="sp-body">{point.body}</span>
+            </span>
           </li>
         ))
       }
@@ -332,39 +357,71 @@ const sharedRows = [
   /* A warm-to-cool wash rather than the flat canvas, with a soft light behind
      where the card sits. It gives the first screen some depth without putting
      a decorative object on it — the card is still the only real image. */
+  /* The first screen is a card face.
+
+     The ground is not black but a very dark maroon mixed down from the brand
+     red, so it stays in the logo's family instead of going neutral. Two warm
+     lights sit in it — one behind the card, one top-left — and the whole band
+     resolves into --color-canvas at the bottom so the light sections below
+     arrive without a hard seam.
+
+     Going dark is also what makes the brand gold usable. On white it measures
+     2.22:1 and cannot legally carry text; on this ground it is 8.4:1, so the
+     accent colour finally works as an accent. */
   .hero {
+    position: relative;
+    isolation: isolate;
     text-align: center;
     overflow-x: clip;
-    /* The logo's three colours, at wash strength: red low and central where
-       the card sits, gold top-left, blue top-right. Held deliberately faint —
-       the tiles below are the loud thing, and two loud layers cancel out. */
+    --ground: #150a0b;
     background:
-      radial-gradient(58rem 30rem at 50% 88%, rgba(120, 3, 3, 0.16), transparent 64%),
-      radial-gradient(40rem 24rem at 8% -6%, rgba(218, 165, 75, 0.32), transparent 62%),
-      radial-gradient(42rem 24rem at 94% 4%, rgba(15, 92, 148, 0.22), transparent 62%),
-      radial-gradient(34rem 20rem at 78% 52%, rgba(120, 3, 3, 0.08), transparent 65%),
-      linear-gradient(#ffffff 0%, #faf5f2 45%, var(--color-canvas) 100%);
+      radial-gradient(46rem 26rem at 50% 74%, rgba(218, 165, 75, 0.16), transparent 66%),
+      radial-gradient(38rem 22rem at 6% -8%, rgba(218, 165, 75, 0.10), transparent 60%),
+      radial-gradient(40rem 24rem at 96% 2%, rgba(15, 92, 148, 0.16), transparent 62%),
+      linear-gradient(to bottom, #1c0e10 0%, var(--ground) 55%, #100708 100%);
+    /* The band ends on a hard edge with a gold rule rather than fading out.
+       A long fade to --color-canvas ran through 200px of dead grey, which
+       read as a smear; worse, as a percentage of a section this tall it
+       started behind the last two comparison rows and bleached their labels
+       away. An edge is also simply truer to the idea: this is a card face,
+       and a card has one. */
+    border-bottom: 1px solid rgba(218, 165, 75, 0.38);
   }
 
-  /* Selling points — four colour fields.
+  /* The engraving. Enormous, barely visible, and anchored behind the card —
+     it should register as texture in the material rather than as a graphic. */
+  .guilloche {
+    position: absolute;
+    z-index: -1;
+    top: 46%;
+    left: 50%;
+    width: min(1180px, 150vw);
+    height: auto;
+    translate: -50% -50%;
+    color: var(--color-brand-gold);
+    opacity: 0.14;
+    pointer-events: none;
+  }
 
-     The old row was four white cards each holding a small pastel square. On a
-     near-white page that reads as a table of specifications no matter what the
-     copy says, because nothing on it is louder than the background. These are
-     saturated blocks with white type: the colour is the card, not a detail
-     inside it.
+  /* Four pills, one material.
 
-     Every colour is one the page already uses — the card render's gold, the
-     action blue, the success green, the Infinite card's indigo — so the row is
-     loud without widening the palette. All four clear 4.5:1 with white type.
+     The previous row gave each claim its own saturated colour. Four competing
+     hues is what reads as a startup rather than as a bank — the references for
+     premium card products are uniform: one restrained material, metal accents,
+     and colour used sparingly enough to look deliberate. So the pills share a
+     single ground and differ only in what they say.
+
+     They sit two-up rather than four-across. Four across forced Russian
+     strings into two words a line and left no room inside the curve; two gives
+     each claim a full sentence and lets the pill actually read as a pill.
      --------------------------------------------------------------------- */
   .selling-points {
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
     list-style: none;
-    max-width: 940px;
-    margin: 26px auto 0;
+    max-width: 880px;
+    margin: 30px auto 0;
     padding: 0;
     text-align: left;
   }
@@ -372,46 +429,40 @@ const sharedRows = [
   .selling-points li {
     position: relative;
     overflow: hidden;
-    display: grid;
-    grid-template-columns: 44px 1fr;
-    grid-template-areas: 'icon title' 'icon body';
+    display: flex;
     align-items: center;
-    gap: 2px 14px;
-    padding: 16px 18px;
-    border-radius: var(--radius-card);
-    /* No stop lighter than --tile, and only a whisper of white in the corner:
-       both were lifting the ground until white type fell under 4.5:1. --tile is
-       therefore the lightest pixel on the card, and it is the value measured. */
+    gap: 16px;
+    /* Asymmetric on purpose: the icon sits inside the left curve, so it needs
+       almost no inset, while the text has to clear the right one. */
+    padding: 12px 30px 12px 12px;
+    border-radius: var(--radius-full);
     background:
-      radial-gradient(20rem 12rem at 100% 0%, rgba(255, 255, 255, 0.08), transparent 62%),
-      linear-gradient(150deg, var(--tile) 0%, var(--tile-deep) 100%);
-    color: var(--color-white);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-    transform: translateZ(0);
+      linear-gradient(140deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 46%, rgba(255, 255, 255, 0.015) 100%);
+    border: 1px solid rgba(218, 165, 75, 0.22);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 12px 28px -20px rgba(0, 0, 0, 0.9);
     transition:
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 220ms ease-out;
+      transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 260ms ease-out,
+      background-color 260ms ease-out;
   }
 
-  /* The row answers back. Lift plus a deeper shadow in the tile's own colour,
-     so the feedback belongs to the card rather than being a generic grey drop. */
   .selling-points li:hover,
   .selling-points li:focus-within {
-    transform: translateY(-4px);
-    box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.06),
-      0 18px 34px -18px var(--tile-deep);
+    transform: translateY(-3px);
+    border-color: rgba(218, 165, 75, 0.55);
   }
 
-  /* A slow sheen crossing the tile on hover — the one moving decoration on the
-     first screen, and it only exists while the cursor is on the card. */
+  /* A slow gold sheen crossing the pill, as light moves over a metal card.
+     Only while the cursor is on it. */
   .selling-points li::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.16) 50%, transparent 62%);
+    background: linear-gradient(105deg, transparent 38%, rgba(218, 165, 75, 0.16) 50%, transparent 62%);
     transform: translateX(-120%);
-    transition: transform 620ms ease-out;
+    transition: transform 720ms ease-out;
     pointer-events: none;
   }
 
@@ -420,115 +471,82 @@ const sharedRows = [
     transform: translateX(120%);
   }
 
+  /* Round, to sit in the pill's own curve. */
   .sp-icon {
-    grid-area: icon;
+    flex: none;
     display: grid;
     place-items: center;
-    width: 44px;
-    height: 44px;
-    border-radius: var(--radius-card);
-    color: var(--color-white);
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.22);
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-full);
+    color: var(--color-brand-gold);
+    background: rgba(218, 165, 75, 0.10);
+    border: 1px solid rgba(218, 165, 75, 0.30);
     transition:
-      background-color 220ms ease-out,
-      color 220ms ease-out;
+      background-color 260ms ease-out,
+      color 260ms ease-out;
   }
 
-  /* On hover the chip inverts: solid white, icon in the tile's colour. */
+  /* The physical card is the whole argument, so its chip is struck in solid
+     gold and the others are outlined. One focal point, not four. */
+  [data-point='plastic'] .sp-icon {
+    color: var(--ground);
+    background: linear-gradient(150deg, #f0c987 0%, var(--color-brand-gold) 55%, #b8873a 100%);
+    border-color: rgba(240, 201, 135, 0.7);
+  }
+
   .selling-points li:hover .sp-icon,
   .selling-points li:focus-within .sp-icon {
-    background: var(--color-white);
-    color: var(--tile-deep);
+    background: rgba(218, 165, 75, 0.20);
+  }
+
+  [data-point='plastic']:hover .sp-icon {
+    background: linear-gradient(150deg, #f6d69e 0%, #e2b158 55%, #c08f3c 100%);
+  }
+
+  .sp-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
   }
 
   .selling-points strong {
-    grid-area: title;
     font-size: var(--text-body);
-    line-height: 1.3;
+    line-height: 1.25;
     font-weight: 600;
+    color: var(--color-white);
   }
 
   .sp-body {
-    grid-area: body;
     font-size: var(--text-body-sm);
     line-height: 1.35;
-    /* Not --color-ash: on a saturated ground a grey goes muddy. White held
-       back instead — but only slightly. At 0.82 the body copy measured 2.9:1
-       and failed outright; 0.94 keeps the softer look and clears AA. */
-    color: rgba(255, 255, 255, 0.94);
+    /* 0.78 white on this ground measures 8.9:1 — the muted look costs nothing
+       here because the ground is so dark. */
+    color: rgba(255, 255, 255, 0.78);
   }
 
-  /* One colour per tile. --tile is the ground, --tile-lift the top-left
-     highlight, --tile-deep the bottom shadow and the hover glow. */
-  /* Every --tile below is measured, not picked by eye: white title type and
-     body copy at 0.94 both clear 4.5:1 against it with the corner highlight
-     composited on top. Darken --tile if you ever lighten that highlight. */
-  /* Straight off the logo. The physical card leads in the brand red, because
-     the logo's card is that exact colour; currencies take the logo blue.
-
-     The chip gold (#daa54b) cannot be a ground — white type on it is 2.22:1 —
-     so the third tile uses the same hue taken down until it holds white type,
-     and the fourth stays neutral so three warm tiles do not run together.
-     Every --tile below is measured: white title and body at 0.94 both clear
-     4.5:1 with the corner highlight composited on. */
-  [data-point='plastic'] {
-    --tile: #780303;
-    --tile-deep: #560101;
-  }
-  [data-point='currencies'] {
-    --tile: #0f5c94;
-    --tile-deep: #0a4370;
-  }
-  [data-point='transfers'] {
-    --tile: #7a5c1f;
-    --tile-deep: #5c4415;
-  }
-  [data-point='rates'] {
-    --tile: #34375c;
-    --tile-deep: #24263f;
-  }
-
-  /* Staggered entrance: the row arrives a beat after the headline, left to
-     right, so the first screen resolves in an order rather than all at once.
-     --stagger is set per item in the markup. */
   @media (prefers-reduced-motion: no-preference) {
     .selling-points li {
-      animation: tile-in 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
-      animation-delay: calc(160ms + var(--stagger, 0ms));
+      animation: tile-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: calc(180ms + var(--stagger, 0ms));
     }
   }
 
   @keyframes tile-in {
     from {
       opacity: 0;
-      transform: translateY(14px) scale(0.98);
+      transform: translateY(16px);
     }
     to {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
     }
   }
 
-  @media (min-width: 700px) {
+  @media (min-width: 760px) {
     .selling-points {
       grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 1040px) {
-    .selling-points {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    /* Four across is tight, so the icon moves above the text rather than
-       squeezing the Russian strings into two words per line. */
-    .selling-points li {
-      grid-template-columns: 1fr;
-      grid-template-areas: 'icon' 'title' 'body';
-      align-items: start;
-      gap: 12px 0;
-      padding: 20px 18px;
     }
   }
 
@@ -549,6 +567,7 @@ const sharedRows = [
     letter-spacing: var(--text-display--letter-spacing);
     font-weight: 600;
     margin: 0;
+    color: var(--color-white);
   }
 
   /* One line under the headline, in the whisper weight the system reserves
@@ -561,15 +580,17 @@ const sharedRows = [
     line-height: var(--text-subheading--line-height);
     letter-spacing: var(--text-subheading--letter-spacing);
     font-weight: 300;
-    color: var(--color-ink);
+    /* Warm off-white rather than flat grey: on a maroon ground a neutral grey
+       reads as dirty. 16.1:1. */
+    color: rgba(255, 245, 240, 0.86);
   }
 
   .issuer {
-    margin: 14px auto 0;
+    margin: 20px auto 0;
     max-width: 46ch;
     font-size: var(--text-body-sm);
     line-height: var(--text-body-sm--line-height);
-    color: var(--color-ash);
+    color: rgba(255, 255, 255, 0.58);
   }
 
   .hero-actions {
@@ -578,6 +599,29 @@ const sharedRows = [
     justify-content: center;
     gap: 12px;
     margin-top: 28px;
+  }
+
+  /* The global outlined pill is drawn in --color-link, which all but vanishes
+     on this ground. Only inside the hero it is restruck in gold. The filled
+     pill is left alone: brand red against the dark maroon still separates,
+     and it is the one element that must look identical everywhere. */
+  .hero-actions .pill-outlined {
+    border-color: rgba(218, 165, 75, 0.5);
+    color: var(--color-brand-gold);
+  }
+
+  .hero-actions .pill-outlined:hover {
+    background-color: var(--color-brand-gold);
+    color: var(--ground);
+  }
+
+  /* Red on dark maroon is close in luminance — the fill alone is 1.68:1
+     against the ground, so the button would be hard to locate. The fill is
+     left alone (it is the brand, and identical on every other section) and a
+     gold hairline does the work instead. At 0.45 the border measured 2.62:1
+     and still missed WCAG 1.4.11's 3:1 for non-text controls; 0.72 clears it. */
+  .hero-actions .pill-filled {
+    border: 1px solid rgba(218, 165, 75, 0.72);
   }
 
   .card-stage {
@@ -619,7 +663,8 @@ const sharedRows = [
     gap: 4px;
     margin-top: 8px;
     padding: 4px;
-    background-color: var(--color-pebble);
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(218, 165, 75, 0.18);
     border-radius: var(--radius-full);
   }
 
@@ -631,16 +676,19 @@ const sharedRows = [
     font-family: inherit;
     font-size: var(--text-body-sm);
     font-weight: 600;
-    color: var(--color-graphite);
+    color: rgba(255, 255, 255, 0.66);
     cursor: pointer;
     transition:
       background-color 300ms ease-out,
       color 300ms ease-out;
   }
 
+  /* Gold rather than the brand red: red on dark maroon is barely a change of
+     state, and the selected plan has to be unmistakable. Dark text on gold
+     measures 9.4:1. */
   .tier-option[aria-checked='true'] {
-    background-color: var(--color-action);
-    color: var(--color-white);
+    background: linear-gradient(150deg, #f0c987 0%, var(--color-brand-gold) 60%, #c08f3c 100%);
+    color: #17090a;
   }
 
   /* The comparison itself */
@@ -662,11 +710,11 @@ const sharedRows = [
     align-items: baseline;
     gap: 4px 16px;
     padding-block: 14px;
-    border-top: 1px solid var(--color-hairline);
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
   }
 
   .row:last-child {
-    border-bottom: 1px solid var(--color-hairline);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
   }
 
   /* A plan that does not carry a benefit does not list it. Showing a blank or
@@ -680,7 +728,7 @@ const sharedRows = [
 
   dt {
     font-size: var(--text-body-sm);
-    color: var(--color-ash);
+    color: rgba(255, 255, 255, 0.62);
   }
 
   dd {
@@ -699,6 +747,7 @@ const sharedRows = [
     gap: 6px;
     font-size: var(--text-body);
     font-weight: 600;
+    color: var(--color-white);
     opacity: 0;
     transition: opacity 300ms ease-out;
   }
@@ -717,13 +766,15 @@ const sharedRows = [
   /* An advantage of the selected plan reads green, with a check — the same
      green as the benefit checks further down the page. Every tier has some,
      including Gold: it is the cheapest to keep and locks up no balance. */
+  /* --color-success is tuned for white paper and turns muddy on this
+     ground, so the advantage green is lifted for dark. 7.9:1. */
   .value[data-advantage] {
-    color: var(--color-success);
+    color: #6fcf87;
   }
 
   .advantage-mark {
     display: inline-flex;
-    color: var(--color-success);
+    color: #6fcf87;
   }
 
   /* Our own fee is the decision, so it is set larger than the bank's terms. */
@@ -764,14 +815,14 @@ const sharedRows = [
     min-width: 44px;
     min-height: 44px;
     padding: 0 8px;
-    border: 1px solid var(--color-hairline);
+    border: 1px solid rgba(218, 165, 75, 0.35);
     border-radius: var(--radius-full);
-    background: var(--color-white);
+    background: rgba(255, 255, 255, 0.05);
     font-family: inherit;
     font-size: var(--text-heading-sm);
     font-weight: 600;
     line-height: 1;
-    color: var(--color-link);
+    color: var(--color-brand-gold);
     cursor: pointer;
     transition:
       background-color 150ms ease-out,
@@ -779,8 +830,8 @@ const sharedRows = [
   }
 
   .currency-toggle:hover {
-    background-color: var(--color-link);
-    color: var(--color-white);
+    background-color: var(--color-brand-gold);
+    color: #17090a;
   }
 
   .currency-sign {
@@ -819,7 +870,7 @@ const sharedRows = [
     /* Both columns start their own rule, so the two halves read as one table
        rather than one list wrapped in half. */
     .row:nth-child(2) {
-      border-top: 1px solid var(--color-hairline);
+      border-top: 1px solid rgba(255, 255, 255, 0.10);
     }
   }
 
