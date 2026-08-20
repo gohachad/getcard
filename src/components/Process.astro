@@ -55,11 +55,17 @@ const copy = t(locale);
               )}
               {index === 2 && (
                 <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2.5" y="4" width="19" height="12" rx="2" />
-                  <path d="M2.5 8h19" />
-                  <path d="M6 12.5h4" />
-                  <path d="M7 20.5h10" />
-                  <path d="M12 17v3.5" />
+                  {/* A card with a chip. The previous drawing put a bar and
+                      a stem under the rectangle, meaning them as a surface the
+                      card arrives on — at 24px that is a screen on a stand,
+                      and the step read as "you get a monitor". The chip is
+                      what makes a rounded rectangle unambiguously a bank card,
+                      and it also keeps this distinct from step two, which is
+                      the same card with contactless waves. */}
+                  <rect x="2" y="5" width="20" height="14" rx="2.5" />
+                  <path d="M2 9.5h20" />
+                  <rect x="5.5" y="12.5" width="5" height="3.5" rx="0.8" />
+                  <path d="M14 15.5h4.5" />
                 </svg>
               )}
             </span>
