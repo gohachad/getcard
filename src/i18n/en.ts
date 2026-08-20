@@ -82,18 +82,8 @@ export const en: Translations = {
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
     },
-    serviceFeeBy: {
-      rub: pricing.serviceFee,
-      usd: pricing.serviceFeeUsd,
-      eur: pricing.serviceFeeEur,
-      aed: pricing.serviceFeeAed,
-    },
-    serviceFeeAmountBy: {
-      rub: pricing.serviceFeeAmountRub,
-      usd: pricing.serviceFeeAmountUsd,
-      eur: pricing.serviceFeeAmountEur,
-      aed: pricing.serviceFeeAmountAed,
-    },
+    serviceFeeBy: pricing.serviceFeeByTier.gold.label,
+    serviceFeeAmountBy: pricing.serviceFeeByTier.gold.amount,
     currencyLabel: 'Payment currency',
     currencyToggleLabel: 'Switch currency',
     currencies: [
@@ -108,6 +98,8 @@ export const en: Translations = {
       {
         id: 'gold',
         name: 'Gold',
+        serviceFeeBy: pricing.serviceFeeByTier.gold.label,
+        serviceFeeAmountBy: pricing.serviceFeeByTier.gold.amount,
         annualFee: specs.gold.annualFee,
         dailyLimit: specs.gold.dailyLimit,
         lounge: specs.lounge.gold,
@@ -120,6 +112,8 @@ export const en: Translations = {
       {
         id: 'platinum',
         name: 'Platinum',
+        serviceFeeBy: pricing.serviceFeeByTier.platinum.label,
+        serviceFeeAmountBy: pricing.serviceFeeByTier.platinum.amount,
         annualFee: specs.platinum.annualFee,
         dailyLimit: specs.platinum.dailyLimit,
         lounge: specs.lounge.platinumEn,
@@ -132,6 +126,8 @@ export const en: Translations = {
       {
         id: 'infinite',
         name: 'Infinite',
+        serviceFeeBy: pricing.serviceFeeByTier.infinite.label,
+        serviceFeeAmountBy: pricing.serviceFeeByTier.infinite.amount,
         annualFee: specs.infinite.annualFee,
         dailyLimit: specs.infinite.dailyLimit,
         lounge: specs.lounge.infiniteEn,

@@ -99,19 +99,12 @@ export const ru = {
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
     },
-    // Three separate prices, not conversions from the ruble figure.
-    serviceFeeBy: {
-      rub: pricing.serviceFee,
-      usd: pricing.serviceFeeUsd,
-      eur: pricing.serviceFeeEur,
-      aed: pricing.serviceFeeAed,
-    },
-    serviceFeeAmountBy: {
-      rub: pricing.serviceFeeAmountRub,
-      usd: pricing.serviceFeeAmountUsd,
-      eur: pricing.serviceFeeAmountEur,
-      aed: pricing.serviceFeeAmountAed,
-    },
+    // Four separate prices, not conversions from the ruble figure — and now
+    // per plan as well, since Infinite is no longer the same price as Gold.
+    // Kept as the Gold figure for anything that still needs one fee without a
+    // plan in hand; every surface that knows its plan reads tier.serviceFeeBy.
+    serviceFeeBy: pricing.serviceFeeByTier.gold.label,
+    serviceFeeAmountBy: pricing.serviceFeeByTier.gold.amount,
     currencyLabel: 'Валюта оплаты',
     currencyToggleLabel: 'Сменить валюту',
     currencies: [
@@ -127,6 +120,8 @@ export const ru = {
       {
         id: 'gold',
         name: 'Gold',
+        serviceFeeBy: pricing.serviceFeeByTier.gold.label,
+        serviceFeeAmountBy: pricing.serviceFeeByTier.gold.amount,
         annualFee: specs.gold.annualFee,
         dailyLimit: specs.gold.dailyLimit,
         lounge: specs.lounge.gold,
@@ -142,6 +137,8 @@ export const ru = {
       {
         id: 'platinum',
         name: 'Platinum',
+        serviceFeeBy: pricing.serviceFeeByTier.platinum.label,
+        serviceFeeAmountBy: pricing.serviceFeeByTier.platinum.amount,
         annualFee: specs.platinum.annualFee,
         dailyLimit: specs.platinum.dailyLimit,
         lounge: specs.lounge.platinum,
@@ -154,6 +151,8 @@ export const ru = {
       {
         id: 'infinite',
         name: 'Infinite',
+        serviceFeeBy: pricing.serviceFeeByTier.infinite.label,
+        serviceFeeAmountBy: pricing.serviceFeeByTier.infinite.amount,
         annualFee: specs.infinite.annualFee,
         dailyLimit: specs.infinite.dailyLimit,
         lounge: specs.lounge.infinite,

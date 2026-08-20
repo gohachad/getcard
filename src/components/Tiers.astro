@@ -93,7 +93,7 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
             <p class="fee">
               {comparison.currencies.map((currency) => (
                 <span class="fee-value" data-currency={currency.id}>
-                  <Copy text={comparison.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur' | 'aed']} />
+                  <Copy text={tier.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur' | 'aed']} />
                 </span>
               ))}
               <span class="fee-unit">{copy.tiers.serviceFeeLabel}</span>

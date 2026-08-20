@@ -48,6 +48,42 @@ export const pricing = {
   serviceFeeAed: '1400 AED',
 
   /**
+   * Our fee, per plan.
+   *
+   * It used to be one figure for all three. It is not any more: Infinite is
+   * 35 000 ₽ while Gold and Platinum stay at 29 000 ₽, so every surface that
+   * quotes a price has to know which plan it is quoting.
+   *
+   * The three non-ruble figures for Infinite are the ruble change carried
+   * across at the rate the existing prices already imply — 35 000 / 29 000 =
+   * 1.2069 — and rounded UP, the same rule the two-card deal uses:
+   *
+   *   usd   380 × 1.2069 =  458.62 → 460
+   *   eur   350 × 1.2069 =  422.41 → 430
+   *   aed  1400 × 1.2069 = 1689.66 → 1700
+   *
+   * They are still four separate prices, not conversions performed at runtime,
+   * and must never be recalculated in a component.
+   *
+   * `amount` is the same figure with the sign split off, because the hero's
+   * comparison row makes the currency sign itself the control.
+   */
+  serviceFeeByTier: {
+    gold: {
+      label: { rub: '29 000 ₽', usd: '$380', eur: '€350', aed: '1400 AED' },
+      amount: { rub: '29 000', usd: '380', eur: '350', aed: '1400' },
+    },
+    platinum: {
+      label: { rub: '29 000 ₽', usd: '$380', eur: '€350', aed: '1400 AED' },
+      amount: { rub: '29 000', usd: '380', eur: '350', aed: '1400' },
+    },
+    infinite: {
+      label: { rub: '35 000 ₽', usd: '$460', eur: '€430', aed: '1700 AED' },
+      amount: { rub: '35 000', usd: '460', eur: '430', aed: '1700' },
+    },
+  },
+
+  /**
    * The same three prices with the sign split off, so the comparison row can
    * make the currency sign itself the control that switches between them.
    * Amount then sign is the normal order in Russian typography, so "380 $"
@@ -57,12 +93,6 @@ export const pricing = {
   serviceFeeAmountUsd: '380',
   serviceFeeAmountEur: '350',
   serviceFeeAmountAed: '1400',
-
-  /**
-   * Open question: does 29 000 ₽ apply to all three tiers, or only to the
-   * entry tier with the others priced above it?
-   */
-  tierCoverage: TBD,
 
   /**
    * Open question: does 29 000 ₽ include the first year's annual card fee,
