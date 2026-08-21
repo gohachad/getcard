@@ -121,7 +121,9 @@ export const payment = {
 
 export const timeline = {
   /**
-   * Issue time as the business now quotes it.
+   * Average issue time as the business now quotes it. Every surface that
+   * shows it says so: the bank sets the actual timing and can take longer,
+   * so this figure must never be worded as a promise.
    *
    * NOTE: the bank's own product deck says about three weeks. This shorter
    * figure is the operator's, not the bank's, and nothing in this repository

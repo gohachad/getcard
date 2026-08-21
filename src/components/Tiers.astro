@@ -47,11 +47,28 @@ const rowsFor = (tier: (typeof comparison.tiers)[number]) =>
 
 // Qualifiers that belong to a specific benefit, shown only on the panel that
 // actually carries it.
+//
+// Each note carries the key of the row it qualifies. Without that link the
+// notes read as fine print about the whole plan — "включая питание" says
+// nothing on its own about which line it is qualifying — so the row gets a
+// marker in the brand red and the note repeats it. The marker is decorative
+// for screen readers, which follow the aria-describedby on the row instead.
+const NOTE_MARKERS: Record<string, string> = {
+  lounge: '*',
+  limitIncrease: '**',
+};
+
 const notesFor = (tier: (typeof comparison.tiers)[number]) =>
   [
-    tier.advantages.includes('lounge') ? comparison.loungeNote : null,
-    tier.advantages.includes('limitIncrease') ? comparison.limitIncreaseNote : null,
-  ].filter((note): note is string => note !== null);
+    tier.advantages.includes('lounge')
+      ? { key: 'lounge', text: comparison.loungeNote }
+      : null,
+    tier.advantages.includes('limitIncrease')
+      ? { key: 'limitIncrease', text: comparison.limitIncreaseNote }
+      : null,
+  ].filter((note): note is { key: string; text: string } => note !== null);
+
+const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
 ---
 
 <section class="tiers section" id="tiers" aria-labelledby="tiers-heading">
@@ -102,10 +119,16 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
             <dl class="specs">
               {rowsFor(tier).map((row) => {
                 const isAdvantage = tier.advantages.includes(row.key);
+                const marker = notesFor(tier).some((note) => note.key === row.key)
+                  ? NOTE_MARKERS[row.key]
+                  : null;
                 return (
                   <div class="spec-row">
                     <dt>{row.label}</dt>
-                    <dd data-advantage={isAdvantage ? '' : undefined}>
+                    <dd
+                      data-advantage={isAdvantage ? '' : undefined}
+                      aria-describedby={marker ? noteId(tier.id, row.key) : undefined}
+                    >
                       {isAdvantage && (
                         <svg class="check" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true">
                           <path
@@ -118,7 +141,17 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
                           />
                         </svg>
                       )}
-                      <Copy text={row.value} />
+                      {/* Value and marker share one flex item so the footnote
+                          sign sits against the value rather than being spaced
+                          off it by the row's gap. */}
+                      <span class="spec-value">
+                        <Copy text={row.value} />
+                        {marker && (
+                          <sup class="note-marker" aria-hidden="true">
+                            {marker}
+                          </sup>
+                        )}
+                      </span>
                     </dd>
                   </div>
                 );
@@ -131,7 +164,12 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
                 subgrid row structure; it simply has no children on Gold. */}
             <p class="panel-notes">
               {notesFor(tier).map((note) => (
-                <span>{note}</span>
+                <span id={noteId(tier.id, note.key)}>
+                  <span class="note-marker" aria-hidden="true">
+                    {NOTE_MARKERS[note.key]}
+                  </span>
+                  {note.text}
+                </span>
               ))}
             </p>
 
@@ -379,6 +417,25 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
     font-size: var(--text-caption);
     line-height: 1.4;
     color: var(--color-ash);
+  }
+
+  /* Brand red, so the marker on the row and the marker on the note read as one
+     pair against grey fine print. 11.58:1 on white — it carries text safely. */
+  .note-marker {
+    color: var(--color-action);
+    font-weight: 600;
+  }
+
+  .panel-notes .note-marker {
+    margin-right: 3px;
+  }
+
+  /* On the row the marker rides the value rather than the baseline, which is
+     what makes it read as a footnote reference and not as part of the value. */
+  .spec-value .note-marker {
+    font-size: 0.75em;
+    line-height: 1;
+    margin-left: 1px;
   }
 
   .tier-panel > .pill-filled,

@@ -159,7 +159,7 @@ export const en: Translations = {
           'Four separate accounts: dollars, euros, dirhams and rubles.',
           'Ruble transfers — both sending and receiving.',
           'Paying for Russian services from abroad.',
-          'One card that works on both sides.',
+          'One bank for both sides: a ruble account for Russia, a card for payments abroad.',
         ],
       },
     ],
@@ -184,7 +184,7 @@ export const en: Translations = {
       },
       {
         title: 'We handle it — the card already works online',
-        body: `Issue takes ${timeline.toIssueEn}. After that you pay online and through Apple Pay or Google Pay without waiting for the plastic.`,
+        body: `Issue takes ${timeline.toIssueEn} on average. After that you pay online and through Apple Pay or Google Pay without waiting for the plastic.`,
       },
       {
         title: 'You get the plastic',
@@ -260,7 +260,7 @@ export const en: Translations = {
     legalLines: [
       `${legal.entityName} · INN ${legal.inn} · OGRNIP ${legal.ogrnip}`,
       `Account № ${legal.account} at ${legal.bankName} · BIC ${legal.bik} · Corr. account ${legal.corrAccount}`,
-      `Card issue time: ${timeline.toIssueEn}.`,
+      `Average card issue time: ${timeline.toIssueEn}. The bank sets the actual timing.`,
       'Available to Russian citizens. Every stage happens online.',
     ],
     copyright: '© 2026 getcard · getcard.kg',
