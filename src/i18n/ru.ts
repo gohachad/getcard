@@ -69,10 +69,7 @@ export const ru = {
     ],
     ctaPrimary: 'Выбрать тариф',
     ctaSecondary: 'Как это работает',
-    tierSelectorLabel: 'Выберите тариф',
     cardAlt: 'Изображение карты VISA',
-    comparisonLabel: 'Условия по тарифу',
-    advantageLabel: 'Преимущество тарифа',
   },
 
   // Shared by the hero comparison and the plans section, so a tier's terms are
@@ -106,7 +103,6 @@ export const ru = {
     serviceFeeBy: pricing.serviceFeeByTier.gold.label,
     serviceFeeAmountBy: pricing.serviceFeeByTier.gold.amount,
     currencyLabel: 'Валюта оплаты',
-    currencyToggleLabel: 'Сменить валюту',
     currencies: [
       { id: 'rub', label: '₽' },
       { id: 'usd', label: '$' },
@@ -199,7 +195,13 @@ export const ru = {
   tiers: {
     heading: 'Тарифы',
     intro:
-      'Три варианта карты от ведущего киргизского банка, работающего с 1998 года. Все — многовалютные и работают в Apple Pay и Google Pay. Gold закрывает большинство задач; выше — больше лимиты.',
+      'Отличий — семь строк, и они ниже. Всё остальное на всех трёх тарифах одинаково.',
+    // Heads the strip under the panels, where everything the three plans
+    // share is stated once for the whole page.
+    sameHeading: 'Одинаково во всех тарифах',
+    // Read out in place of the green check, which is the only thing marking a
+    // plan's own advantages for a sighted reader.
+    advantageLabel: 'Преимущество тарифа',
     serviceFeeLabel: 'Стоимость нашей услуги',
     annualFeeNote: 'Годовая плата банку',
     cta: 'Оформить',

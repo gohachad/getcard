@@ -1,7 +1,14 @@
 ---
+/**
+ * The first screen: the promise, and the card.
+ *
+ * It used to carry a plan switcher and the full eleven-row comparison as
+ * well, which stated the plans a second time — the <Tiers> section states
+ * them once now, and states them better. What is left is the argument the
+ * page is actually making, the four claims behind it, and one card face.
+ */
 import { t, type Locale } from '../i18n';
 import CardRender from './CardRender.astro';
-import Copy from './Copy.astro';
 
 interface Props {
   locale: Locale;
@@ -9,39 +16,7 @@ interface Props {
 
 const { locale } = Astro.props;
 const copy = t(locale);
-const { comparison } = copy;
 
-// Gold is the baseline and the card most people take, so it is what the page
-// opens on. Every other tier is presented as a change from it.
-const tiers = comparison.tiers;
-const baseline = tiers[0];
-
-// Rows that can differ between tiers, followed by rows that never do. Keeping
-// the varying ones first means the upgrade highlights land in one place
-// instead of being scattered down the list.
-// Our own fee leads: it is the number the visitor is actually deciding about,
-// and burying it under the bank's terms made them hunt for it.
-//
-// Rows every plan has come first, then the ones only the higher plans carry.
-// A plan that lacks a benefit does not show the row at all, so keeping the
-// variable rows last means the list grows downward as you move up the tiers
-// rather than reshuffling.
-const perTierRows = [
-  'annualFee',
-  'dailyLimit',
-  'expressIssue',
-  'minBalance',
-  'lounge',
-  'personalManager',
-  'limitIncrease',
-] as const;
-
-/** Which tiers actually offer this row — the rest never render it. */
-const tiersWith = (row: (typeof perTierRows)[number]) =>
-  tiers
-    .filter((tier) => tier[row] !== '')
-    .map((tier) => tier.id)
-    .join(' ');
 /**
  * Guilloche — the engine-turned rosette engraved on banknotes, share
  * certificates and the security print of payment cards, including the one
@@ -56,16 +31,9 @@ const GUILLOCHE = Array.from({ length: 40 }, (_, i) => {
   const a = (i / 40) * Math.PI * 2;
   return { cx: +(200 + Math.cos(a) * 62).toFixed(1), cy: +(200 + Math.sin(a) * 62).toFixed(1) };
 });
-
-const sharedRows = [
-  'dailyTransactions',
-  'atmFee',
-  'currencies',
-  'wallets',
-] as const;
 ---
 
-<section class="hero section" aria-labelledby="hero-heading" data-tier={baseline.id}>
+<section class="hero section" aria-labelledby="hero-heading">
   {/* Decorative only. Sits behind everything and is never announced. */}
   <svg class="guilloche" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
     <g fill="none" stroke="currentColor" stroke-width="0.4">
@@ -129,239 +97,15 @@ const sharedRows = [
     </div>
   </div>
 
+  {/* One face. The plans section shows all three, each on its own panel, so
+      the hero no longer has to hold a switcher to show them. */}
   <div class="card-stage">
     <div class="card-tilt">
-      {
-        tiers.map((tier) => (
-          <div class="card-slot" data-slot={tier.id}>
-            <CardRender
-              tier={tier.id as 'gold' | 'platinum' | 'infinite'}
-              label={`${copy.hero.cardAlt} — ${tier.name}`}
-              active={tier.id === baseline.id}
-            />
-          </div>
-        ))
-      }
+      <CardRender tier="gold" label={copy.hero.cardAlt} active={true} />
     </div>
   </div>
 
-  <div class="measure">
-    <div
-      class="tier-selector"
-      role="radiogroup"
-      aria-label={copy.hero.tierSelectorLabel}
-      data-tier-selector
-    >
-      {
-        tiers.map((tier) => (
-          <button
-            type="button"
-            role="radio"
-            class="tier-option"
-            data-tier-option={tier.id}
-            aria-checked={tier.id === baseline.id ? 'true' : 'false'}
-            tabindex={tier.id === baseline.id ? 0 : -1}
-          >
-            {tier.name}
-          </button>
-        ))
-      }
-    </div>
-
-    {/* The currency control sits above the table rather than inside the fee
-        cell. As the bare sign next to the number it read as the number's unit
-        and nobody could tell it was pressable; in the cell with a label it
-        overlapped the row's own heading. Here it is unmistakably a control and
-        it crowds nothing. It only sets data-currency on <html>, so the plan
-        panels further down follow the same choice. */}
-    <button
-      type="button"
-      class="currency-toggle"
-      title={comparison.currencyToggleLabel}
-      data-currency-toggle
-    >
-      <span class="currency-signs">
-        {
-          comparison.currencies.map((currency) => (
-            <span class="currency-sign" data-currency={currency.id}>
-              {currency.label}
-            </span>
-          ))
-        }
-      </span>
-      <svg class="swap-icon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 8h13l-3-3M20 16H7l3 3" />
-      </svg>
-      <span class="currency-toggle-label">{comparison.currencyToggleLabel}</span>
-    </button>
-
-    {/* Every tier's terms are in the DOM at build time, so without JS the
-        baseline plan still renders completely and the section still reads. */}
-    <dl class="comparison" aria-label={copy.hero.comparisonLabel}>
-      {/* Our fee first — it is the number the visitor is deciding about. All
-          three currencies are in the DOM; the switcher only changes which is
-          shown, so there is no conversion happening at runtime. */}
-      <div class="row row-fee">
-        <dt>{comparison.labels.serviceFee}</dt>
-        <dd class="fee-cell">
-          {/* Our fee is no longer one number: Infinite costs more than Gold.
-              So this cell carries a value per plan AND per currency — twelve
-              spans, of which exactly one is ever visible. Rendering them all
-              at build time keeps the row's height fixed and means the page
-              still shows a correct price with JavaScript disabled. */}
-          <span class="fee-amounts">
-            {
-              tiers.map((tier) =>
-                comparison.currencies.map((currency) => (
-                  <span
-                    class="value value-fee"
-                    data-value={tier.id}
-                    data-currency={currency.id}
-                  >
-                    <Copy text={tier.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur' | 'aed']} />
-                  </span>
-                ))
-              )
-            }
-          </span>
-        </dd>
-      </div>
-
-      {
-        perTierRows.map((row) => (
-          <div class="row" data-tiers={tiersWith(row)}>
-            <dt>{comparison.labels[row]}</dt>
-            <dd>
-              {tiers.map((tier) => tier[row] !== '' && (
-                <span
-                  class="value"
-                  data-value={tier.id}
-                  data-advantage={tier.advantages.includes(row) ? '' : undefined}
-                >
-                  <Copy text={tier[row]} />
-                  {tier.advantages.includes(row) && (
-                    <span class="advantage-mark" aria-hidden="true">
-                      <svg viewBox="0 0 16 16" width="14" height="14">
-                        <path
-                          d="M3.5 8.5l3 3 6-7"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                      <span class="sr-only">{copy.hero.advantageLabel}</span>
-                    </span>
-                  )}
-                </span>
-              ))}
-            </dd>
-          </div>
-        ))
-      }
-
-      {
-        sharedRows.map((row) => (
-          <div class="row">
-            <dt>{comparison.labels[row]}</dt>
-            <dd>
-              <span class="value value-static">
-                <Copy text={comparison.shared[row]} />
-              </span>
-            </dd>
-          </div>
-        ))
-      }
-    </dl>
-  </div>
 </section>
-
-<script>
-  // The one animated moment on the page. Selecting a tier flips a single data
-  // attribute; the swap is CSS from there. The only thing JS adds beyond that
-  // is retriggering the upgrade animation, which CSS cannot do on its own
-  // because the animated elements are already in their final state.
-  const hero = document.querySelector<HTMLElement>('.hero');
-  const group = document.querySelector<HTMLElement>('[data-tier-selector]');
-
-  if (hero && group) {
-    const options = Array.from(group.querySelectorAll<HTMLButtonElement>('[data-tier-option]'));
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    const select = (index: number, moveFocus = false) => {
-      const chosen = options[index];
-      if (!chosen) return;
-
-      const tier = chosen.dataset.tierOption ?? '';
-      const changed = hero.dataset.tier !== tier;
-      hero.dataset.tier = tier;
-
-      options.forEach((option, i) => {
-        const isChosen = i === index;
-        option.setAttribute('aria-checked', String(isChosen));
-        option.tabIndex = isChosen ? 0 : -1;
-      });
-
-      // Only the visible card should be reachable by assistive tech.
-      hero.querySelectorAll<HTMLElement>('.card-slot').forEach((slot) => {
-        const svg = slot.querySelector('svg');
-        if (!svg) return;
-        if (slot.dataset.slot === tier) svg.removeAttribute('aria-hidden');
-        else svg.setAttribute('aria-hidden', 'true');
-      });
-
-      // Replay the pop on this plan's advantages.
-      if (changed && !reduceMotion.matches) {
-        hero
-          .querySelectorAll<HTMLElement>(`.value[data-value="${tier}"][data-advantage]`)
-          .forEach((el) => {
-            el.classList.remove('is-upgrading');
-            // Reading offsetWidth forces a reflow, which is what lets the same
-            // animation run again rather than being treated as unchanged.
-            void el.offsetWidth;
-            el.classList.add('is-upgrading');
-          });
-      }
-
-      if (moveFocus) chosen.focus();
-    };
-
-    options.forEach((option, index) => {
-      option.addEventListener('click', () => select(index));
-    });
-
-    // The currency sign next to our fee cycles to the next currency. It only
-    // sets the attribute on <html>; the switch above the plans listens for the
-    // event and re-syncs its own checked state, so the two controls can never
-    // disagree about which currency is showing.
-    const ORDER = ['rub', 'usd', 'eur', 'aed'];
-    const toggle = document.querySelector<HTMLButtonElement>('[data-currency-toggle]');
-
-    toggle?.addEventListener('click', () => {
-      const current = document.documentElement.dataset.currency ?? ORDER[0];
-      const next = ORDER[(ORDER.indexOf(current) + 1) % ORDER.length];
-      document.documentElement.dataset.currency = next;
-      document.dispatchEvent(new CustomEvent('currencychange', { detail: next }));
-    });
-
-    group.addEventListener('keydown', (event) => {
-      const current = options.findIndex((option) => option.tabIndex === 0);
-      if (current < 0) return;
-
-      const step =
-        event.key === 'ArrowRight' || event.key === 'ArrowDown'
-          ? 1
-          : event.key === 'ArrowLeft' || event.key === 'ArrowUp'
-            ? -1
-            : 0;
-
-      if (step === 0) return;
-      event.preventDefault();
-      select((current + step + options.length) % options.length, true);
-    });
-  }
-</script>
 
 <style>
   /* A warm-to-cool wash rather than the flat canvas, with a soft light behind
@@ -637,8 +381,10 @@ const sharedRows = [
   .card-stage {
     /* The selling points pushed the card off the first screen entirely, which
        cost the page its one real image. Pulled back up so an edge of it shows
-       and the visitor knows to keep going. */
-    margin-top: 28px;
+       and the visitor knows to keep going. The comparison table used to
+       follow it and the stage was spaced for that; the card is the last thing
+       in the band now, so it sits closer and the band ends sooner. */
+    margin-top: 10px;
     padding-inline: 24px;
     display: flex;
     justify-content: center;
@@ -651,7 +397,7 @@ const sharedRows = [
     rotate: -15deg;
     /* Rotation is not layout, so the corners overhang the element's own box by
        (w·sinθ + h·cosθ − h) / 2 — about 97px at full width. */
-    margin-block: clamp(32px, 11vw, 100px);
+    margin-block: clamp(24px, 8vw, 68px);
   }
 
   /* Desktop only.
@@ -673,321 +419,4 @@ const sharedRows = [
     }
   }
 
-  .card-slot {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 300ms ease-out;
-    pointer-events: none;
-  }
-
-  .hero[data-tier='gold'] .card-slot[data-slot='gold'],
-  .hero[data-tier='platinum'] .card-slot[data-slot='platinum'],
-  .hero[data-tier='infinite'] .card-slot[data-slot='infinite'] {
-    opacity: 1;
-  }
-
-  .tier-selector {
-    display: inline-flex;
-    gap: 4px;
-    margin-top: 8px;
-    padding: 4px;
-    background-color: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(218, 165, 75, 0.18);
-    border-radius: var(--radius-full);
-  }
-
-  .tier-option {
-    border: none;
-    background: transparent;
-    border-radius: var(--radius-full);
-    padding: 8px 20px;
-    font-family: inherit;
-    font-size: var(--text-body-sm);
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.66);
-    cursor: pointer;
-    transition:
-      background-color 300ms ease-out,
-      color 300ms ease-out;
-  }
-
-  /* Gold rather than the brand red: red on dark maroon is barely a change of
-     state, and the selected plan has to be unmistakable. Dark text on gold
-     measures 9.4:1. */
-  .tier-option[aria-checked='true'] {
-    background: linear-gradient(150deg, #f0c987 0%, var(--color-brand-gold) 60%, #c08f3c 100%);
-    color: #17090a;
-  }
-
-  /* The comparison itself */
-  .comparison {
-    margin: 40px auto 0;
-    max-width: var(--container-form);
-    text-align: left;
-    display: grid;
-    gap: 0;
-  }
-
-  /* A grid rather than a flex row: Russian labels are long enough that a
-     wrapping flex row detaches the value onto its own line and strands it.
-     Here the label keeps the left track and wraps within it, and the value
-     stays on the right whatever happens. */
-  .row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
-    align-items: baseline;
-    gap: 4px 16px;
-    padding-block: 14px;
-    border-top: 1px solid rgba(255, 255, 255, 0.10);
-  }
-
-  .row:last-child {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
-  }
-
-  /* A plan that does not carry a benefit does not list it. Showing a blank or
-     a dash turns the cheapest plan into a column of absences, which argues
-     against the card we most want people to take. */
-  .hero[data-tier='gold'] .row[data-tiers]:not([data-tiers~='gold']),
-  .hero[data-tier='platinum'] .row[data-tiers]:not([data-tiers~='platinum']),
-  .hero[data-tier='infinite'] .row[data-tiers]:not([data-tiers~='infinite']) {
-    display: none;
-  }
-
-  dt {
-    font-size: var(--text-body-sm);
-    color: rgba(255, 255, 255, 0.62);
-  }
-
-  dd {
-    margin: 0;
-    /* Every tier's value for this row is stacked in the same cell, so the row
-       height never jumps as the selection changes. */
-    display: grid;
-    justify-items: end;
-    text-align: right;
-  }
-
-  .value {
-    grid-area: 1 / 1;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: var(--text-body);
-    font-weight: 600;
-    color: var(--color-white);
-    opacity: 0;
-    transition: opacity 300ms ease-out;
-  }
-
-  .value-static {
-    opacity: 1;
-    font-weight: 400;
-  }
-
-  /* Every other row varies on one axis — the plan — so matching the plan is
-     enough to show a value. The fee row is the exception: it varies on plan
-     AND currency, and it is excluded here so this rule cannot reveal all four
-     of a plan's currencies at once. Its own rule further down requires both. */
-  .hero[data-tier='gold'] .value[data-value='gold']:not(.value-fee),
-  .hero[data-tier='platinum'] .value[data-value='platinum']:not(.value-fee),
-  .hero[data-tier='infinite'] .value[data-value='infinite']:not(.value-fee) {
-    opacity: 1;
-  }
-
-  /* An advantage of the selected plan reads green, with a check — the same
-     green as the benefit checks further down the page. Every tier has some,
-     including Gold: it is the cheapest to keep and locks up no balance. */
-  /* --color-success is tuned for white paper and turns muddy on this
-     ground, so the advantage green is lifted for dark. 7.9:1. */
-  .value[data-advantage] {
-    color: #6fcf87;
-  }
-
-  .advantage-mark {
-    display: inline-flex;
-    color: #6fcf87;
-  }
-
-  /* Our own fee is the decision, so it is set larger than the bank's terms. */
-  .fee-cell {
-    display: flex;
-    align-items: baseline;
-    justify-content: flex-end;
-    gap: 6px;
-  }
-
-  .fee-amounts {
-    display: grid;
-    justify-items: end;
-  }
-
-  .row-fee .value {
-    font-size: var(--text-heading-sm);
-    line-height: var(--text-heading-sm--line-height);
-    letter-spacing: var(--text-heading-sm--letter-spacing);
-  }
-
-  .value-fee {
-    grid-area: 1 / 1;
-    opacity: 0;
-  }
-
-  /* Our fee varies on two axes now — which plan, and which currency — so the
-     cell holds twelve values and exactly one may show.
-
-     Written as twelve explicit combinations, each requiring BOTH attributes,
-     because only one rule in this file ever sets a fee span to opacity 1. The
-     first attempt split it into a "show if the currency matches" rule and a
-     "hide if either axis does not" rule, which is shorter and reads better —
-     and worked locally. The minifier then reordered them so the show rule came
-     last, and every Gold price rendered on top of every other plan's. Nothing
-     here depends on source order any more. */
-  :global([data-currency='rub']) .hero[data-tier='gold'] .value-fee[data-currency='rub'][data-value='gold'],
-  :global([data-currency='usd']) .hero[data-tier='gold'] .value-fee[data-currency='usd'][data-value='gold'],
-  :global([data-currency='eur']) .hero[data-tier='gold'] .value-fee[data-currency='eur'][data-value='gold'],
-  :global([data-currency='aed']) .hero[data-tier='gold'] .value-fee[data-currency='aed'][data-value='gold'],
-  :global([data-currency='rub']) .hero[data-tier='platinum'] .value-fee[data-currency='rub'][data-value='platinum'],
-  :global([data-currency='usd']) .hero[data-tier='platinum'] .value-fee[data-currency='usd'][data-value='platinum'],
-  :global([data-currency='eur']) .hero[data-tier='platinum'] .value-fee[data-currency='eur'][data-value='platinum'],
-  :global([data-currency='aed']) .hero[data-tier='platinum'] .value-fee[data-currency='aed'][data-value='platinum'],
-  :global([data-currency='rub']) .hero[data-tier='infinite'] .value-fee[data-currency='rub'][data-value='infinite'],
-  :global([data-currency='usd']) .hero[data-tier='infinite'] .value-fee[data-currency='usd'][data-value='infinite'],
-  :global([data-currency='eur']) .hero[data-tier='infinite'] .value-fee[data-currency='eur'][data-value='infinite'],
-  :global([data-currency='aed']) .hero[data-tier='infinite'] .value-fee[data-currency='aed'][data-value='infinite'] {
-    opacity: 1;
-  }
-
-  /* Reads as a control, because it is one.
-
-     It used to be the bare currency sign with an aria-label — visually just
-     the number's unit, so there was nothing to suggest it could be pressed.
-     It now carries the sign, a swap glyph and its own words. */
-  .currency-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    min-height: 44px;
-    padding: 0 14px;
-    border: 1px solid rgba(218, 165, 75, 0.55);
-    border-radius: var(--radius-full);
-    background: rgba(218, 165, 75, 0.10);
-    font-family: inherit;
-    font-size: var(--text-body-sm);
-    font-weight: 600;
-    line-height: 1;
-    color: var(--color-brand-gold);
-    white-space: nowrap;
-    cursor: pointer;
-    transition:
-      background-color 150ms ease-out,
-      color 150ms ease-out,
-      border-color 150ms ease-out;
-  }
-
-  /* All four signs stack in one cell so the button's width never jumps as the
-     currency changes — "AED" is three characters where the others are one. */
-  .currency-signs {
-    display: grid;
-    place-items: center;
-    min-width: 3.4ch;
-    font-size: var(--text-body);
-  }
-
-  .swap-icon {
-    opacity: 0.75;
-  }
-
-  @media (max-width: 560px) {
-    /* The words come off the narrow layout, but they are clipped rather than
-       display:none — the label is the button's accessible name, and hiding it
-       outright left screen readers announcing a lone currency sign. */
-    .currency-toggle-label {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
-      border: 0;
-    }
-  }
-
-  .currency-toggle:hover {
-    background-color: var(--color-brand-gold);
-    border-color: var(--color-brand-gold);
-    color: #17090a;
-  }
-
-  .currency-sign {
-    grid-area: 1 / 1;
-    display: none;
-  }
-
-  .currency-toggle {
-    margin: 14px auto 0;
-  }
-
-  :global([data-currency='rub']) .currency-sign[data-currency='rub'],
-  :global([data-currency='usd']) .currency-sign[data-currency='usd'],
-  :global([data-currency='eur']) .currency-sign[data-currency='eur'],
-  :global([data-currency='aed']) .currency-sign[data-currency='aed'] {
-    display: block;
-  }
-
-  .value.is-upgrading {
-    animation: upgrade-pop 420ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  @keyframes upgrade-pop {
-    0% {
-      transform: translateY(6px) scale(0.94);
-    }
-    60% {
-      transform: translateY(0) scale(1.06);
-    }
-    100% {
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  @media (min-width: 768px) {
-    .comparison {
-      grid-template-columns: 1fr 1fr;
-      column-gap: 48px;
-    }
-
-    /* Both columns start their own rule, so the two halves read as one table
-       rather than one list wrapped in half. */
-    .row:nth-child(2) {
-      border-top: 1px solid rgba(255, 255, 255, 0.10);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .card-slot,
-    .value,
-    .tier-option {
-      transition: none;
-    }
-
-    .value.is-upgrading {
-      animation: none;
-    }
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
-  }
 </style>

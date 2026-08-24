@@ -1,22 +1,30 @@
 ---
 /**
- * The three plans, side by side.
+ * The plans — the only place on the page that states them.
  *
- * Gold is the baseline and carries the one filled button, because it is the
- * card most people take. No plan is badged "recommended" — that decision is
- * not made yet, and a badge would make it for us.
+ * The page used to state them twice: the hero switched between plans one at a
+ * time with all eleven rows, and this section repeated all three as panels.
+ * Four of those rows are identical on every plan, so the page printed them
+ * four times before the visitor reached the process.
  *
- * Each plan lists only what it actually offers. A benefit a plan does not
- * carry is omitted rather than shown as a blank or a dash — a column of
- * absences reads as an argument against the cheapest plan, which is the one
- * most people should take.
+ * One surface now, split by what is actually true of the content:
  *
- * A plan's own advantages read in --color-success with a check, the same
- * treatment the hero comparison uses, so a gain looks identical wherever it
- * appears. Gold's are its annual fee and having no minimum balance.
+ *   — what differs between plans lives in the three panels
+ *   — what is the same on all three is stated once, under them
+ *
+ * The hero gave up its comparison table and went back to being the promise.
+ * The card faces come with the plans instead, because the face is the one
+ * thing that genuinely differs and cannot be written as a row. The section
+ * takes the hero's dark ground: the page has exactly two weighted moments —
+ * the promise and the choice — with the argument in the light between them.
+ *
+ * The whole choice fits in a 1280x800 window under the sticky nav, which is
+ * what the density is for: label and value share a line, the face and the
+ * price share a band, and the heading shares one with the currency control.
  */
-import { t, type Locale } from '../i18n';
+import CardRender from './CardRender.astro';
 import Copy from './Copy.astro';
+import { t, type Locale } from '../i18n';
 
 interface Props {
   locale: Locale;
@@ -27,32 +35,26 @@ const copy = t(locale);
 const { comparison } = copy;
 const { labels, shared } = comparison;
 
-// A row whose value is empty means the plan does not carry that benefit, and
-// it is dropped rather than shown as a blank or a dash — a plan should list
-// what it gives you, not what it withholds.
-const rowsFor = (tier: (typeof comparison.tiers)[number]) =>
-  [
-    { key: 'annualFee', label: labels.annualFee, value: tier.annualFee },
-    { key: 'dailyLimit', label: labels.dailyLimit, value: tier.dailyLimit },
-    { key: 'expressIssue', label: labels.expressIssue, value: tier.expressIssue },
-    { key: 'minBalance', label: labels.minBalance, value: tier.minBalance },
-    { key: 'lounge', label: labels.lounge, value: tier.lounge },
-    { key: 'personalManager', label: labels.personalManager, value: tier.personalManager },
-    { key: 'limitIncrease', label: labels.limitIncrease, value: tier.limitIncrease },
-    { key: 'dailyTransactions', label: labels.dailyTransactions, value: shared.dailyTransactions },
-    { key: 'atmFee', label: labels.atmFee, value: shared.atmFee },
-    { key: 'currencies', label: labels.currencies, value: shared.currencies },
-    { key: 'wallets', label: labels.wallets, value: shared.wallets },
-  ].filter((row) => row.value !== '');
+// The rows that change from plan to plan. Everything absent from this list is
+// identical on all three and is stated once, in the strip under the panels.
+const DIFFERING = [
+  'annualFee',
+  'dailyLimit',
+  'expressIssue',
+  'minBalance',
+  'lounge',
+  'personalManager',
+  'limitIncrease',
+] as const;
 
-// Qualifiers that belong to a specific benefit, shown only on the panel that
-// actually carries it.
-//
-// Each note carries the key of the row it qualifies. Without that link the
-// notes read as fine print about the whole plan — "включая питание" says
-// nothing on its own about which line it is qualifying — so the row gets a
-// marker in the brand red and the note repeats it. The marker is decorative
-// for screen readers, which follow the aria-describedby on the row instead.
+// An empty value still means the plan does not carry the benefit and the row
+// is dropped — a column of dashes reads as an argument against Gold, which is
+// the plan most people should take.
+const rowsFor = (tier: (typeof comparison.tiers)[number]) =>
+  DIFFERING.map((key) => ({ key, label: labels[key], value: tier[key] })).filter(
+    (row) => row.value !== ''
+  );
+
 const NOTE_MARKERS: Record<string, string> = {
   lounge: '*',
   limitIncrease: '**',
@@ -60,25 +62,33 @@ const NOTE_MARKERS: Record<string, string> = {
 
 const notesFor = (tier: (typeof comparison.tiers)[number]) =>
   [
-    tier.advantages.includes('lounge')
-      ? { key: 'lounge', text: comparison.loungeNote }
-      : null,
+    tier.advantages.includes('lounge') ? { key: 'lounge', text: comparison.loungeNote } : null,
     tier.advantages.includes('limitIncrease')
       ? { key: 'limitIncrease', text: comparison.limitIncreaseNote }
       : null,
   ].filter((note): note is { key: string; text: string } => note !== null);
 
-const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
+const noteId = (tierId: string, key: string) => `draft-note-${tierId}-${key}`;
+
+const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as const).map((key) => ({
+  key,
+  label: labels[key],
+  value: shared[key],
+}));
 ---
 
-<section class="tiers section" id="tiers" aria-labelledby="tiers-heading">
-  <div class="measure">
-    <h2 id="tiers-heading">{copy.tiers.heading}</h2>
-    <p class="intro">{copy.tiers.intro}</p>
+<section class="plans section" id="tiers" aria-labelledby="plans-heading">
+  <div class="plans-measure">
+    {/* Heading on the left, the one currency control on the page on the
+        right. Centred and stacked they cost 40px the section cannot spare if
+        the whole choice is to sit on one screen. */}
+    <div class="plans-head">
+      <div>
+        <h2 id="plans-heading">{copy.tiers.heading}</h2>
+        <p class="intro">{copy.tiers.intro}</p>
+      </div>
 
-    {/* Three prices, not a converter. Setting the attribute on <html> lets the
-        hero comparison follow the same choice from one control. */}
-    <div class="currency-switch" role="radiogroup" aria-label={comparison.currencyLabel}>
+      <div class="currency-switch" role="radiogroup" aria-label={comparison.currencyLabel}>
       {
         comparison.currencies.map((currency, index) => (
           <button
@@ -91,30 +101,42 @@ const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
           >
             {currency.label}
           </button>
-        ))
-      }
+          ))
+        }
+      </div>
     </div>
 
-    <ul class="tiers-grid">
+    <ul class="plan-grid">
       {
         comparison.tiers.map((tier, index) => (
-          <li class="panel tier-panel">
-            <h3>
-              {tier.name}
-              {index === 0 && <span class="badge">{copy.tiers.baselineLabel}</span>}
-            </h3>
+          <li class="plan" data-tier={tier.id}>
+            {/* Face, name and price share one band. Stacked, those three
+                lines cost the panel about 120px of height and say no more. */}
+            <div class="plan-head">
+              <div class="face">
+                <CardRender
+                  tier={tier.id as 'gold' | 'platinum' | 'infinite'}
+                  label={`${copy.hero.cardAlt} — ${tier.name}`}
+                  active={true}
+                />
+              </div>
 
-            {/* Our fee is the headline number, not the bank's annual fee: it is
-                what the visitor is actually deciding to pay. All three
-                currencies render; the switcher picks one. */}
-            <p class="fee">
-              {comparison.currencies.map((currency) => (
-                <span class="fee-value" data-currency={currency.id}>
-                  <Copy text={tier.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur' | 'aed']} />
-                </span>
-              ))}
-              <span class="fee-unit">{copy.tiers.serviceFeeLabel}</span>
-            </p>
+              <div class="plan-id">
+                <h3>
+                  {tier.name}
+                  {index === 0 && <span class="badge">{copy.tiers.baselineLabel}</span>}
+                </h3>
+
+                <p class="fee">
+                  {comparison.currencies.map((currency) => (
+                    <span class="fee-value" data-currency={currency.id}>
+                      <Copy text={tier.serviceFeeBy[currency.id as 'rub' | 'usd' | 'eur' | 'aed']} />
+                    </span>
+                  ))}
+                </p>
+                <p class="fee-unit">{copy.tiers.serviceFeeLabel}</p>
+              </div>
+            </div>
 
             <dl class="specs">
               {rowsFor(tier).map((row) => {
@@ -141,9 +163,7 @@ const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
                           />
                         </svg>
                       )}
-                      {/* Value and marker share one flex item so the footnote
-                          sign sits against the value rather than being spaced
-                          off it by the row's gap. */}
+                      {isAdvantage && <span class="sr-only">{copy.tiers.advantageLabel}</span>}
                       <span class="spec-value">
                         <Copy text={row.value} />
                         {marker && (
@@ -158,25 +178,19 @@ const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
               })}
             </dl>
 
-            {/* Qualifiers sit with the panel that actually carries the
-                benefit, not as fine print at the bottom of the section. The
-                element is always present so all three panels keep the same
-                subgrid row structure; it simply has no children on Gold. */}
-            <p class="panel-notes">
-              {notesFor(tier).map((note) => (
-                <span id={noteId(tier.id, note.key)}>
-                  <span class="note-marker" aria-hidden="true">
-                    {NOTE_MARKERS[note.key]}
+            {notesFor(tier).length > 0 && (
+              <p class="plan-notes">
+                {notesFor(tier).map((note) => (
+                  <span id={noteId(tier.id, note.key)}>
+                    <span class="note-marker" aria-hidden="true">
+                      {NOTE_MARKERS[note.key]}
+                    </span>
+                    {note.text}
                   </span>
-                  {note.text}
-                </span>
-              ))}
-            </p>
+                ))}
+              </p>
+            )}
 
-            {/* Carries the chosen plan into the order so the first screen does
-                not ask again for a decision already made. Ordering lives on the
-                app subdomain because it needs a server; the marketing site
-                stays static. */}
             <a
               class={index === 0 ? 'pill-filled' : 'pill-outlined'}
               href={`https://app.getcard.kg/order?tier=${tier.id}&lang=${locale}`}
@@ -187,15 +201,32 @@ const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
         ))
       }
     </ul>
+
+    {/* Everything the three plans share, printed once for the whole page
+        rather than three times inside the panels and a fourth time in the
+        hero. */}
+    <div class="same">
+      <p class="same-heading">{copy.tiers.sameHeading}</p>
+      <dl class="same-list">
+        {
+          sameRows.map((row) => (
+            <div>
+              <dt>{row.label}</dt>
+              <dd>
+                <Copy text={row.value} />
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
   </div>
 </section>
 
 <script>
-  // Sets the currency on <html> so the hero comparison and the plan panels
-  // both follow one control. Nothing is converted at runtime — all three
-  // prices are in the DOM and this only chooses which is visible, so the page
-  // still shows a correct price with JavaScript disabled.
-  const group = document.querySelector<HTMLElement>('.currency-switch');
+  // Same one-attribute mechanism the live site uses: nothing is converted at
+  // runtime, all four prices are in the DOM and this picks which is visible.
+  const group = document.querySelector<HTMLElement>('.plans .currency-switch');
 
   if (group) {
     const options = Array.from(group.querySelectorAll<HTMLButtonElement>('[data-currency-option]'));
@@ -203,33 +234,16 @@ const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
     const select = (index: number, moveFocus = false) => {
       const chosen = options[index];
       if (!chosen) return;
-
       document.documentElement.dataset.currency = chosen.dataset.currencyOption;
       options.forEach((option, i) => {
         option.setAttribute('aria-checked', String(i === index));
         option.tabIndex = i === index ? 0 : -1;
       });
-
       if (moveFocus) chosen.focus();
     };
 
-    // The default has to be applied on load: the markup ships with rub checked
-    // but the attribute that drives the CSS lives on <html>.
     select(0);
-
     options.forEach((option, index) => option.addEventListener('click', () => select(index)));
-
-    // The currency sign in the hero comparison changes the same attribute, so
-    // mirror its choice here rather than letting the two controls disagree
-    // about which currency is checked.
-    document.addEventListener('currencychange', (event) => {
-      const chosen = (event as CustomEvent<string>).detail;
-      options.forEach((option) => {
-        const isChosen = option.dataset.currencyOption === chosen;
-        option.setAttribute('aria-checked', String(isChosen));
-        option.tabIndex = isChosen ? 0 : -1;
-      });
-    });
 
     group.addEventListener('keydown', (event) => {
       const current = options.findIndex((o) => o.tabIndex === 0);
@@ -248,75 +262,65 @@ const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
 </script>
 
 <style>
-  h2 {
-    font-size: var(--text-heading);
-    line-height: var(--text-heading--line-height);
-    letter-spacing: var(--text-heading--letter-spacing);
-    font-weight: 600;
-    margin: 0;
-    text-align: center;
+  /* The second dark band on the page, and the last one. It is the same ground
+     as the hero so the two read as one material, but flatter and without the
+     engraving: the three card faces are the only loud objects here, and the
+     hero's texture behind them would be a second voice. */
+  .plans {
+    position: relative;
+    isolation: isolate;
+    --ground: #150a0b;
+    background:
+      radial-gradient(54rem 22rem at 50% 34%, rgba(218, 165, 75, 0.13), transparent 68%),
+      linear-gradient(to bottom, #100708 0%, var(--ground) 46%, #140a0c 100%);
+    border-block: 1px solid rgba(218, 165, 75, 0.38);
+    color: var(--color-white);
   }
 
-  .intro {
-    max-width: var(--container-form);
-    margin: 20px auto 32px;
-    color: var(--color-graphite);
-    text-align: center;
+  .plans {
+    padding-block: 24px;
   }
 
-  .notice {
-    max-width: var(--container-form);
-    margin: 0 auto 40px;
+  .plans-measure {
+    max-width: 1180px;
+    margin-inline: auto;
+    padding-inline: 24px;
   }
 
-  .tiers-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  /* Flex rather than subgrid: the panels no longer share a row structure, so
-     there is nothing to align. Each lists only what its plan actually offers,
-     and the button is pushed to the bottom so all three still line up there. */
-  .tier-panel {
+  .plans-head {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    text-align: center;
   }
 
-  h3 {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 8px;
+  h2 {
+    margin: 0;
     font-size: var(--text-heading-sm);
     line-height: var(--text-heading-sm--line-height);
     letter-spacing: var(--text-heading-sm--letter-spacing);
     font-weight: 600;
-    margin: 0;
   }
 
-  .badge {
-    font-size: var(--text-caption);
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--color-graphite);
-    border: 1px solid var(--color-signal);
-    border-radius: var(--radius-full);
-    padding: 2px 10px;
-    white-space: nowrap;
+  .intro {
+    max-width: 46ch;
+    margin: 6px 0 0;
+    font-size: var(--text-body-sm);
+    color: rgba(255, 255, 255, 0.72);
   }
 
   .currency-switch {
     display: flex;
+    flex: none;
     justify-content: center;
     gap: 4px;
     width: fit-content;
-    margin: 0 auto 32px;
-    padding: 4px;
-    background-color: var(--color-pebble);
+    margin: 0;
+    padding: 3px;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(218, 165, 75, 0.28);
     border-radius: var(--radius-full);
   }
 
@@ -324,11 +328,11 @@ const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
     border: none;
     background: transparent;
     border-radius: var(--radius-full);
-    padding: 8px 22px;
+    padding: 6px 18px;
     font-family: inherit;
-    font-size: var(--text-body);
+    font-size: var(--text-body-sm);
     font-weight: 600;
-    color: var(--color-graphite);
+    color: rgba(255, 255, 255, 0.72);
     cursor: pointer;
     transition:
       background-color 200ms ease-out,
@@ -336,12 +340,97 @@ const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
   }
 
   .currency-option[aria-checked='true'] {
-    background-color: var(--color-action);
-    color: var(--color-white);
+    background-color: var(--color-brand-gold);
+    color: #241505;
   }
 
-  /* All three prices occupy the same cell so the panel never changes height
-     when the currency changes. */
+  .plan-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Glass over the ground rather than a white card: a white panel here would
+     punch three holes in the band and undo the reason for going dark. */
+  .plan {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 18px 18px;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.075),
+      rgba(255, 255, 255, 0.035)
+    );
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+  }
+
+  /* Gold is the baseline and the plan most people should take, so it is the
+     one panel with a lit edge — the same job the filled button does. */
+  .plan[data-tier='gold'] {
+    border-color: rgba(218, 165, 75, 0.5);
+  }
+
+  /* Face, name and price on one band. The face is a plan attribute here, not
+     the hero's object: small, flat, no tilt, no shadow. */
+  .plan-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .face {
+    flex: none;
+    width: 84px;
+  }
+
+  .plan-id {
+    min-width: 0;
+  }
+
+  .face :global(.card-render) {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+  }
+
+  h3 {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    font-size: var(--text-subheading);
+    line-height: var(--text-subheading--line-height);
+    font-weight: 600;
+  }
+
+  .badge {
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-brand-gold);
+    border: 1px solid rgba(218, 165, 75, 0.5);
+    border-radius: var(--radius-full);
+    padding: 2px 10px;
+    white-space: nowrap;
+  }
+
+  .fee {
+    display: grid;
+    margin: 4px 0 0;
+    font-size: var(--text-subheading);
+    line-height: 1.1;
+    letter-spacing: var(--text-heading-sm--letter-spacing);
+    font-weight: 600;
+  }
+
+  /* All four prices occupy one cell, so switching currency never changes the
+     panel's height. */
   .fee-value {
     grid-area: 1 / 1;
     display: none;
@@ -354,111 +443,177 @@ const noteId = (tierId: string, key: string) => `note-${tierId}-${key}`;
     display: inline;
   }
 
-  .fee {
-    font-size: var(--text-heading);
-    line-height: var(--text-heading--line-height);
-    letter-spacing: var(--text-heading--letter-spacing);
-    font-weight: 600;
-    margin: 12px 0 0;
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
   .fee-unit {
-    font-size: var(--text-body-sm);
-    font-weight: 400;
-    letter-spacing: var(--text-body-sm--letter-spacing);
-    color: var(--color-ash);
+    margin: 2px 0 0;
+    font-size: var(--text-caption);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .specs {
-    margin: 20px 0 0;
+    margin: 14px 0 0;
     padding: 0;
   }
 
+  /* Label and value on one line rather than stacked. Stacked, seven rows cost
+     the panel 200px it does not have if the whole choice is to sit on one
+     screen; side by side they also read as a spec sheet, which is what they
+     are. */
   .spec-row {
-    padding-block: 12px;
-    border-top: 1px solid var(--color-hairline);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .spec-row dt {
     font-size: var(--text-body-sm);
-    line-height: var(--text-body-sm--line-height);
-    color: var(--color-ash);
+    color: rgba(255, 255, 255, 0.58);
   }
 
   .spec-row dd {
-    margin: 2px 0 0;
-    font-size: var(--text-body);
-    line-height: var(--text-body--line-height);
     display: flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 5px;
+    margin: 0;
+    text-align: right;
+    font-size: var(--text-body-sm);
+    line-height: 1.4;
+    font-weight: 500;
+    white-space: nowrap;
   }
 
-  /* Better than the baseline plan. Same green and same check as the hero
-     comparison and the benefit list. */
+  /* The dark-ground green, the same one the hero comparison uses for a plan's
+     own advantages. */
   .spec-row dd[data-advantage] {
-    color: var(--color-success);
+    color: #6fcf87;
     font-weight: 600;
+  }
+
+  /* The check is the only thing marking an advantage for a sighted reader,
+     and it is decorative to assistive tech, so the label is read instead. */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
   }
 
   .check {
-    flex: 0 0 auto;
-    align-self: center;
+    flex: none;
+    width: 13px;
+    height: 13px;
+    color: #6fcf87;
+    translate: 0 2px;
   }
 
-  .panel-notes {
-    display: grid;
-    gap: 4px;
-    margin: 12px 0 0;
-    font-size: var(--text-caption);
-    line-height: 1.4;
-    color: var(--color-ash);
-  }
-
-  /* Brand red, so the marker on the row and the marker on the note read as one
-     pair against grey fine print. 11.58:1 on white — it carries text safely. */
   .note-marker {
-    color: var(--color-action);
+    color: var(--color-brand-gold);
     font-weight: 600;
   }
 
-  .panel-notes .note-marker {
-    margin-right: 3px;
-  }
-
-  /* On the row the marker rides the value rather than the baseline, which is
-     what makes it read as a footnote reference and not as part of the value. */
   .spec-value .note-marker {
     font-size: 0.75em;
     line-height: 1;
     margin-left: 1px;
   }
 
-  .tier-panel > .pill-filled,
-  .tier-panel > .pill-outlined {
-    /* auto pushes the button to the bottom of the panel whatever the row count,
-       so the three buttons stay on one line across the row. */
+  .plan-notes {
+    display: grid;
+    gap: 3px;
+    margin: 10px 0 0;
+    font-size: var(--text-caption);
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .plan-notes .note-marker {
+    margin-right: 3px;
+  }
+
+  .plan > .pill-filled,
+  .plan > .pill-outlined {
     margin-top: auto;
-    padding-top: 11px;
+    padding-block: 9px;
+    font-size: var(--text-body-sm);
   }
 
-  .tier-panel > .panel-notes + .pill-filled,
-  .tier-panel > .panel-notes + .pill-outlined {
-    margin-top: 24px;
+  /* Deliberately no rule for a notes-then-button pair: it would beat the auto
+     margin above and drop that plan's button off the shared line. */
+  .plan-notes {
+    margin-bottom: 14px;
   }
 
-  @media (min-width: 768px) {
-    /* No subgrid any more: the plans list different numbers of rows, so there
-       is no shared structure to align to. The panels still stretch to equal
-       height as grid items, and margin-top:auto on the button keeps the three
-       calls to action on one line. */
-    .tiers-grid {
+  /* On this ground the outlined button's ink is unreadable, so the two
+     secondary plans get a gold outline instead of the site's blue one. */
+  .plan > .pill-outlined {
+    color: var(--color-brand-gold);
+    border-color: rgba(218, 165, 75, 0.55);
+  }
+
+  /* Everything the plans share, said once. It is deliberately not a panel:
+     it is the floor all three stand on, so it reads as a rule under them
+     rather than as a fourth plan. */
+  .same {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(218, 165, 75, 0.3);
+  }
+
+  .same-heading {
+    margin: 0 0 10px;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-brand-gold);
+  }
+
+  .same-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px 28px;
+    margin: 0;
+  }
+
+  .same-list dt {
+    font-size: var(--text-caption);
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .same-list dd {
+    margin: 1px 0 0;
+    font-size: var(--text-body-sm);
+    font-weight: 500;
+  }
+
+  @media (min-width: 640px) {
+    .same-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .plans-head {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+      text-align: left;
+    }
+
+    .plan-grid {
       grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+    }
+
+    .same-list {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 </style>

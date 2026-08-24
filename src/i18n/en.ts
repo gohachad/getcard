@@ -54,10 +54,7 @@ export const en: Translations = {
     ],
     ctaPrimary: 'Choose a plan',
     ctaSecondary: 'How it works',
-    tierSelectorLabel: 'Choose a plan',
     cardAlt: 'Illustration of a VISA card',
-    comparisonLabel: 'Terms on this plan',
-    advantageLabel: 'Plan advantage',
   },
 
   comparison: {
@@ -85,7 +82,6 @@ export const en: Translations = {
     serviceFeeBy: pricing.serviceFeeByTier.gold.label,
     serviceFeeAmountBy: pricing.serviceFeeByTier.gold.amount,
     currencyLabel: 'Payment currency',
-    currencyToggleLabel: 'Switch currency',
     currencies: [
       { id: 'rub', label: '₽' },
       { id: 'usd', label: '$' },
@@ -168,7 +164,9 @@ export const en: Translations = {
   tiers: {
     heading: 'Plans',
     intro:
-      'Three versions of the card from a leading Kyrgyz bank operating since 1998. All are multi-currency and all work with Apple Pay and Google Pay. Gold covers most needs; the higher plans raise the limits.',
+      'Seven rows differ, and they are below. Everything else is the same on all three.',
+    sameHeading: 'The same on every plan',
+    advantageLabel: 'Plan advantage',
     serviceFeeLabel: 'Our service fee',
     annualFeeNote: 'Annual fee to the bank',
     cta: 'Get this card',
