@@ -2,10 +2,9 @@
 /**
  * The first screen: the promise, and the card.
  *
- * It used to carry a plan switcher and the full eleven-row comparison as
- * well, which stated the plans a second time — the <Tiers> section states
- * them once now, and states them better. What is left is the argument the
- * page is actually making, the four claims behind it, and one card face.
+ * It carries the argument the page is making, the four claims behind it, and
+ * one card face. Nothing about the plans: <Tiers> states those, once, and it
+ * is the only place that does.
  */
 import { t, type Locale } from '../i18n';
 import CardRender from './CardRender.astro';
@@ -97,8 +96,8 @@ const GUILLOCHE = Array.from({ length: 40 }, (_, i) => {
     </div>
   </div>
 
-  {/* One face. The plans section shows all three, each on its own panel, so
-      the hero no longer has to hold a switcher to show them. */}
+  {/* One face — Gold, the baseline. Each plan's own face heads its panel in
+      the plans section, so there is nothing to switch between here. */}
   <div class="card-stage">
     <div class="card-tilt">
       <CardRender tier="gold" label={copy.hero.cardAlt} active={true} />
@@ -381,9 +380,8 @@ const GUILLOCHE = Array.from({ length: 40 }, (_, i) => {
   .card-stage {
     /* The selling points pushed the card off the first screen entirely, which
        cost the page its one real image. Pulled back up so an edge of it shows
-       and the visitor knows to keep going. The comparison table used to
-       follow it and the stage was spaced for that; the card is the last thing
-       in the band now, so it sits closer and the band ends sooner. */
+       and the visitor knows to keep going. The card ends the band, so it
+       sits close under the buttons rather than being spaced off them. */
     margin-top: 10px;
     padding-inline: 24px;
     display: flex;

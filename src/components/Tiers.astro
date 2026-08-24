@@ -2,25 +2,20 @@
 /**
  * The plans — the only place on the page that states them.
  *
- * The page used to state them twice: the hero switched between plans one at a
- * time with all eleven rows, and this section repeated all three as panels.
- * Four of those rows are identical on every plan, so the page printed them
- * four times before the visitor reached the process.
+ * The section is split by what is true of the content: what differs between
+ * plans is in the three panels, what is the same on all three is stated once
+ * in the strip beneath them. Four of the eleven terms are identical on every
+ * plan, and printing them three times says nothing three times.
  *
- * One surface now, split by what is actually true of the content:
+ * Each panel is headed by the face that plan actually issues — the one
+ * difference that cannot be written as a row. The section takes the hero's
+ * dark ground, so the page has two weighted moments, the promise and the
+ * choice, with the argument in the light between them.
  *
- *   — what differs between plans lives in the three panels
- *   — what is the same on all three is stated once, under them
- *
- * The hero gave up its comparison table and went back to being the promise.
- * The card faces come with the plans instead, because the face is the one
- * thing that genuinely differs and cannot be written as a row. The section
- * takes the hero's dark ground: the page has exactly two weighted moments —
- * the promise and the choice — with the argument in the light between them.
- *
- * The whole choice fits in a 1280x800 window under the sticky nav, which is
- * what the density is for: label and value share a line, the face and the
- * price share a band, and the heading shares one with the currency control.
+ * It is dense on purpose: the whole choice has to sit on one screen, or
+ * choosing means scrolling a comparison and holding it in your head. Label
+ * and value share a line, the face and the price share a band, and the
+ * heading shares one with the currency control.
  */
 import CardRender from './CardRender.astro';
 import Copy from './Copy.astro';
@@ -68,7 +63,7 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
       : null,
   ].filter((note): note is { key: string; text: string } => note !== null);
 
-const noteId = (tierId: string, key: string) => `draft-note-${tierId}-${key}`;
+const noteId = (tierId: string, key: string) => `plan-note-${tierId}-${key}`;
 
 const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as const).map((key) => ({
   key,
@@ -79,9 +74,8 @@ const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as co
 
 <section class="plans section" id="tiers" aria-labelledby="plans-heading">
   <div class="plans-measure">
-    {/* Heading on the left, the one currency control on the page on the
-        right. Centred and stacked they cost 40px the section cannot spare if
-        the whole choice is to sit on one screen. */}
+    {/* Heading on the left, the page's one currency control on the right:
+        one band rather than two stacked and centred. */}
     <div class="plans-head">
       <div>
         <h2 id="plans-heading">{copy.tiers.heading}</h2>
@@ -110,8 +104,8 @@ const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as co
       {
         comparison.tiers.map((tier, index) => (
           <li class="plan" data-tier={tier.id}>
-            {/* Face, name and price share one band. Stacked, those three
-                lines cost the panel about 120px of height and say no more. */}
+            {/* Face, name and price on one band — three lines of the same
+                thing, which is which plan this is and what it costs. */}
             <div class="plan-head">
               <div class="face">
                 <CardRender
@@ -262,10 +256,10 @@ const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as co
 </script>
 
 <style>
-  /* The second dark band on the page, and the last one. It is the same ground
-     as the hero so the two read as one material, but flatter and without the
+  /* The second dark band on the page, and the last one. The same ground as
+     the hero so the two read as one material, but flatter and without the
      engraving: the three card faces are the only loud objects here, and the
-     hero's texture behind them would be a second voice. */
+     texture behind them would be a second voice. */
   .plans {
     position: relative;
     isolation: isolate;
@@ -374,8 +368,8 @@ const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as co
     border-color: rgba(218, 165, 75, 0.5);
   }
 
-  /* Face, name and price on one band. The face is a plan attribute here, not
-     the hero's object: small, flat, no tilt, no shadow. */
+  /* The face is a plan attribute here, not the hero's object: small, flat,
+     no tilt, no shadow, sized to sit beside the name rather than above it. */
   .plan-head {
     display: flex;
     align-items: center;
@@ -454,10 +448,9 @@ const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as co
     padding: 0;
   }
 
-  /* Label and value on one line rather than stacked. Stacked, seven rows cost
-     the panel 200px it does not have if the whole choice is to sit on one
-     screen; side by side they also read as a spec sheet, which is what they
-     are. */
+  /* Label and value on one line: seven rows have to fit without turning the
+     panel into a page of its own, and side by side they read as a spec sheet,
+     which is what they are. */
   .spec-row {
     display: flex;
     align-items: baseline;
@@ -484,8 +477,8 @@ const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as co
     white-space: nowrap;
   }
 
-  /* The dark-ground green, the same one the hero comparison uses for a plan's
-     own advantages. */
+  /* Green light enough to carry on this ground — the flat --color-success is
+     for the light sections and disappears here. */
   .spec-row dd[data-advantage] {
     color: #6fcf87;
     font-weight: 600;

@@ -194,8 +194,9 @@ export const ru = {
 
   tiers: {
     heading: 'Тарифы',
-    intro:
-      'Отличий — семь строк, и они ниже. Всё остальное на всех трёх тарифах одинаково.',
+    // Says what there is to choose between rather than where to look for
+    // it: the plans differ in seven terms and match in everything else.
+    intro: 'Тарифы отличаются ценой и семью условиями. Всё остальное во всех трёх одинаково.',
     // Heads the strip under the panels, where everything the three plans
     // share is stated once for the whole page.
     sameHeading: 'Одинаково во всех тарифах',

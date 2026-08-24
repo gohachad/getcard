@@ -163,8 +163,7 @@ export const en: Translations = {
 
   tiers: {
     heading: 'Plans',
-    intro:
-      'Seven rows differ, and they are below. Everything else is the same on all three.',
+    intro: 'The plans differ in price and seven terms. Everything else is the same on all three.',
     sameHeading: 'The same on every plan',
     advantageLabel: 'Plan advantage',
     serviceFeeLabel: 'Our service fee',
