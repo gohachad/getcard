@@ -1,13 +1,13 @@
 ---
 /**
- * DRAFT v2 — the card and the accounts, told apart.
+ * The card and the accounts, told apart.
  *
- * Same argument as the first draft, made with the page's own materials rather
- * than with two bulleted lists. Each side gets an object — the card face the
- * hero and the plans already use, and a details slip drawn in the same
- * abstract way — sitting in a warm gold light, with two spoken sentences
- * under it. Four bullets a side read as a specification; the section is here
- * to explain, so it should read as an explanation.
+ * Two things get confused with each other: paying with the card, and moving
+ * money by bank details. They run in different currencies, carry different
+ * limits and do different jobs, so each gets its own side of the section,
+ * headed by its own object — the card face the hero and the plans use, and a
+ * details slip. The section explains rather than specifies: two spoken
+ * sentences a side, not a list of terms.
  *
  * The slip carries no bank name, no logo and no real number: a masked account
  * line, a masked SWIFT, and the guilloche from the hero shrunk to a seal.
@@ -240,7 +240,7 @@ const names = copy.comparison.shared.currencies
     text-wrap: balance;
   }
 
-  /* Two sentences, set for reading: a measure short enough to scan, and the
+  /* Set for reading: a measure short enough to scan, ranged left, and the
      line height of body copy rather than of a table row. */
   .body {
     max-width: 42ch;
@@ -326,7 +326,7 @@ const names = copy.comparison.shared.currencies
     text-wrap: pretty;
   }
 
-  /* The one competitive claim on the page. Quiet, centred and given room — a
+  /* The one competitive claim on the page. Quiet, centred and given room: a
      callout box would make the page look defensive about it. */
   .difference {
     max-width: 58ch;

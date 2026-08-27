@@ -1,5 +1,5 @@
 import type { Translations } from './types';
-import { pricing, timeline, legal, specs, verify } from '../config/placeholders';
+import { pricing, timeline, legal, specs } from '../config/placeholders';
 
 /**
  * English — translated from ru.ts, which is the source of truth for meaning.
@@ -77,7 +77,7 @@ export const en: Translations = {
       dailyTransactions: specs.dailyTransactionsEn,
       atmFee: specs.shared.atmFeeEn,
       currencies: 'Dollars, euros, dirhams, rubles',
-      transfers: verify('No cap on the amount'),
+      transfers: 'No cap on the amount',
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
     },
@@ -153,7 +153,7 @@ export const en: Translations = {
         id: 'transfers',
         kicker: 'Transfers by bank details',
         title: 'The details are in your name',
-        body: `Money arrives as yours rather than into a shared service account. Incoming transfers come in four currencies, and your own accounts convert between themselves at the bank rate. ${verify('The limits here are not the card limits: there is no cap on the amount you transfer.')}`,
+        body: 'Money arrives as yours rather than into a shared service account. Incoming transfers come in four currencies, and your own accounts convert between themselves at the bank rate. The limits here are not the card limits: there is no cap on the amount you transfer.',
       },
     ],
     accountsLabel: 'Four accounts',

@@ -1,4 +1,4 @@
-import { pricing, timeline, legal, specs, verify } from '../config/placeholders';
+import { pricing, timeline, legal, specs } from '../config/placeholders';
 
 /**
  * Russian copy — written first. English is translated from this file.
@@ -96,7 +96,7 @@ export const ru = {
       currencies: 'Доллары, евро, дирхамы, рубли',
       // Stated with the plans as well: the daily limit above it is the card's,
       // and people read the two as one number.
-      transfers: verify('Без лимита по сумме'),
+      transfers: 'Без лимита по сумме',
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
     },
@@ -172,10 +172,10 @@ export const ru = {
   },
 
   // Paying with the card and moving money by bank details are two different
-  // things, and the page let them blur into one. This section is the one place
-  // that separates them, says which currency the card itself runs in, and
-  // states that the account details belong to the client rather than to a
-  // shared pool — which is the difference from a virtual-card service.
+  // things: different currencies, different limits, different uses. This is
+  // the one place that tells them apart, says which currency the card itself
+  // runs in, and states that the account details belong to the client rather
+  // than to a shared pool.
   accounts: {
     heading: 'Карта и счета — это разные вещи',
     intro:
@@ -191,7 +191,7 @@ export const ru = {
         id: 'transfers',
         kicker: 'Переводы по реквизитам',
         title: 'Реквизиты открыты на вас',
-        body: `Деньги приходят на ваше имя, а не на общий счёт сервиса. Входящие переводы — в четырёх валютах, между своими счетами работает конвертация по курсу банка. ${verify('Лимиты здесь не карточные: ограничений по сумме перевода нет.')}`,
+        body: 'Деньги приходят на ваше имя, а не на общий счёт сервиса. Входящие переводы — в четырёх валютах, между своими счетами работает конвертация по курсу банка. Лимиты здесь не карточные: ограничений по сумме перевода нет.',
       },
     ],
     accountsLabel: 'Четыре счёта',
