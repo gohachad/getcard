@@ -1,15 +1,13 @@
-# getcard.kg — public marketing site.
+# getcard.kg — public marketing site. Both language routes are open to every
+# crawler, and the sitemap below lists them.
 #
-# The order flow and tracking run on this same host (proxied to the app
-# container) so a client never changes domain mid-purchase. Those paths are
-# private to one customer and must not be crawled: an order page has nothing
-# useful to index, and a tracking URL carries a code in the query string.
-#
-# The pages also carry their own noindex, so this is belt and braces.
+# Only the customer's own paths stay out: tracking URLs carry an order code in
+# the query string, and /api/ is not a page at all. Those run on this same host
+# because a client should not change domain mid-purchase — the restriction is
+# about privacy, not about keeping the site out of search.
 
 User-agent: *
 Allow: /
-Disallow: /order
 Disallow: /track
 Disallow: /api/
 Disallow: /app-assets/

@@ -5,6 +5,7 @@ import '../styles/global.css';
 import interLatin from '../fonts/inter-latin-wght-normal.woff2?url';
 import interCyrillic from '../fonts/inter-cyrillic-wght-normal.woff2?url';
 import { t, htmlLang, canonicalPath, LOCALES, type Locale } from '../i18n';
+import { legal } from '../config/placeholders';
 
 interface Props {
   locale: Locale;
@@ -18,6 +19,54 @@ const copy = t(locale);
 const site = Astro.site ?? new URL('https://getcard.kg');
 const origin = site.origin;
 const absolute = (locale: Locale) => new URL(canonicalPath(locale), site).href;
+
+/**
+ * Structured data — three graphs, all of them things a search engine can act
+ * on rather than decoration:
+ *
+ *   Organization  who is behind the site, with the legal entity that already
+ *                 appears in the footer, so the two cannot disagree
+ *   WebSite       the site itself and the language it is in
+ *   FAQPage       the questions from <Faq>, read from the same copy the page
+ *                 renders. Answers shown to a searcher must match the page,
+ *                 which is exactly what reading them from one source gives us
+ *
+ * Nothing here claims a rating, a review or a price that is not on the page.
+ */
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${origin}/#organization`,
+      name: 'getcard',
+      legalName: legal.entityName,
+      taxID: legal.inn,
+      url: origin,
+      logo: `${origin}/favicon-512.png`,
+      image: `${origin}/og.png`,
+      description: copy.meta.description,
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${origin}/#website`,
+      url: origin,
+      name: 'getcard',
+      inLanguage: htmlLang[locale],
+      publisher: { '@id': `${origin}/#organization` },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${absolute(locale)}#faq`,
+      inLanguage: htmlLang[locale],
+      mainEntity: copy.faq.items.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -29,6 +78,14 @@ const absolute = (locale: Locale) => new URL(canonicalPath(locale), site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{copy.meta.title}</title>
     <meta name="description" content={copy.meta.description} />
+
+    {/* Indexing is the default, but saying so explicitly also carries the
+        preview limits: a large image and an unlimited snippet, which is what
+        makes a result worth clicking rather than a title and one line. */}
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
 
     <link rel="canonical" href={absolute(locale)} />
     {
@@ -88,6 +145,8 @@ const absolute = (locale: Locale) => new URL(canonicalPath(locale), site).href;
     <meta name="twitter:title" content={copy.meta.title} />
     <meta name="twitter:description" content={copy.meta.description} />
     <meta name="twitter:image" content={`${origin}/og.png`} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   </head>
 
   <body>
