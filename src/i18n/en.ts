@@ -146,33 +146,22 @@ export const en: Translations = {
       {
         id: 'card',
         kicker: 'Paying by card',
-        title: 'A card in dollars or euros',
-        items: [
-          'The card currency is dollars or euros — you choose when you apply.',
-          'Pay online and in shops anywhere VISA is accepted.',
-          'Apple Pay and Google Pay from the day it is issued, before the plastic.',
-          'The daily card limit depends on the plan: $6,000 to\u00a0$20,000.',
-        ],
+        title: 'Dollars or euros — your choice',
+        body: 'The card pays in shops and online anywhere VISA is accepted, and works in Apple\u00a0Pay and Google\u00a0Pay before the plastic arrives. Its daily limit depends on the plan: $6,000 to\u00a0$20,000.',
       },
       {
         id: 'transfers',
         kicker: 'Transfers by bank details',
-        title: 'Your own details, not a shared account',
-        items: [
-          'The details are opened in your name — money arrives as yours.',
-          'Incoming transfers in four currencies: dollars, euros, dirhams, rubles.',
-          verify('Outgoing transfers by bank details — no cap on the amount.'),
-          'Convert between your own accounts at the bank rate.',
-        ],
+        title: 'The details are in your name',
+        body: `Money arrives as yours rather than into a shared service account. Incoming transfers come in four currencies, and your own accounts convert between themselves at the bank rate. ${verify('The limits here are not the card limits: there is no cap on the amount you transfer.')}`,
       },
     ],
     accountsLabel: 'Four accounts',
     cardTag: 'card',
     accountsNote:
-      'The card draws on the dollar or the euro account. Dirhams and rubles sit in their own accounts, topped up and converted by bank details.',
-    differenceLabel: 'How this differs from a virtual card',
+      'The card draws on the dollar or the euro account. Dirhams and rubles are topped up and converted by bank details.',
     difference:
-      'Virtual-card services issue a number on a shared account, and no transfer can arrive in your name. Here the accounts and the details are yours.',
+      'A virtual card from another service is a number on a shared account: no transfer can arrive there in your name. Here the accounts and the details are yours.',
   },
 
   benefits: {

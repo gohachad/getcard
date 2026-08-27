@@ -1,23 +1,24 @@
 ---
 /**
- * DRAFT — the card and the accounts, told apart.
+ * DRAFT v2 — the card and the accounts, told apart.
  *
- * Two things get confused with each other: paying with the card, and moving
- * money by bank details. They have different currencies, different limits and
- * different uses, and the page said nothing about the difference. So the
- * section is literally two columns with a rule between them, and everything
- * that belongs to one side stays on that side.
+ * Same argument as the first draft, made with the page's own materials rather
+ * than with two bulleted lists. Each side gets an object — the card face the
+ * hero and the plans already use, and a details slip drawn in the same
+ * abstract way — sitting in a warm gold light, with two spoken sentences
+ * under it. Four bullets a side read as a specification; the section is here
+ * to explain, so it should read as an explanation.
  *
- * Under both sits the thing they share — the four accounts. Two of them carry
- * a tag saying the card runs on them, which is the shortest possible answer to
- * "what currency is the card in", and it is answered by the diagram rather
- * than by a sentence.
+ * The slip carries no bank name, no logo and no real number: a masked account
+ * line, a masked SWIFT, and the guilloche from the hero shrunk to a seal.
  *
- * The last line is the one competitive claim on the page. It names no service
- * and describes what a virtual card cannot do rather than who is bad at it.
+ * Under both sits the thing they share — the four accounts. The two the card
+ * draws on carry a gold tag, which answers "what currency is the card in"
+ * without a sentence having to.
  */
-import { t, type Locale } from '../i18n';
+import CardRender from './CardRender.astro';
 import Copy from './Copy.astro';
+import { t, type Locale } from '../i18n';
 
 interface Props {
   locale: Locale;
@@ -27,8 +28,8 @@ const { locale } = Astro.props;
 const copy = t(locale);
 const { accounts } = copy;
 
-// The four accounts, in the order the rest of the site lists them. The two
-// the card itself draws on are tagged.
+// The four accounts, in the order the rest of the site lists them. The two the
+// card itself draws on are tagged.
 const wallets = [
   { sign: '$', card: true },
   { sign: '€', card: true },
@@ -36,9 +37,9 @@ const wallets = [
   { sign: '₽', card: false },
 ];
 
-// Account names read off the shared currencies string so the wording cannot
-// drift from the plans section: "Доллары, евро, дирхамы, рубли". They are a
-// sentence there and labels here, so each one starts a capital.
+// Names read off the shared currencies string so the wording cannot drift from
+// the plans section. They are a sentence there and labels here, so each one
+// starts with a capital.
 const names = copy.comparison.shared.currencies
   .split(',')
   .map((part) => part.trim())
@@ -50,47 +51,77 @@ const names = copy.comparison.shared.currencies
     <h2 id="accounts-heading">{accounts.heading}</h2>
     <p class="intro">{accounts.intro}</p>
 
-    {/* Two ways to move money, kept apart by a rule rather than by wording. */}
-    <div class="rails">
+    <div class="pair">
       {
         accounts.columns.map((column) => (
-          <div class="rail" data-rail={column.id}>
-            <p class="kicker">
-              <span class="rail-icon" aria-hidden="true">
-                {column.id === 'card' ? (
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="5" width="20" height="14" rx="3" />
-                    <path d="M2 10h20" />
-                    <path d="M6 15h4" />
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 9h13l-3-3M20 15H7l3 3" />
-                  </svg>
-                )}
-              </span>
-              {column.kicker}
-            </p>
+          <article class="side" data-side={column.id}>
+            {/* The object first: it says which of the two this is before a
+                word is read. */}
+            <div class="stage">
+              {column.id === 'card' ? (
+                <div class="card-object">
+                  <CardRender tier="gold" label={copy.hero.cardAlt} active={true} />
+                </div>
+              ) : (
+                <svg class="slip" viewBox="0 0 300 190" role="img" aria-label={column.title}>
+                  <defs>
+                    <linearGradient id="slip-face" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#ffffff" />
+                      <stop offset="100%" stop-color="#f2f4f7" />
+                    </linearGradient>
+                  </defs>
 
+                  <rect
+                    x="0.5"
+                    y="0.5"
+                    width="299"
+                    height="189"
+                    rx="10"
+                    fill="url(#slip-face)"
+                    stroke="#d2d2d7"
+                  />
+
+                  {/* The engraving from the hero, shrunk to a seal. */}
+                  <g stroke="#daa54b" fill="none" opacity="0.55">
+                    <circle cx="252" cy="44" r="20" stroke-width="1" />
+                    <circle cx="252" cy="44" r="14" stroke-width="1" />
+                    <circle cx="252" cy="44" r="8" stroke-width="1" />
+                  </g>
+
+                  {/* Field labels and masked values. Nothing here is a real
+                      number and nothing names an issuer. */}
+                  <g fill="#858585" font-family="system-ui, sans-serif" font-size="9" letter-spacing="1.2">
+                    <text x="28" y="44">IBAN</text>
+                    <text x="28" y="96">SWIFT</text>
+                    <text x="28" y="148">HOLDER</text>
+                  </g>
+
+                  <g fill="#1d1d1f" font-family="ui-monospace, SFMono-Regular, monospace" font-size="15">
+                    <text x="28" y="66">KG•• •••• •••• 4417</text>
+                    <text x="28" y="118">•••• •• ••</text>
+                  </g>
+
+                  <g fill="#474747" font-family="system-ui, sans-serif" font-size="13">
+                    <text x="28" y="170">•••••• ••••••••</text>
+                  </g>
+
+                  <path d="M28 78h244M28 130h244" stroke="#e2e2e5" stroke-width="1" />
+                </svg>
+              )}
+            </div>
+
+            <p class="kicker">{column.kicker}</p>
             <h3>{column.title}</h3>
-
-            <ul>
-              {column.items.map((item) => (
-                <li>
-                  <span class="bullet" aria-hidden="true"></span>
-                  <span>
-                    <Copy text={item} />
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <p class="body">
+              <Copy text={column.body} />
+            </p>
+          </article>
         ))
       }
     </div>
 
-    {/* What both rails share. The tag on two of the four is the answer to the
-        question the section exists for. */}
+    {/* What both sides run on. The tag on two of the four is the shortest
+        answer to the question the section exists for. */}
     <div class="wallets">
       <p class="wallets-label">{accounts.accountsLabel}</p>
 
@@ -109,14 +140,23 @@ const names = copy.comparison.shared.currencies
       <p class="wallets-note">{accounts.accountsNote}</p>
     </div>
 
-    <div class="difference">
-      <p class="difference-label">{accounts.differenceLabel}</p>
-      <p class="difference-body">{accounts.difference}</p>
-    </div>
+    <p class="difference">{accounts.difference}</p>
   </div>
 </section>
 
 <style>
+  /* A warm ground rather than the flat canvas — the same gold light that sits
+     behind the card in the hero, at the strength white can carry. It is what
+     keeps this section in the brand instead of reading as a plain white block
+     between two dark bands. */
+  .accounts {
+    position: relative;
+    isolation: isolate;
+    background:
+      radial-gradient(38rem 20rem at 50% 0%, rgba(218, 165, 75, 0.1), transparent 70%),
+      linear-gradient(to bottom, #fbf9f6 0%, var(--color-canvas) 62%);
+  }
+
   h2 {
     font-size: var(--text-heading);
     line-height: var(--text-heading--line-height);
@@ -124,43 +164,71 @@ const names = copy.comparison.shared.currencies
     font-weight: 600;
     margin: 0;
     text-align: center;
+    text-wrap: balance;
   }
 
   .intro {
-    max-width: var(--container-form);
+    max-width: 54ch;
     margin: 14px auto 0;
     color: var(--color-graphite);
     text-align: center;
+    text-wrap: pretty;
   }
 
-  /* One rule between the two rails, on the page's centre axis — the same
-     device the benefits columns use, and the same colour. */
-  .rails {
+  .pair {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 28px;
-    margin-top: 32px;
+    gap: 40px;
+    margin-top: 36px;
   }
 
-  .rail {
-    min-width: 0;
+  .side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Both objects get the same footprint and the same light behind them, so
+     neither side looks like the more important one. */
+  .stage {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 164px;
+    background: radial-gradient(closest-side, rgba(218, 165, 75, 0.22), transparent 72%);
+  }
+
+  .card-object {
+    width: 215px;
+    rotate: -9deg;
+    filter: drop-shadow(rgba(0, 0, 0, 0.22) 3px 5px 22px);
+  }
+
+  .card-object :global(.card-render) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Tilted the other way, so the two objects lean towards each other rather
+     than in parallel. */
+  .slip {
+    width: 215px;
+    height: auto;
+    rotate: 6deg;
+    filter: drop-shadow(rgba(0, 0, 0, 0.16) 2px 4px 18px);
   }
 
   .kicker {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
+    margin: 18px 0 0;
     font-size: var(--text-caption);
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-ash);
-  }
-
-  .rail-icon {
-    display: inline-flex;
-    color: var(--color-signal);
+    /* The gold darkened until it carries text: --color-brand-gold is 2.2:1 on
+       white and may never hold a word. */
+    color: #8a6a2f;
   }
 
   h3 {
@@ -169,51 +237,35 @@ const names = copy.comparison.shared.currencies
     line-height: var(--text-subheading--line-height);
     letter-spacing: var(--text-subheading--letter-spacing);
     font-weight: 600;
+    text-wrap: balance;
   }
 
-  ul {
-    list-style: none;
-    margin: 14px 0 0;
-    padding: 0;
-    display: grid;
-    gap: 10px;
-  }
-
-  li {
-    display: flex;
-    gap: 10px;
-    align-items: baseline;
+  /* Two sentences, set for reading: a measure short enough to scan, and the
+     line height of body copy rather than of a table row. */
+  .body {
+    max-width: 42ch;
+    margin: 12px 0 0;
     font-size: var(--text-body-sm);
-    line-height: 1.5;
-    color: var(--color-smoke);
+    line-height: 1.6;
+    color: var(--color-graphite);
+    text-align: left;
+    text-wrap: pretty;
   }
 
-  /* A dot, not a check: these are statements of fact about how the thing
-     works, not a list of gains. The page already spends its checks on gains
-     in the benefits and the plans. */
-  .bullet {
-    flex: none;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background-color: var(--color-signal);
-    translate: 0 -3px;
-  }
-
-  /* The shared floor: what both rails run on. */
+  /* The floor both sides stand on. A hairline rather than a panel: a boxed
+     card here would make a third object out of what is really a caption. */
   .wallets {
-    margin-top: 32px;
-    padding: 20px 22px 18px;
-    background-color: var(--color-wash);
-    border: 1px solid var(--color-hairline);
-    border-radius: var(--radius-card);
+    margin-top: 34px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(218, 165, 75, 0.45);
+    text-align: center;
   }
 
   .wallets-label {
     margin: 0;
     font-size: var(--text-caption);
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--color-ash);
   }
@@ -223,24 +275,25 @@ const names = copy.comparison.shared.currencies
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     list-style: none;
-    margin: 12px 0 0;
+    margin: 16px 0 0;
     padding: 0;
   }
 
   .wallet {
     display: flex;
-    align-items: baseline;
-    gap: 8px;
-    padding: 9px 12px;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 10px 14px;
     background-color: var(--color-white);
     border: 1px solid var(--color-hairline);
     border-radius: var(--radius-card);
   }
 
-  /* The two accounts the card draws on carry the brand gold edge; the other
-     two are plain. The difference is the whole point of the row. */
+  /* The two the card draws on carry the gold edge and the tag. */
   .wallet[data-card] {
-    border-color: rgba(218, 165, 75, 0.75);
+    border-color: rgba(218, 165, 75, 0.7);
+    box-shadow: rgba(218, 165, 75, 0.14) 0 1px 8px;
   }
 
   .wallet-sign {
@@ -255,68 +308,77 @@ const names = copy.comparison.shared.currencies
   }
 
   .wallet-tag {
-    margin-left: auto;
     font-size: var(--text-caption);
     font-weight: 600;
     letter-spacing: 0.04em;
-    color: var(--color-action);
-    border: 1px solid rgba(120, 3, 3, 0.35);
+    color: #8a6a2f;
+    background-color: rgba(218, 165, 75, 0.16);
     border-radius: var(--radius-full);
-    padding: 1px 8px;
+    padding: 2px 9px;
   }
 
   .wallets-note {
-    margin: 12px 0 0;
+    max-width: 62ch;
+    margin: 14px auto 0;
     font-size: var(--text-caption);
-    line-height: 1.45;
-    color: var(--color-ash);
-  }
-
-  /* The one competitive claim on the page, and the only place the word
-     "virtual" appears next to what it cannot do. */
-  .difference {
-    margin-top: 24px;
-    padding-left: 14px;
-    border-left: 2px solid var(--color-action);
-  }
-
-  .difference-label {
-    margin: 0;
-    font-size: var(--text-caption);
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--color-action);
-  }
-
-  .difference-body {
-    margin: 6px 0 0;
-    font-size: var(--text-body-sm);
     line-height: 1.5;
+    color: var(--color-ash);
+    text-wrap: pretty;
+  }
+
+  /* The one competitive claim on the page. Quiet, centred and given room — a
+     callout box would make the page look defensive about it. */
+  .difference {
+    max-width: 58ch;
+    margin: 26px auto 0;
+    font-size: var(--text-body-sm);
+    line-height: 1.6;
     color: var(--color-smoke);
+    text-align: center;
+    text-wrap: pretty;
   }
 
   @media (min-width: 768px) {
-    .rails {
+    .pair {
       grid-template-columns: 1fr 1fr;
       gap: 0;
     }
 
-    .rail {
-      padding-inline: 28px;
+    .side {
+      padding-inline: 32px;
     }
 
-    .rail:first-child {
-      padding-left: 0;
-      border-right: 1px solid var(--color-hairline);
-    }
-
-    .rail:last-child {
-      padding-right: 0;
+    /* The rule between them fades at both ends, so it reads as light between
+       two objects rather than as a table border. */
+    .side:first-child {
+      border-right: 1px solid transparent;
+      border-image: linear-gradient(
+          to bottom,
+          transparent,
+          var(--color-hairline) 22%,
+          var(--color-hairline) 78%,
+          transparent
+        )
+        1;
     }
 
     .wallet-list {
       grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card-object,
+    .slip {
+      transition: rotate 400ms ease-out;
+    }
+
+    .side:hover .card-object {
+      rotate: -6deg;
+    }
+
+    .side:hover .slip {
+      rotate: 3deg;
     }
   }
 </style>
