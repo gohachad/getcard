@@ -1,0 +1,322 @@
+---
+/**
+ * DRAFT — the card and the accounts, told apart.
+ *
+ * Two things get confused with each other: paying with the card, and moving
+ * money by bank details. They have different currencies, different limits and
+ * different uses, and the page said nothing about the difference. So the
+ * section is literally two columns with a rule between them, and everything
+ * that belongs to one side stays on that side.
+ *
+ * Under both sits the thing they share — the four accounts. Two of them carry
+ * a tag saying the card runs on them, which is the shortest possible answer to
+ * "what currency is the card in", and it is answered by the diagram rather
+ * than by a sentence.
+ *
+ * The last line is the one competitive claim on the page. It names no service
+ * and describes what a virtual card cannot do rather than who is bad at it.
+ */
+import { t, type Locale } from '../i18n';
+import Copy from './Copy.astro';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = t(locale);
+const { accounts } = copy;
+
+// The four accounts, in the order the rest of the site lists them. The two
+// the card itself draws on are tagged.
+const wallets = [
+  { sign: '$', card: true },
+  { sign: '€', card: true },
+  { sign: 'AED', card: false },
+  { sign: '₽', card: false },
+];
+
+// Account names read off the shared currencies string so the wording cannot
+// drift from the plans section: "Доллары, евро, дирхамы, рубли". They are a
+// sentence there and labels here, so each one starts a capital.
+const names = copy.comparison.shared.currencies
+  .split(',')
+  .map((part) => part.trim())
+  .map((name) => name.charAt(0).toLocaleUpperCase(locale) + name.slice(1));
+---
+
+<section class="accounts section" id="accounts" aria-labelledby="accounts-heading">
+  <div class="measure">
+    <h2 id="accounts-heading">{accounts.heading}</h2>
+    <p class="intro">{accounts.intro}</p>
+
+    {/* Two ways to move money, kept apart by a rule rather than by wording. */}
+    <div class="rails">
+      {
+        accounts.columns.map((column) => (
+          <div class="rail" data-rail={column.id}>
+            <p class="kicker">
+              <span class="rail-icon" aria-hidden="true">
+                {column.id === 'card' ? (
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="5" width="20" height="14" rx="3" />
+                    <path d="M2 10h20" />
+                    <path d="M6 15h4" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 9h13l-3-3M20 15H7l3 3" />
+                  </svg>
+                )}
+              </span>
+              {column.kicker}
+            </p>
+
+            <h3>{column.title}</h3>
+
+            <ul>
+              {column.items.map((item) => (
+                <li>
+                  <span class="bullet" aria-hidden="true"></span>
+                  <span>
+                    <Copy text={item} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+
+    {/* What both rails share. The tag on two of the four is the answer to the
+        question the section exists for. */}
+    <div class="wallets">
+      <p class="wallets-label">{accounts.accountsLabel}</p>
+
+      <ul class="wallet-list">
+        {
+          wallets.map((wallet, index) => (
+            <li class="wallet" data-card={wallet.card ? '' : undefined}>
+              <span class="wallet-sign">{wallet.sign}</span>
+              <span class="wallet-name">{names[index]}</span>
+              {wallet.card && <span class="wallet-tag">{accounts.cardTag}</span>}
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="wallets-note">{accounts.accountsNote}</p>
+    </div>
+
+    <div class="difference">
+      <p class="difference-label">{accounts.differenceLabel}</p>
+      <p class="difference-body">{accounts.difference}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  h2 {
+    font-size: var(--text-heading);
+    line-height: var(--text-heading--line-height);
+    letter-spacing: var(--text-heading--letter-spacing);
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+  }
+
+  .intro {
+    max-width: var(--container-form);
+    margin: 14px auto 0;
+    color: var(--color-graphite);
+    text-align: center;
+  }
+
+  /* One rule between the two rails, on the page's centre axis — the same
+     device the benefits columns use, and the same colour. */
+  .rails {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-top: 32px;
+  }
+
+  .rail {
+    min-width: 0;
+  }
+
+  .kicker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ash);
+  }
+
+  .rail-icon {
+    display: inline-flex;
+    color: var(--color-signal);
+  }
+
+  h3 {
+    margin: 8px 0 0;
+    font-size: var(--text-subheading);
+    line-height: var(--text-subheading--line-height);
+    letter-spacing: var(--text-subheading--letter-spacing);
+    font-weight: 600;
+  }
+
+  ul {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  li {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: var(--text-body-sm);
+    line-height: 1.5;
+    color: var(--color-smoke);
+  }
+
+  /* A dot, not a check: these are statements of fact about how the thing
+     works, not a list of gains. The page already spends its checks on gains
+     in the benefits and the plans. */
+  .bullet {
+    flex: none;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--color-signal);
+    translate: 0 -3px;
+  }
+
+  /* The shared floor: what both rails run on. */
+  .wallets {
+    margin-top: 32px;
+    padding: 20px 22px 18px;
+    background-color: var(--color-wash);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+  }
+
+  .wallets-label {
+    margin: 0;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ash);
+  }
+
+  .wallet-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+  }
+
+  .wallet {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 9px 12px;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+  }
+
+  /* The two accounts the card draws on carry the brand gold edge; the other
+     two are plain. The difference is the whole point of the row. */
+  .wallet[data-card] {
+    border-color: rgba(218, 165, 75, 0.75);
+  }
+
+  .wallet-sign {
+    font-size: var(--text-subheading);
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .wallet-name {
+    font-size: var(--text-body-sm);
+    color: var(--color-graphite);
+  }
+
+  .wallet-tag {
+    margin-left: auto;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-action);
+    border: 1px solid rgba(120, 3, 3, 0.35);
+    border-radius: var(--radius-full);
+    padding: 1px 8px;
+  }
+
+  .wallets-note {
+    margin: 12px 0 0;
+    font-size: var(--text-caption);
+    line-height: 1.45;
+    color: var(--color-ash);
+  }
+
+  /* The one competitive claim on the page, and the only place the word
+     "virtual" appears next to what it cannot do. */
+  .difference {
+    margin-top: 24px;
+    padding-left: 14px;
+    border-left: 2px solid var(--color-action);
+  }
+
+  .difference-label {
+    margin: 0;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-action);
+  }
+
+  .difference-body {
+    margin: 6px 0 0;
+    font-size: var(--text-body-sm);
+    line-height: 1.5;
+    color: var(--color-smoke);
+  }
+
+  @media (min-width: 768px) {
+    .rails {
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .rail {
+      padding-inline: 28px;
+    }
+
+    .rail:first-child {
+      padding-left: 0;
+      border-right: 1px solid var(--color-hairline);
+    }
+
+    .rail:last-child {
+      padding-right: 0;
+    }
+
+    .wallet-list {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

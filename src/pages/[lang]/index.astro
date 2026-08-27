@@ -13,6 +13,7 @@
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
+import Accounts from '../../components/Accounts.astro';
 import Benefits from '../../components/Benefits.astro';
 import Tiers from '../../components/Tiers.astro';
 import Process from '../../components/Process.astro';
@@ -35,6 +36,8 @@ const copy = t(locale);
 
   <main id="main" aria-label={copy.a11y.mainLabel}>
     <Hero locale={locale} />
+    <BridgeSpan />
+    <Accounts locale={locale} />
     <BridgeSpan />
     <Benefits locale={locale} />
     <BridgeSpan />

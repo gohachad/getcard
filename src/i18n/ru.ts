@@ -1,4 +1,4 @@
-import { pricing, timeline, legal, specs } from '../config/placeholders';
+import { pricing, timeline, legal, specs, verify } from '../config/placeholders';
 
 /**
  * Russian copy — written first. English is translated from this file.
@@ -53,13 +53,13 @@ export const ru = {
       },
       {
         id: 'currencies',
-        title: 'Четыре валюты',
-        body: 'Евро, рубли, доллары и дирхамы — четыре отдельных счёта',
+        title: 'Карта в долларах или евро',
+        body: 'И четыре отдельных счёта: доллары, евро, дирхамы, рубли',
       },
       {
         id: 'transfers',
-        title: 'Переводы по реквизитам',
-        body: 'Отправляйте и принимайте деньги на банковские реквизиты',
+        title: 'Свои реквизиты',
+        body: 'Личные реквизиты для переводов, а не общий счёт сервиса',
       },
       {
         id: 'rates',
@@ -77,7 +77,7 @@ export const ru = {
   comparison: {
     labels: {
       annualFee: 'Годовая плата',
-      dailyLimit: 'Суточный лимит',
+      dailyLimit: 'Суточный лимит по карте',
       lounge: 'Бизнес-залы в аэропортах',
       personalManager: 'Персональный менеджер',
       limitIncrease: 'Увеличение лимита по запросу',
@@ -88,11 +88,15 @@ export const ru = {
       currencies: 'Валюты счетов',
       wallets: 'Бесконтактная оплата',
       serviceFee: 'Стоимость услуги getcard',
+      transfers: 'Переводы по реквизитам',
     },
     shared: {
       dailyTransactions: specs.dailyTransactions,
       atmFee: specs.shared.atmFee,
       currencies: 'Доллары, евро, дирхамы, рубли',
+      // Stated with the plans as well: the daily limit above it is the card's,
+      // and people read the two as one number.
+      transfers: verify('Без лимита по сумме'),
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
     },
@@ -165,6 +169,48 @@ export const ru = {
         ] as string[],
       },
     ],
+  },
+
+  // Paying with the card and moving money by bank details are two different
+  // things, and the page let them blur into one. This section is the one place
+  // that separates them, says which currency the card itself runs in, and
+  // states that the account details belong to the client rather than to a
+  // shared pool — which is the difference from a virtual-card service.
+  accounts: {
+    heading: 'Карта и счета — это разные вещи',
+    intro:
+      'У вас будет и то, и другое: карта VISA в долларах или евро и четыре собственных счёта с личными реквизитами.',
+    columns: [
+      {
+        id: 'card',
+        kicker: 'Оплата картой',
+        title: 'Карта в долларах или евро',
+        items: [
+          'Валюта карты — доллар или евро, на выбор при оформлении.',
+          'Оплата в интернете и в магазинах везде, где принимают VISA.',
+          'Apple Pay и Google Pay — сразу после выпуска, до пластика.',
+          'Суточный лимит по карте зависит от тарифа: от\u00a0$6\u00a0000 до\u00a0$20\u00a0000.',
+        ],
+      },
+      {
+        id: 'transfers',
+        kicker: 'Переводы по реквизитам',
+        title: 'Свои реквизиты, а не общий счёт',
+        items: [
+          'Реквизиты открыты на вас — деньги приходят на ваше имя.',
+          'Входящие переводы в четырёх валютах: доллары, евро, дирхамы, рубли.',
+          verify('Исходящие переводы по реквизитам — без лимита по сумме.'),
+          'Конвертация между своими счетами по курсу банка.',
+        ],
+      },
+    ],
+    accountsLabel: 'Четыре счёта',
+    cardTag: 'карта',
+    accountsNote:
+      'Карта списывает с долларового или еврового счёта. Дирхамы и рубли лежат на своих счетах: их пополняют и конвертируют по реквизитам.',
+    differenceLabel: 'Чем это отличается от виртуальной карты',
+    difference:
+      'Сервисы с виртуальными картами выдают номер на общем счёте, и принять перевод на своё имя нельзя. Здесь счета и реквизиты ваши.',
   },
 
   benefits: {
@@ -249,6 +295,14 @@ export const ru = {
       {
         q: 'В каких валютах работают счета?',
         a: 'Доллары, евро, дирхамы и рубли — это четыре отдельных счёта, а не один мультивалютный. Хранить и тратить можно в любой из этих валют, а рублёвый счёт делает карту рабочей и для тех, кто живёт за границей и сохраняет связь с Россией.',
+      },
+      {
+        q: 'Чем оплата картой отличается от перевода по реквизитам?',
+        a: 'Это два разных способа двигать деньги, и вы получаете оба. Картой платят в магазинах и в интернете — она списывает с долларового или еврового счёта, и по ней действует суточный лимит тарифа. По реквизитам деньги переводят со счёта на счёт: у каждого счёта свои реквизиты, открытые на вас, и лимиты здесь другие, чем по карте.',
+      },
+      {
+        q: 'В какой валюте сама карта?',
+        a: 'Доллар или евро — вы выбираете при оформлении. Счетов при этом четыре: доллары, евро, дирхамы и рубли. Карта списывает с долларового или еврового, остальные два счёта пополняются и конвертируются по реквизитам.',
       },
       {
         q: 'Работает ли карта в России?',

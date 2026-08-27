@@ -65,7 +65,7 @@ const notesFor = (tier: (typeof comparison.tiers)[number]) =>
 
 const noteId = (tierId: string, key: string) => `plan-note-${tierId}-${key}`;
 
-const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as const).map((key) => ({
+const sameRows = (['dailyTransactions', 'atmFee', 'transfers', 'currencies', 'wallets'] as const).map((key) => ({
   key,
   label: labels[key],
   value: shared[key],
@@ -571,7 +571,7 @@ const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as co
   .same-list {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 8px 28px;
+    gap: 8px 24px;
     margin: 0;
   }
 
@@ -606,7 +606,7 @@ const sameRows = (['dailyTransactions', 'atmFee', 'currencies', 'wallets'] as co
     }
 
     .same-list {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
     }
   }
 </style>

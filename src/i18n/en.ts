@@ -1,5 +1,5 @@
 import type { Translations } from './types';
-import { pricing, timeline, legal, specs } from '../config/placeholders';
+import { pricing, timeline, legal, specs, verify } from '../config/placeholders';
 
 /**
  * English — translated from ru.ts, which is the source of truth for meaning.
@@ -38,13 +38,13 @@ export const en: Translations = {
       },
       {
         id: 'currencies',
-        title: 'Four currencies',
-        body: 'Euros, rubles, dollars and dirhams — four separate accounts',
+        title: 'A card in dollars or euros',
+        body: 'Plus four separate accounts: dollars, euros, dirhams, rubles',
       },
       {
         id: 'transfers',
-        title: 'Transfers by bank details',
-        body: 'Send and receive money using bank details',
+        title: 'Bank details of your own',
+        body: 'Personal details for transfers, not a shared service account',
       },
       {
         id: 'rates',
@@ -60,7 +60,7 @@ export const en: Translations = {
   comparison: {
     labels: {
       annualFee: 'Annual fee',
-      dailyLimit: 'Daily limit',
+      dailyLimit: 'Daily card limit',
       lounge: 'Airport lounges',
       personalManager: 'Personal manager',
       limitIncrease: 'Limit increase on request',
@@ -71,11 +71,13 @@ export const en: Translations = {
       currencies: 'Account currencies',
       wallets: 'Contactless payment',
       serviceFee: 'getcard service fee',
+      transfers: 'Transfers by bank details',
     },
     shared: {
       dailyTransactions: specs.dailyTransactionsEn,
       atmFee: specs.shared.atmFeeEn,
       currencies: 'Dollars, euros, dirhams, rubles',
+      transfers: verify('No cap on the amount'),
       wallets: 'Apple Pay, Google Pay',
       serviceFee: pricing.serviceFee,
     },
@@ -134,6 +136,43 @@ export const en: Translations = {
         advantages: ['dailyLimit', 'lounge', 'personalManager', 'limitIncrease', 'expressIssue'],
       },
     ],
+  },
+
+  accounts: {
+    heading: 'The card and the accounts are two different things',
+    intro:
+      'You get both: a VISA card in dollars or euros, and four accounts of your own with bank details in your name.',
+    columns: [
+      {
+        id: 'card',
+        kicker: 'Paying by card',
+        title: 'A card in dollars or euros',
+        items: [
+          'The card currency is dollars or euros — you choose when you apply.',
+          'Pay online and in shops anywhere VISA is accepted.',
+          'Apple Pay and Google Pay from the day it is issued, before the plastic.',
+          'The daily card limit depends on the plan: $6,000 to\u00a0$20,000.',
+        ],
+      },
+      {
+        id: 'transfers',
+        kicker: 'Transfers by bank details',
+        title: 'Your own details, not a shared account',
+        items: [
+          'The details are opened in your name — money arrives as yours.',
+          'Incoming transfers in four currencies: dollars, euros, dirhams, rubles.',
+          verify('Outgoing transfers by bank details — no cap on the amount.'),
+          'Convert between your own accounts at the bank rate.',
+        ],
+      },
+    ],
+    accountsLabel: 'Four accounts',
+    cardTag: 'card',
+    accountsNote:
+      'The card draws on the dollar or the euro account. Dirhams and rubles sit in their own accounts, topped up and converted by bank details.',
+    differenceLabel: 'How this differs from a virtual card',
+    difference:
+      'Virtual-card services issue a number on a shared account, and no transfer can arrive in your name. Here the accounts and the details are yours.',
   },
 
   benefits: {
@@ -212,6 +251,14 @@ export const en: Translations = {
       {
         q: 'Which currencies do the accounts work in?',
         a: 'Dollars, euros, dirhams and rubles — four separate accounts rather than one multi-currency one. You can hold and spend in any of them, and the ruble account is what makes the card useful to people living abroad who stay connected to Russia.',
+      },
+      {
+        q: 'How is paying by card different from a transfer by bank details?',
+        a: 'They are two different ways to move money, and you get both. The card pays in shops and online — it draws on the dollar or euro account, and the daily limit of the plan applies to it. Transfers by bank details move money from account to account: each account has details of its own, opened in your name, and the limits there are not the card limits.',
+      },
+      {
+        q: 'What currency is the card itself in?',
+        a: 'Dollars or euros — you choose when you apply. There are four accounts regardless: dollars, euros, dirhams and rubles. The card draws on the dollar or the euro account; the other two are topped up and converted by bank details.',
       },
       {
         q: 'Does the card work inside Russia?',
