@@ -123,7 +123,7 @@ Confirmed from the deck and now unmarked:
 | Daily limit | $6,000 | $12,000 | $20,000 |
 | Airport lounges | — | 2 / year | 6 / year |
 | Personal manager | — | — | yes |
-| Limit increase | — | — | up to $50,000 |
+| Limit increase | — | — | up to $100,000 |
 
 Also confirmed: 20 transactions per day on all three, and issue takes about
 three weeks. The lounge figure includes food and covers the cardholder; the

@@ -114,8 +114,6 @@ export const ru = {
       // The dirham has no single glyph in common use, so the code carries it.
       { id: 'aed', label: 'AED' },
     ],
-    loungeNote: 'Включая питание. Доступ предоставляется держателю карты.',
-    limitIncreaseNote: 'При подтверждении происхождения средств.',
     tiers: [
       {
         id: 'gold',
@@ -171,35 +169,35 @@ export const ru = {
     ],
   },
 
-  // Paying with the card and moving money by bank details are two different
-  // things: different currencies, different limits, different uses. This is
-  // the one place that tells them apart, says which currency the card itself
-  // runs in, and states that the account details belong to the client rather
-  // than to a shared pool.
+  // Paying with the card and being sent money are two different things, and
+  // people arrive believing they are one. This is the place that separates
+  // them, in the plainest words the page has: what the card is for, what the
+  // accounts are for, and which of the four the card actually spends from.
+  // No banking vocabulary survives here on purpose — «реквизиты»,
+  // «конвертация» and «суточный лимит» each cost a reader who does not
+  // already know what they mean.
   accounts: {
-    heading: 'Карта и счета — это разные вещи',
+    heading: 'Карта — чтобы платить. Счета — чтобы получать деньги',
     intro:
-      'У вас будет и то, и другое: карта VISA в долларах или евро и четыре собственных счёта с личными реквизитами.',
+      'Вы получаете сразу и то, и другое: карту VISA, которой вы платите, и четыре счёта в банке, открытых на ваше имя — доллары, евро, дирхамы и рубли.',
     columns: [
       {
         id: 'card',
-        kicker: 'Оплата картой',
-        title: 'Доллар или евро — на выбор',
-        body: 'Карта платит в магазинах и в интернете везде, где принимают VISA, и работает в Apple\u00a0Pay и Google\u00a0Pay ещё до пластика. Суточный лимит по ней зависит от тарифа: от\u00a0$6\u00a0000 до\u00a0$20\u00a0000.',
+        kicker: 'Чем платить',
+        title: 'Карта: доллары или евро',
+        body: 'Картой вы платите в магазинах и в интернете — везде, где принимают VISA. Она работает в Apple\u00a0Pay и Google\u00a0Pay сразу, ещё до того как приедет пластик. Вы сами выбираете, в какой валюте будет карта: в долларах или в евро. В день картой можно потратить от\u00a0$6\u00a0000 до\u00a0$20\u00a0000 — сколько именно, зависит от тарифа.',
       },
       {
         id: 'transfers',
-        kicker: 'Переводы по реквизитам',
-        title: 'Реквизиты открыты на вас',
-        body: 'Деньги приходят на ваше имя, а не на общий счёт сервиса. Входящие переводы — в четырёх валютах, между своими счетами работает конвертация по курсу банка. Лимиты здесь не карточные: ограничений по сумме перевода нет.',
+        kicker: 'Куда вам присылают деньги',
+        title: 'Счета открыты лично на вас',
+        body: 'У каждого счёта свой номер — это как адрес, по которому вам присылают деньги. Счета оформлены на ваше имя, а не на сервис, поэтому перевод, отправленный вам, дойдёт. Получать деньги можно в четырёх валютах, а между своими счетами — менять одну валюту на другую по курсу банка. Сумма перевода ничем не ограничена.',
       },
     ],
-    accountsLabel: 'Четыре счёта',
+    accountsLabel: 'Ваши четыре счёта',
     cardTag: 'карта',
     accountsNote:
-      'Карта списывает с долларового или еврового счёта. Дирхамы и рубли пополняются и конвертируются по реквизитам.',
-    difference:
-      'Виртуальная карта другого сервиса — это номер на общем счёте: перевод на своё имя туда не придёт. Здесь счета и реквизиты ваши.',
+      'Когда вы платите картой, деньги уходят с долларового или с еврового счёта — с того, который вы выбрали. Дирхамы и рубли вам присылают на счёт, а потом вы меняете их на доллары или евро.',
   },
 
   benefits: {

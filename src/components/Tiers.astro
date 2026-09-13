@@ -50,21 +50,6 @@ const rowsFor = (tier: (typeof comparison.tiers)[number]) =>
     (row) => row.value !== ''
   );
 
-const NOTE_MARKERS: Record<string, string> = {
-  lounge: '*',
-  limitIncrease: '**',
-};
-
-const notesFor = (tier: (typeof comparison.tiers)[number]) =>
-  [
-    tier.advantages.includes('lounge') ? { key: 'lounge', text: comparison.loungeNote } : null,
-    tier.advantages.includes('limitIncrease')
-      ? { key: 'limitIncrease', text: comparison.limitIncreaseNote }
-      : null,
-  ].filter((note): note is { key: string; text: string } => note !== null);
-
-const noteId = (tierId: string, key: string) => `plan-note-${tierId}-${key}`;
-
 const sameRows = (['dailyTransactions', 'atmFee', 'transfers', 'currencies', 'wallets'] as const).map((key) => ({
   key,
   label: labels[key],
@@ -135,16 +120,10 @@ const sameRows = (['dailyTransactions', 'atmFee', 'transfers', 'currencies', 'wa
             <dl class="specs">
               {rowsFor(tier).map((row) => {
                 const isAdvantage = tier.advantages.includes(row.key);
-                const marker = notesFor(tier).some((note) => note.key === row.key)
-                  ? NOTE_MARKERS[row.key]
-                  : null;
                 return (
                   <div class="spec-row">
                     <dt>{row.label}</dt>
-                    <dd
-                      data-advantage={isAdvantage ? '' : undefined}
-                      aria-describedby={marker ? noteId(tier.id, row.key) : undefined}
-                    >
+                    <dd data-advantage={isAdvantage ? '' : undefined}>
                       {isAdvantage && (
                         <svg class="check" viewBox="0 0 20 20" width="15" height="15" aria-hidden="true">
                           <path
@@ -160,30 +139,12 @@ const sameRows = (['dailyTransactions', 'atmFee', 'transfers', 'currencies', 'wa
                       {isAdvantage && <span class="sr-only">{copy.tiers.advantageLabel}</span>}
                       <span class="spec-value">
                         <Copy text={row.value} />
-                        {marker && (
-                          <sup class="note-marker" aria-hidden="true">
-                            {marker}
-                          </sup>
-                        )}
                       </span>
                     </dd>
                   </div>
                 );
               })}
             </dl>
-
-            {notesFor(tier).length > 0 && (
-              <p class="plan-notes">
-                {notesFor(tier).map((note) => (
-                  <span id={noteId(tier.id, note.key)}>
-                    <span class="note-marker" aria-hidden="true">
-                      {NOTE_MARKERS[note.key]}
-                    </span>
-                    {note.text}
-                  </span>
-                ))}
-              </p>
-            )}
 
             <a
               class={index === 0 ? 'pill-filled' : 'pill-outlined'}
@@ -506,41 +467,11 @@ const sameRows = (['dailyTransactions', 'atmFee', 'transfers', 'currencies', 'wa
     translate: 0 2px;
   }
 
-  .note-marker {
-    color: var(--color-brand-gold);
-    font-weight: 600;
-  }
-
-  .spec-value .note-marker {
-    font-size: 0.75em;
-    line-height: 1;
-    margin-left: 1px;
-  }
-
-  .plan-notes {
-    display: grid;
-    gap: 3px;
-    margin: 10px 0 0;
-    font-size: var(--text-caption);
-    line-height: 1.4;
-    color: rgba(255, 255, 255, 0.55);
-  }
-
-  .plan-notes .note-marker {
-    margin-right: 3px;
-  }
-
   .plan > .pill-filled,
   .plan > .pill-outlined {
     margin-top: auto;
     padding-block: 9px;
     font-size: var(--text-body-sm);
-  }
-
-  /* Deliberately no rule for a notes-then-button pair: it would beat the auto
-     margin above and drop that plan's button off the shared line. */
-  .plan-notes {
-    margin-bottom: 14px;
   }
 
   /* On this ground the outlined button's ink is unreadable, so the two

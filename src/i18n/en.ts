@@ -90,8 +90,6 @@ export const en: Translations = {
       { id: 'eur', label: '€' },
       { id: 'aed', label: 'AED' },
     ],
-    loungeNote: 'Food included. Access is for the cardholder.',
-    limitIncreaseNote: 'Subject to confirming the source of funds.',
     tiers: [
       {
         id: 'gold',
@@ -139,29 +137,27 @@ export const en: Translations = {
   },
 
   accounts: {
-    heading: 'The card and the accounts are two different things',
+    heading: 'The card is for paying. The accounts are for being paid',
     intro:
-      'You get both: a VISA card in dollars or euros, and four accounts of your own with bank details in your name.',
+      'You get both at once: a VISA card you pay with, and four bank accounts opened in your own name — dollars, euros, dirhams and rubles.',
     columns: [
       {
         id: 'card',
-        kicker: 'Paying by card',
-        title: 'Dollars or euros — your choice',
-        body: 'The card pays in shops and online anywhere VISA is accepted, and works in Apple\u00a0Pay and Google\u00a0Pay before the plastic arrives. Its daily limit depends on the plan: $6,000 to\u00a0$20,000.',
+        kicker: 'What you pay with',
+        title: 'The card: dollars or euros',
+        body: 'You pay with the card in shops and online — anywhere VISA is accepted. It works in Apple\u00a0Pay and Google\u00a0Pay straight away, before the plastic arrives. You choose which currency the card runs in: dollars or euros. You can spend $6,000 to\u00a0$20,000 a day with it — how much exactly depends on the plan.',
       },
       {
         id: 'transfers',
-        kicker: 'Transfers by bank details',
-        title: 'The details are in your name',
-        body: 'Money arrives as yours rather than into a shared service account. Incoming transfers come in four currencies, and your own accounts convert between themselves at the bank rate. The limits here are not the card limits: there is no cap on the amount you transfer.',
+        kicker: 'Where money is sent to you',
+        title: 'The accounts are in your own name',
+        body: 'Every account has its own number — an address people send money to. The accounts are opened in your name and not the service’s, so a transfer made out to you arrives. You can be paid in four currencies, and swap one currency for another between your own accounts at the bank’s rate. There is no cap on how much you transfer.',
       },
     ],
-    accountsLabel: 'Four accounts',
+    accountsLabel: 'Your four accounts',
     cardTag: 'card',
     accountsNote:
-      'The card draws on the dollar or the euro account. Dirhams and rubles are topped up and converted by bank details.',
-    difference:
-      'A virtual card from another service is a number on a shared account: no transfer can arrive there in your name. Here the accounts and the details are yours.',
+      'When you pay by card, the money leaves the dollar or the euro account — whichever one you chose. Dirhams and rubles are sent to your account, and you swap them for dollars or euros afterwards.',
   },
 
   benefits: {

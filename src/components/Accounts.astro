@@ -15,6 +15,10 @@
  * Under both sits the thing they share — the four accounts. The two the card
  * draws on carry a gold tag, which answers "what currency is the card in"
  * without a sentence having to.
+ *
+ * The wording is deliberately plain: no «реквизиты», no «конвертация», no
+ * «суточный лимит». Someone who already knows those words loses nothing by
+ * reading around them; someone who does not would have lost the section.
  */
 import CardRender from './CardRender.astro';
 import Copy from './Copy.astro';
@@ -139,8 +143,6 @@ const names = copy.comparison.shared.currencies
 
       <p class="wallets-note">{accounts.accountsNote}</p>
     </div>
-
-    <p class="difference">{accounts.difference}</p>
   </div>
 </section>
 
@@ -323,18 +325,6 @@ const names = copy.comparison.shared.currencies
     font-size: var(--text-caption);
     line-height: 1.5;
     color: var(--color-ash);
-    text-wrap: pretty;
-  }
-
-  /* The one competitive claim on the page. Quiet, centred and given room: a
-     callout box would make the page look defensive about it. */
-  .difference {
-    max-width: 58ch;
-    margin: 26px auto 0;
-    font-size: var(--text-body-sm);
-    line-height: 1.6;
-    color: var(--color-smoke);
-    text-align: center;
     text-wrap: pretty;
   }
 

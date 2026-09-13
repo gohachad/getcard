@@ -222,8 +222,8 @@ export const specs = {
   limitIncrease: {
     gold: '',
     platinum: '',
-    infinite: 'до $50 000',
-    infiniteEn: 'up to $50,000',
+    infinite: 'до $100 000',
+    infiniteEn: 'up to $100,000',
   },
   /** Same on all three. */
   dailyTransactions: '20 в сутки',
