@@ -227,7 +227,7 @@ export const en: Translations = {
       },
       {
         q: 'Do I have to travel anywhere?',
-        a: 'No. Not to Kyrgyzstan, not to a bank, not to a notary. The whole thing happens online: you send two documents, we file the application, the bank issues the card. There is no in-person meeting at any stage.',
+        a: 'You do not fly to Kyrgyzstan, and you go to neither a bank nor a notary. One meeting in Moscow is needed: you meet our associate once. That is the only time you appear in person — you send the documents online, we file the application, and the bank issues the card.',
       },
       {
         q: 'When can I start paying with the card?',
@@ -290,7 +290,7 @@ export const en: Translations = {
       `${legal.entityName} · INN ${legal.inn} · OGRNIP ${legal.ogrnip}`,
       `Account № ${legal.account} at ${legal.bankName} · BIC ${legal.bik} · Corr. account ${legal.corrAccount}`,
       `Average card issue time: ${timeline.toIssueEn}. The bank sets the actual timing.`,
-      'Available to Russian citizens. Every stage happens online.',
+      'Available to Russian citizens. One meeting in Moscow is required; every other stage happens online.',
     ],
     copyright: '© 2026 getcard · getcard.kg',
     visaNote:
