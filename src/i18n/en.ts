@@ -160,6 +160,88 @@ export const en: Translations = {
       'When you pay by card, the money leaves the dollar or the euro account — whichever one you chose. Dirhams and rubles are sent to your account, and you swap them for dollars or euros afterwards.',
   },
 
+  bankRates: {
+    trigger: 'Bank fees: transfers, exchange, documents',
+    triggerHint: 'The bank\u2019s own, not ours',
+    heading: 'What the bank charges on the accounts',
+    intro:
+      'These are the fees of the bank that issues the card, not getcard\u2019s. They are not part of our fee, and the bank may change them.',
+    effective: 'The bank\u2019s schedule is effective from 22.06.2026',
+    columns: { service: 'Operation', fee: 'Fee', limits: 'Minimum and maximum' },
+    groups: [
+      {
+        title: 'The account',
+        rows: [
+          { service: 'Opening an account for a foreign citizen', fee: '200 som', limits: '' },
+          { service: 'Running the account', fee: 'free', limits: '' },
+          { service: 'Internet banking', fee: 'free', limits: '' },
+          { service: 'Closing the account', fee: 'free', limits: '' },
+          {
+            service: 'Closing a dormant account',
+            fee: '100 som',
+            limits: 'after more than 12 months without a transaction',
+          },
+        ],
+      },
+      {
+        title: 'When money arrives',
+        rows: [
+          {
+            service: 'Crediting currency through the bank\u2019s correspondent accounts',
+            fee: 'free',
+            limits: '',
+          },
+          {
+            service: 'Crediting euros through Zhejiang Chouzhou Commercial Bank',
+            fee: '0.5% of the amount',
+            limits: 'a separate correspondent, not the usual route',
+          },
+        ],
+      },
+      {
+        title: 'When money leaves by bank details (SWIFT)',
+        rows: [
+          { service: 'Dollars and euros', fee: '0.2%', limits: '$30 to\u00a0$300 · €30 to\u00a0€300' },
+          { service: 'Rubles', fee: '0.1%', limits: '500\u00a0₽ to\u00a03,000\u00a0₽' },
+          { service: 'Dirhams', fee: '0.3%', limits: '120 to\u00a01,000\u00a0AED' },
+          {
+            service: 'Transfer at the payee\u2019s expense, dollars and euros',
+            fee: '$20 · €20',
+            limits: 'a flat fee instead of a percentage',
+          },
+        ],
+      },
+      {
+        title: 'Exchanging currency',
+        rows: [
+          {
+            service: 'Exchange between your own accounts',
+            fee: 'at the bank\u2019s rate',
+            limits: 'the bank sets the rate itself, on the day',
+          },
+        ],
+      },
+      {
+        title: 'Account paperwork',
+        rows: [
+          { service: 'Statement by email', fee: '10 som', limits: 'per statement' },
+          { service: 'Consolidated account statement', fee: '300 som', limits: '' },
+          { service: 'Certificate of account opening, in Russian', fee: '300 som', limits: '' },
+          {
+            service: 'Certificate of account opening, in English',
+            fee: '1,000 som',
+            limits: 'or in two languages of your choice',
+          },
+        ],
+      },
+    ],
+    notes: [
+      'Fees quoted in a currency are charged in som at the National Bank of Kyrgyzstan rate on the day.',
+      'Cash withdrawal with the card is a card fee rather than an account fee: 1%, minimum $3, the same on every plan.',
+      'The bank may change its schedule unilaterally and publishes changes on its own site 10 days ahead.',
+    ],
+  },
+
   benefits: {
     columns: [
       {
@@ -280,9 +362,9 @@ export const en: Translations = {
       {
         title: 'Company',
         links: [
-          { label: 'Terms of service', href: '#' },
-          { label: 'Data processing policy', href: '#' },
-          { label: 'Company details', href: '#' },
+          { label: 'Terms of service', href: '/oferta/' },
+          { label: 'Personal data', href: '/oferta/#s12' },
+          { label: 'Legal details', href: '/oferta/#requisites' },
         ],
       },
     ],

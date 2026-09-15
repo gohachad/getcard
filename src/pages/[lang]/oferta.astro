@@ -1,0 +1,308 @@
+---
+/**
+ * The public offer, one route per locale.
+ *
+ * Set as a document rather than as a page of the site: one column at reading
+ * measure, numbered clauses hanging in the margin, and none of the landing
+ * page's furniture between the reader and the text. Somebody opening this is
+ * checking a term before they pay, and every decoration is something they have
+ * to scroll past to find it.
+ *
+ * noindex: this is a contract, not a page we want ranking for "карта VISA".
+ * It is linked from the footer, which is how anyone who needs it arrives.
+ */
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+import { LOCALES, t, localePath, type Locale } from '../../i18n';
+import { oferta } from '../../i18n/oferta';
+
+export function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const copy = t(locale);
+const doc = oferta[locale];
+
+/**
+ * The one piece of inline markup the document needs: **bold** for the clauses
+ * that disclaim something, which are the ones a reader must not skim past.
+ *
+ * Deliberately not a markdown renderer. A contract with a full markdown parser
+ * behind it is a contract where a stray underscore changes the text.
+ */
+const bold = (text: string) => text.split(/(\*\*[^*]+\*\*)/g);
+---
+
+<Base locale={locale} noindex title={`${doc.title} — getcard`} description={doc.intro}>
+  <Nav locale={locale} />
+
+  <main id="main" class="doc" aria-label={copy.a11y.mainLabel}>
+    <article class="measure">
+      <header class="doc-head">
+        <p class="kicker">{doc.subtitle}</p>
+        <h1>{doc.title}</h1>
+        <p class="revision">{doc.revision} · {doc.canonicalLabel}</p>
+        <p class="intro">{doc.intro}</p>
+
+        {doc.translationNote && <p class="translation-note">{doc.translationNote}</p>}
+      </header>
+
+      {
+        doc.sections.map((section) => (
+          <section class="doc-section" id={`s${section.n}`} aria-labelledby={`h${section.n}`}>
+            <h2 id={`h${section.n}`}>
+              <span class="section-n">{section.n}.</span> {section.title}
+            </h2>
+
+            {section.clauses.map((clause) => (
+              <div class="clause">
+                {clause.text && (
+                  <p>
+                    {clause.id && <span class="clause-n">{clause.id}.</span>}
+                    {bold(clause.text).map((part) =>
+                      part.startsWith('**') && part.endsWith('**') ? (
+                        <strong>{part.slice(2, -2)}</strong>
+                      ) : (
+                        <>{part}</>
+                      )
+                    )}
+                  </p>
+                )}
+
+                {clause.items && (
+                  <ul>
+                    {clause.items.map((item) => (
+                      <li>
+                        {bold(item).map((part) =>
+                          part.startsWith('**') && part.endsWith('**') ? (
+                            <strong>{part.slice(2, -2)}</strong>
+                          ) : (
+                            <>{part}</>
+                          )
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </section>
+        ))
+      }
+
+      {/* The footer's «Реквизиты» link lands here, so it carries its own id. */}
+      <section class="doc-section" id="requisites" aria-labelledby="h-requisites">
+        <h2 id="h-requisites">{doc.requisitesHeading}</h2>
+        <dl class="details">
+          {
+            doc.requisites.map((row) => (
+              <div>
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <h2 id="h-contacts" class="contacts-heading">{doc.contactsHeading}</h2>
+        <dl class="details">
+          {
+            doc.contacts.map((row) => (
+              <div>
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <p class="published">{doc.published}</p>
+      </section>
+
+      <a class="back" href={localePath(locale)}>{doc.backToSite}</a>
+    </article>
+  </main>
+
+  <Footer locale={locale} />
+</Base>
+
+<style>
+  .doc {
+    padding-block: clamp(40px, 8vw, 88px);
+    background-color: var(--color-white);
+  }
+
+  .measure {
+    max-width: 46rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter, 20px);
+  }
+
+  .doc-head {
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .kicker {
+    margin: 0;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8a6a2f;
+  }
+
+  h1 {
+    margin: 10px 0 0;
+    font-size: clamp(26px, 4vw, 36px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  .revision {
+    margin: 14px 0 0;
+    font-size: var(--text-caption);
+    color: var(--color-ash);
+  }
+
+  /* The one sentence that is not a clause: it says what the document is for,
+     in the words someone would use out loud. */
+  .intro {
+    margin: 18px 0 0;
+    font-size: var(--text-body-sm);
+    line-height: 1.6;
+    color: var(--color-ink);
+    font-weight: 600;
+    text-wrap: pretty;
+  }
+
+  .translation-note {
+    margin: 14px 0 0;
+    padding: 12px 14px;
+    font-size: var(--text-caption);
+    line-height: 1.5;
+    color: var(--color-graphite);
+    background-color: var(--color-canvas);
+    border-radius: var(--radius-card);
+  }
+
+  .doc-section {
+    margin-top: 36px;
+    scroll-margin-top: 90px;
+  }
+
+  h2 {
+    margin: 0 0 14px;
+    font-size: var(--text-subheading);
+    line-height: var(--text-subheading--line-height);
+    letter-spacing: var(--text-subheading--letter-spacing);
+    font-weight: 600;
+    text-wrap: balance;
+  }
+
+  .section-n {
+    color: #8a6a2f;
+  }
+
+  .clause {
+    margin-top: 12px;
+  }
+
+  .clause p {
+    margin: 0;
+    font-size: var(--text-body-sm);
+    line-height: 1.65;
+    color: var(--color-graphite);
+    text-wrap: pretty;
+  }
+
+  .clause strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+
+  /* The number sits in the text rather than in a hanging indent: at this
+     measure a hanging indent costs more width than it buys in scannability,
+     and on a phone it collapses anyway. */
+  .clause-n {
+    font-weight: 600;
+    color: var(--color-ink);
+    margin-right: 6px;
+  }
+
+  .clause ul {
+    margin: 8px 0 0;
+    padding-left: 22px;
+    display: grid;
+    gap: 6px;
+  }
+
+  .clause li {
+    font-size: var(--text-body-sm);
+    line-height: 1.6;
+    color: var(--color-graphite);
+    text-wrap: pretty;
+  }
+
+  .clause li::marker {
+    color: var(--color-brand-gold);
+  }
+
+  .details {
+    display: grid;
+    gap: 0;
+    margin: 0;
+  }
+
+  .details > div {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding: 10px 0;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  dt {
+    font-size: var(--text-caption);
+    color: var(--color-ash);
+  }
+
+  dd {
+    margin: 0;
+    font-size: var(--text-body-sm);
+    color: var(--color-ink);
+    /* Account numbers and a BIC are strings of digits meant to be read in
+       groups and copied exactly. */
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+
+  .contacts-heading {
+    margin-top: 32px;
+  }
+
+  .published {
+    margin: 22px 0 0;
+    font-size: var(--text-caption);
+    color: var(--color-ash);
+  }
+
+  .back {
+    display: inline-block;
+    margin-top: 40px;
+    font-size: var(--text-body-sm);
+    color: var(--color-link);
+  }
+
+  @media (min-width: 640px) {
+    .details > div {
+      grid-template-columns: 15rem 1fr;
+      gap: 16px;
+      align-items: baseline;
+    }
+  }
+</style>

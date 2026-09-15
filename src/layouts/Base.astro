@@ -9,16 +9,34 @@ import { legal } from '../config/placeholders';
 
 interface Props {
   locale: Locale;
+  /** Overrides the landing page's title and description on a sub-page. */
+  title?: string;
+  description?: string;
+  /**
+   * Keeps a page out of the index. Used by the public offer: it is a contract
+   * that has to be reachable, not a page we want ranking for "карта VISA".
+   */
+  noindex?: boolean;
 }
 
-const { locale } = Astro.props;
+const { locale, title, description, noindex = false } = Astro.props;
 const copy = t(locale);
+
+const pageTitle = title ?? copy.meta.title;
+const pageDescription = description ?? copy.meta.description;
+
+// Sub-pages are their own URL, and hreflang must point at the same document in
+// the other locale rather than at the landing page.
+const path = Astro.url.pathname;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const sub = path.replace(base, '').replace(/^\/(ru|en)/, '').replace(/^\/|\/$/g, '');
 
 // Public identity of the page, which is the production domain — never the
 // GitHub Pages base path. See canonicalPath() in src/i18n.
 const site = Astro.site ?? new URL('https://getcard.kg');
 const origin = site.origin;
-const absolute = (locale: Locale) => new URL(canonicalPath(locale), site).href;
+const absolute = (locale: Locale) =>
+  new URL(sub ? `${canonicalPath(locale)}${sub}/` : canonicalPath(locale), site).href;
 
 /**
  * Structured data — three graphs, all of them things a search engine can act
@@ -55,16 +73,22 @@ const structuredData = {
       inLanguage: htmlLang[locale],
       publisher: { '@id': `${origin}/#organization` },
     },
-    {
-      '@type': 'FAQPage',
-      '@id': `${absolute(locale)}#faq`,
-      inLanguage: htmlLang[locale],
-      mainEntity: copy.faq.items.map((item) => ({
-        '@type': 'Question',
-        name: item.q,
-        acceptedAnswer: { '@type': 'Answer', text: item.a },
-      })),
-    },
+    // The FAQ graph describes the landing page, so it is emitted only there —
+    // claiming an FAQPage on the public offer would be a lie to a crawler.
+    ...(sub
+      ? []
+      : [
+          {
+            '@type': 'FAQPage',
+            '@id': `${absolute(locale)}#faq`,
+            inLanguage: htmlLang[locale],
+            mainEntity: copy.faq.items.map((item) => ({
+              '@type': 'Question',
+              name: item.q,
+              acceptedAnswer: { '@type': 'Answer', text: item.a },
+            })),
+          },
+        ]),
   ],
 };
 ---
@@ -76,15 +100,19 @@ const structuredData = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{copy.meta.title}</title>
-    <meta name="description" content={copy.meta.description} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
 
     {/* Indexing is the default, but saying so explicitly also carries the
         preview limits: a large image and an unlimited snippet, which is what
         makes a result worth clicking rather than a title and one line. */}
     <meta
       name="robots"
-      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      content={
+        noindex
+          ? 'noindex, follow'
+          : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
+      }
     />
 
     <link rel="canonical" href={absolute(locale)} />
@@ -105,13 +133,19 @@ const structuredData = {
       )
     }
 
-    {/* The mark from the logo, cropped out of the lockup and trimmed to its
-        own ink — the 512 master has margins that would shrink it to nothing at
-        tab size. The old favicon.svg stays as the last fallback. */}
+    {/* The logo mark, trimmed to its own ink and centred — the 512 master
+        has margins that shrink it to nothing at tab size.
+
+        There is deliberately no favicon.svg. The one that used to sit here was
+        the Astro starter's glyph, and because browsers PREFER an SVG icon over
+        any PNG offered beside it, that glyph is what every tab actually showed
+        — the PNGs below were never reached. The mark is a raster with a
+        gradient and a guilloche, so there is no faithful SVG of it to put
+        back; the .ico carries 32 and 48 for the bare /favicon.ico request. */}
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon-32.png`} sizes="32x32" type="image/png" />
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon-512.png`} sizes="512x512" type="image/png" />
+    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.ico`} sizes="32x32 48x48" />
     <link rel="apple-touch-icon" href={`${import.meta.env.BASE_URL}apple-touch-icon.png`} />
-    <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
 
     {/* Search console verification.
         TODO: paste the code from Google Search Console into content="" below.
@@ -128,8 +162,8 @@ const structuredData = {
         pasted into a chat, which is where most of this traffic will come from. */}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="getcard" />
-    <meta property="og:title" content={copy.meta.title} />
-    <meta property="og:description" content={copy.meta.description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={absolute(locale)} />
     <meta property="og:locale" content={locale === 'ru' ? 'ru_RU' : 'en_US'} />
     <meta property="og:locale:alternate" content={locale === 'ru' ? 'en_US' : 'ru_RU'} />
@@ -142,8 +176,8 @@ const structuredData = {
     <meta property="og:image:alt" content={copy.meta.ogImageAlt} />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={copy.meta.title} />
-    <meta name="twitter:description" content={copy.meta.description} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={`${origin}/og.png`} />
 
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

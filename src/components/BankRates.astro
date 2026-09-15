@@ -1,0 +1,335 @@
+---
+/**
+ * The issuing bank's fee schedule, folded away until asked for.
+ *
+ * It sits under the four accounts because that is what it is about: what the
+ * bank charges to hold them, to receive money into them, to send money out and
+ * to convert between them. It is deliberately a disclosure rather than a
+ * section — a table of twenty commissions on the page would out-shout the one
+ * sentence most readers actually need, which is that incoming transfers are
+ * free.
+ *
+ * Built on <details>, so the control works with no JavaScript at all and the
+ * closed state is a real collapsed element rather than a hidden one.
+ *
+ * Every figure is the BANK's and is labelled as such. Ours is one number, on
+ * the plans, and the two must never be mistaken for each other.
+ */
+import { t, type Locale } from '../i18n';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const { bankRates } = t(locale);
+---
+
+<details class="rates">
+  <summary class="rates-trigger">
+    <span class="rates-trigger-text">
+      <span class="rates-trigger-label">{bankRates.trigger}</span>
+      <span class="rates-trigger-hint">{bankRates.triggerHint}</span>
+    </span>
+
+    {/* Rotated by the open state rather than swapped for a second glyph, so
+        there is one thing on screen that moves instead of two that flicker. */}
+    <svg class="chevron" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+      <path
+        d="M4 6l4 4 4-4"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+  </summary>
+
+  <div class="rates-body">
+    <h3>{bankRates.heading}</h3>
+    <p class="rates-intro">{bankRates.intro}</p>
+
+    {/* The table scrolls inside its own box on a narrow screen. The page
+        itself must never scroll sideways. */}
+    <div class="rates-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{bankRates.columns.service}</th>
+            <th scope="col">{bankRates.columns.fee}</th>
+            <th scope="col">{bankRates.columns.limits}</th>
+          </tr>
+        </thead>
+
+        {
+          bankRates.groups.map((group) => (
+            <tbody>
+              <tr class="group">
+                {/* A group heading is a row of the table rather than a
+                    paragraph between tables, so the three columns stay
+                    aligned the whole way down. */}
+                <th scope="colgroup" colspan="3">
+                  {group.title}
+                </th>
+              </tr>
+
+              {group.rows.map((row) => (
+                <tr>
+                  <th scope="row">{row.service}</th>
+                  <td class="fee">{row.fee}</td>
+                  <td class="limits">{row.limits}</td>
+                </tr>
+              ))}
+            </tbody>
+          ))
+        }
+      </table>
+    </div>
+
+    <ul class="rates-notes">
+      {bankRates.notes.map((note) => <li>{note}</li>)}
+    </ul>
+
+    <p class="rates-effective">{bankRates.effective}</p>
+  </div>
+</details>
+
+<style>
+  .rates {
+    margin: 22px auto 0;
+    max-width: 62rem;
+  }
+
+  /* The summary is the button. The default marker is removed on both engines
+     and replaced by the chevron, which is inside the flow and can be animated. */
+  .rates-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: fit-content;
+    margin-inline: auto;
+    padding: 10px 20px;
+    border: 1px solid rgba(218, 165, 75, 0.7);
+    border-radius: var(--radius-full);
+    background-color: var(--color-white);
+    color: var(--color-action);
+    cursor: pointer;
+    list-style: none;
+    text-align: left;
+    transition:
+      background-color 150ms ease-out,
+      border-color 150ms ease-out;
+  }
+
+  .rates-trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .rates-trigger:hover {
+    background-color: color-mix(in srgb, var(--color-brand-gold) 10%, var(--color-white));
+    border-color: var(--color-brand-gold);
+  }
+
+  .rates-trigger:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 3px;
+  }
+
+  .rates-trigger-text {
+    display: grid;
+    gap: 1px;
+  }
+
+  .rates-trigger-label {
+    font-size: var(--text-body-sm);
+    font-weight: 600;
+  }
+
+  /* Says whose money this is before the table is even open. */
+  .rates-trigger-hint {
+    font-size: var(--text-caption);
+    font-weight: 400;
+    color: var(--color-ash);
+  }
+
+  .chevron {
+    flex: none;
+    transition: rotate 200ms ease-out;
+  }
+
+  .rates[open] .chevron {
+    rotate: 180deg;
+  }
+
+  .rates-body {
+    margin-top: 18px;
+    padding: 22px;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-card);
+    text-align: left;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: var(--text-subheading);
+    line-height: var(--text-subheading--line-height);
+    letter-spacing: var(--text-subheading--letter-spacing);
+    font-weight: 600;
+  }
+
+  .rates-intro {
+    max-width: 58ch;
+    margin: 8px 0 0;
+    font-size: var(--text-body-sm);
+    line-height: 1.6;
+    color: var(--color-graphite);
+    text-wrap: pretty;
+  }
+
+  .rates-scroll {
+    margin-top: 18px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--text-body-sm);
+  }
+
+  thead th {
+    padding: 0 0 8px;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ash);
+    text-align: left;
+    border-bottom: 1px solid var(--color-hairline);
+    white-space: nowrap;
+  }
+
+  /* The group row carries the gold, so the eye can find the four sections
+     without a heavier rule or a second background. */
+  .group th {
+    padding: 18px 0 6px;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #8a6a2f;
+    text-align: left;
+  }
+
+  tbody th[scope='row'] {
+    padding: 9px 16px 9px 0;
+    font-weight: 400;
+    color: var(--color-ink);
+    text-align: left;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  td {
+    padding: 9px 16px 9px 0;
+    border-top: 1px solid var(--color-hairline);
+    vertical-align: top;
+  }
+
+  .group + tr th,
+  .group + tr td {
+    border-top: none;
+  }
+
+  .fee {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .limits {
+    color: var(--color-ash);
+    font-size: var(--text-caption);
+    line-height: 1.5;
+  }
+
+  .rates-notes {
+    display: grid;
+    gap: 6px;
+    margin: 18px 0 0;
+    padding-left: 18px;
+    font-size: var(--text-caption);
+    line-height: 1.5;
+    color: var(--color-ash);
+  }
+
+  .rates-effective {
+    margin: 14px 0 0;
+    font-size: var(--text-caption);
+    color: var(--color-ash);
+  }
+
+  /* Under 640px three columns cannot be read side by side: the third one ends
+     up past the edge of a box that scrolls, which nobody discovers. Each row
+     becomes a small block instead — operation, then fee, then the limit under
+     it — so everything is on screen and the table never scrolls at all. */
+  @media (max-width: 639px) {
+    .rates-scroll {
+      overflow-x: visible;
+    }
+
+    table,
+    tbody,
+    tr,
+    tbody th,
+    td {
+      display: block;
+      width: 100%;
+    }
+
+    thead {
+      display: none;
+    }
+
+    tr:not(.group) {
+      padding: 10px 0;
+      border-top: 1px solid var(--color-hairline);
+    }
+
+    .group + tr:not(.group) {
+      border-top: none;
+    }
+
+    tbody th[scope='row'] {
+      padding: 0;
+      border-top: none;
+      font-weight: 600;
+      color: var(--color-ink);
+    }
+
+    td {
+      padding: 2px 0 0;
+      border-top: none;
+    }
+
+    .fee {
+      white-space: normal;
+    }
+
+    .group th {
+      padding: 20px 0 2px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .rates-body {
+      padding: 28px 30px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chevron {
+      transition: none;
+    }
+  }
+</style>

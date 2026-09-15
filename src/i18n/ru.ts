@@ -200,6 +200,102 @@ export const ru = {
       'Когда вы платите картой, деньги уходят с долларового или с еврового счёта — с того, который вы выбрали. Дирхамы и рубли вам присылают на счёт, а потом вы меняете их на доллары или евро.',
   },
 
+  /**
+   * The issuing bank's own schedule, for the fees a getcard client will
+   * actually meet.
+   *
+   * Only those: the schedule runs to nine sections and most of it — safe
+   * deposit boxes in Bishkek, bullion, cash at the counter — belongs to
+   * someone standing in a branch in Kyrgyzstan, which is not this client.
+   * What is here is what happens to money arriving, leaving, or being
+   * converted on an account held from Russia, plus the papers the RF tax
+   * office asks for.
+   *
+   * These are the BANK's commissions and not ours, which the copy says
+   * outright: they are not in the getcard fee and the bank may change them.
+   */
+  bankRates: {
+    trigger: 'Тарифы банка: переводы, конвертация, документы',
+    triggerHint: 'Комиссии банка, не наши',
+    heading: 'Что банк берёт по счетам',
+    intro:
+      'Это комиссии банка, который выпускает карту, а не плата getcard. В стоимость нашей услуги они не входят, и банк вправе их менять.',
+    effective: 'Тарифы банка действуют с 22.06.2026',
+    columns: { service: 'Операция', fee: 'Комиссия', limits: 'Минимум и максимум' },
+    groups: [
+      {
+        title: 'Счёт',
+        rows: [
+          { service: 'Открытие счёта для иностранных граждан', fee: '200 сом', limits: '' },
+          { service: 'Ведение счёта', fee: 'бесплатно', limits: '' },
+          { service: 'Интернет-банк', fee: 'бесплатно', limits: '' },
+          { service: 'Закрытие счёта', fee: 'бесплатно', limits: '' },
+          {
+            service: 'Закрытие неактивного счёта',
+            fee: '100 сом',
+            limits: 'если операций не было больше 12 месяцев',
+          },
+        ],
+      },
+      {
+        title: 'Когда деньги приходят',
+        rows: [
+          {
+            service: 'Зачисление валюты через корреспондентские счета банка',
+            fee: 'бесплатно',
+            limits: '',
+          },
+          {
+            service: 'Зачисление евро через Zhejiang Chouzhou Commercial Bank',
+            fee: '0,5% от суммы',
+            limits: 'отдельный корреспондент, не основной путь',
+          },
+        ],
+      },
+      {
+        title: 'Когда деньги уходят по реквизитам (SWIFT)',
+        rows: [
+          { service: 'Доллары и евро', fee: '0,2%', limits: 'от\u00a0$30 до\u00a0$300 · от\u00a0€30 до\u00a0€300' },
+          { service: 'Рубли', fee: '0,1%', limits: 'от\u00a0500\u00a0₽ до\u00a03\u00a0000\u00a0₽' },
+          { service: 'Дирхамы', fee: '0,3%', limits: 'от\u00a0120 до\u00a01\u00a0000\u00a0AED' },
+          {
+            service: 'Перевод за счёт получателя, доллары и евро',
+            fee: '$20 · €20',
+            limits: 'фиксированно, вместо процента',
+          },
+        ],
+      },
+      {
+        title: 'Обмен валюты',
+        rows: [
+          {
+            service: 'Обмен между своими счетами',
+            fee: 'по курсу банка',
+            limits: 'курс банк устанавливает сам, на день операции',
+          },
+        ],
+      },
+      {
+        title: 'Документы по счёту',
+        rows: [
+          { service: 'Выписка по электронной почте', fee: '10 сом', limits: 'за каждую выписку' },
+          { service: 'Сводная выписка по счёту', fee: '300 сом', limits: '' },
+          { service: 'Справка об открытии счёта, на русском', fee: '300 сом', limits: '' },
+          {
+            service: 'Справка об открытии счёта, на английском',
+            fee: '1\u00a0000 сом',
+            limits: 'или на двух языках на выбор',
+          },
+        ],
+      },
+    ],
+    notes: [
+      'Комиссии, названные в валюте, банк списывает в сомах по курсу Нацбанка Кыргызстана на день операции.',
+      'Снятие наличных картой — это не тариф счёта, а тариф карты: 1%, минимум $3, одинаково во всех тарифах.',
+      'Банк вправе менять тарифы в одностороннем порядке и публикует изменения на своём сайте за 10 дней.',
+    ],
+  },
+
   benefits: {
     columns: [
       {
@@ -326,9 +422,12 @@ export const ru = {
       {
         title: 'Компания',
         links: [
-          { label: 'Договор оферты', href: '#' },
-          { label: 'Политика обработки данных', href: '#' },
-          { label: 'Реквизиты', href: '#' },
+          // A leading slash means "a page of this locale" — Footer resolves it
+          // through localePath(), so the GitHub Pages base path is carried and
+          // the link is not written twice for two deploy targets.
+          { label: 'Договор оферты', href: '/oferta/' },
+          { label: 'Обработка персональных данных', href: '/oferta/#s12' },
+          { label: 'Реквизиты', href: '/oferta/#requisites' },
         ],
       },
     ],

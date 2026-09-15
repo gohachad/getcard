@@ -22,6 +22,7 @@
  */
 import CardRender from './CardRender.astro';
 import Copy from './Copy.astro';
+import BankRates from './BankRates.astro';
 import { t, type Locale } from '../i18n';
 
 interface Props {
@@ -142,6 +143,11 @@ const names = copy.comparison.shared.currencies
       </ul>
 
       <p class="wallets-note">{accounts.accountsNote}</p>
+
+      {/* What the bank charges to hold these and move money through them.
+          Folded away: it is the answer to a question, not part of the
+          argument. */}
+      <BankRates locale={locale} />
     </div>
   </div>
 </section>
