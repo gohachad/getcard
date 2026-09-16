@@ -143,6 +143,15 @@ export const legal = {
   inn: '772915840980',
   /** A sole trader has an ОГРНИП rather than an ОГРН — the label differs. */
   ogrnip: '307770000254807',
+  /**
+   * Address of the sole trader, for the реквизиты block of the public offer.
+   *
+   * Deliberately NOT translated on the English page: this is the address a
+   * registered letter would be sent to, and an address is only useful in the
+   * language the postal service that delivers it works in.
+   */
+  address: 'г. Москва, ул. Мосфильмовская, д. 19',
+
   /** Payment details, shown in the footer as реквизиты. */
   account: '40802810194000006730',
   bankName: '«ГПБ» (Открытое акционерное общество)',
