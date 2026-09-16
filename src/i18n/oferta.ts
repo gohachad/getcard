@@ -19,7 +19,7 @@
  * Grep for it before publishing: a public offer with a hole in its payment
  * terms is worse than no published offer at all.
  */
-import { TBD, legal } from '../config/placeholders';
+import { TBD, legal, contacts } from '../config/placeholders';
 import type { Locale } from './types';
 
 export interface OfertaClause {
@@ -301,7 +301,7 @@ const ru: OfertaDoc = {
         },
         {
           id: '9.5',
-          text: `Для возврата Клиент направляет заявление на ${TBD} с адреса, указанного при заказе, указав ФИО, дату и сумму платежа с приложением чека, номер заявки и причину отказа.`,
+          text: `Для возврата Клиент направляет заявление на ${contacts.email} с адреса, указанного при заказе, указав ФИО, дату и сумму платежа с приложением чека, номер заявки и причину отказа.`,
         },
         {
           id: '9.6',
@@ -373,7 +373,7 @@ const ru: OfertaDoc = {
         },
         {
           id: '12.4',
-          text: `Данные хранятся в течение срока действия договора и сроков, установленных законодательством, после чего уничтожаются или обезличиваются. Клиент вправе отозвать согласие, направив заявление на ${TBD}.`,
+          text: `Данные хранятся в течение срока действия договора и сроков, установленных законодательством, после чего уничтожаются или обезличиваются. Клиент вправе отозвать согласие, направив заявление на ${contacts.email}.`,
         },
       ],
     },
@@ -384,7 +384,7 @@ const ru: OfertaDoc = {
         { id: '13.1', text: 'Договор регулируется законодательством Российской Федерации.' },
         {
           id: '13.2',
-          text: `Стороны разрешают споры путём переговоров. Претензия направляется на ${TBD} с описанием требований и подтверждающими документами. Срок ответа — 10 рабочих дней.`,
+          text: `Стороны разрешают споры путём переговоров. Претензия направляется на ${contacts.email} с описанием требований и подтверждающими документами. Срок ответа — 10 рабочих дней.`,
         },
         {
           id: '13.3',
@@ -409,8 +409,8 @@ const ru: OfertaDoc = {
   contacts: [
     { label: 'Сайт', value: 'getcard.kg' },
     { label: 'Оформление и статус заявки', value: 'app.getcard.kg' },
-    { label: 'Электронная почта', value: TBD },
-    { label: 'Поддержка', value: TBD },
+    { label: 'Электронная почта', value: contacts.email },
+    { label: 'Поддержка', value: contacts.supportEmail },
   ],
   published: `Дата публикации: ${TBD}`,
   backToSite: '← Вернуться на сайт',
@@ -667,7 +667,7 @@ const en: OfertaDoc = {
         },
         {
           id: '9.5',
-          text: `To request a refund the Client sends an application to ${TBD} from the address given when ordering, stating their full name, the date and amount of the payment with the receipt attached, the order number, and the reason for withdrawing.`,
+          text: `To request a refund the Client sends an application to ${contacts.email} from the address given when ordering, stating their full name, the date and amount of the payment with the receipt attached, the order number, and the reason for withdrawing.`,
         },
         {
           id: '9.6',
@@ -739,7 +739,7 @@ const en: OfertaDoc = {
         },
         {
           id: '12.4',
-          text: `Data is kept for the term of the contract and for the periods set by law, after which it is destroyed or anonymised. The Client may withdraw consent by sending a request to ${TBD}.`,
+          text: `Data is kept for the term of the contract and for the periods set by law, after which it is destroyed or anonymised. The Client may withdraw consent by sending a request to ${contacts.email}.`,
         },
       ],
     },
@@ -750,7 +750,7 @@ const en: OfertaDoc = {
         { id: '13.1', text: 'This contract is governed by the law of the Russian Federation.' },
         {
           id: '13.2',
-          text: `The Parties settle disputes by negotiation. A claim is sent to ${TBD} setting out the demands with supporting documents. The time for a reply is 10 business days.`,
+          text: `The Parties settle disputes by negotiation. A claim is sent to ${contacts.email} setting out the demands with supporting documents. The time for a reply is 10 business days.`,
         },
         {
           id: '13.3',
@@ -775,8 +775,8 @@ const en: OfertaDoc = {
   contacts: [
     { label: 'Site', value: 'getcard.kg' },
     { label: 'Ordering and order status', value: 'app.getcard.kg' },
-    { label: 'Email', value: TBD },
-    { label: 'Support', value: TBD },
+    { label: 'Email', value: contacts.email },
+    { label: 'Support', value: contacts.supportEmail },
   ],
   published: `Published: ${TBD}`,
   backToSite: '← Back to the site',

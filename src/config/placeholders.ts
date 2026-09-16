@@ -156,7 +156,15 @@ export const legal = {
 
 export const contacts = {
   telegram: TBD,
-  email: TBD,
+  /**
+   * The mailbox is ours: self-hosted on the same VPS as the site, behind
+   * getcard.kg's own MX, with SPF, DKIM and DMARC published. It is the address
+   * the public offer names for claims, refunds and data requests, so it has to
+   * be one that is actually read.
+   */
+  email: 'info@getcard.kg',
+  /** An alias onto the same mailbox, not a second inbox to forget about. */
+  supportEmail: 'support@getcard.kg',
   phone: TBD,
 } as const;
 
