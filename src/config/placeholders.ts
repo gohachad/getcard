@@ -138,25 +138,39 @@ export const timeline = {
    Legal entity
    ------------------------------------------------------------------------- */
 
+/**
+ * The sole trader and the account money is settled into.
+ *
+ * Every value here is transcribed from the bank's own реквизиты screen, which
+ * is the authoritative copy — an acquirer and the tax office both check these
+ * against ЕГРИП and the bank, and a digit that disagrees stops an application.
+ *
+ * NOTE: these replaced an earlier set naming ГПБ with a different account,
+ * BIC and correspondent account. That set was wrong, and it had been published
+ * in the site footer.
+ */
 export const legal = {
   entityName: 'ИП Томашевский Андрей Николаевич',
   inn: '772915840980',
   /** A sole trader has an ОГРНИП rather than an ОГРН — the label differs. */
   ogrnip: '307770000254807',
   /**
-   * Address of the sole trader, for the реквизиты block of the public offer.
+   * The registered address as the bank holds it, not a postal one.
    *
    * Deliberately NOT translated on the English page: this is the address a
-   * registered letter would be sent to, and an address is only useful in the
-   * language the postal service that delivers it works in.
+   * registered letter under section 13 goes to, and an address is only useful
+   * in the language of the postal service that has to deliver it.
    */
-  address: 'г. Москва, ул. Мосфильмовская, д. 19',
+  address: '119330, Россия, г. Москва, Университетский пр-кт, д. 21, корп. 2',
 
   /** Payment details, shown in the footer as реквизиты. */
-  account: '40802810194000006730',
-  bankName: '«ГПБ» (Открытое акционерное общество)',
-  bik: '044525823',
-  corrAccount: '30101810200000000823',
+  account: '40802810700010081862',
+  bankName: 'АО «ТБанк»',
+  bik: '044525974',
+  corrAccount: '30101810145250000974',
+  /** The bank's own INN — asked for on acquiring and counterparty forms. */
+  bankInn: '7710140679',
+  bankAddress: '127287, г. Москва, ул. Хуторская 2-я, д. 38А, стр. 26',
 } as const;
 
 /* -------------------------------------------------------------------------
@@ -174,7 +188,10 @@ export const contacts = {
   email: 'info@getcard.kg',
   /** An alias onto the same mailbox, not a second inbox to forget about. */
   supportEmail: 'support@getcard.kg',
-  phone: TBD,
+  /** Shown on the site and given to the acquirer as the support line. */
+  phone: '+7 925 067-01-90',
+  /** The same number, dialable — for tel: links. */
+  phoneHref: '+79250670190',
 } as const;
 
 /* -------------------------------------------------------------------------

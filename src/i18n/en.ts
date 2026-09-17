@@ -1,5 +1,5 @@
 import type { Translations } from './types';
-import { pricing, timeline, legal, specs } from '../config/placeholders';
+import { pricing, timeline, legal, specs, contacts } from '../config/placeholders';
 
 /**
  * English — translated from ru.ts, which is the source of truth for meaning.
@@ -10,7 +10,7 @@ export const en: Translations = {
   meta: {
     title: 'getcard — a VISA card for two documents: Netflix, ChatGPT, Steam and paying abroad',
     description:
-      'A VISA card from a leading Kyrgyz bank for Russian citizens. Two documents and the card is yours. Pay for Netflix, Spotify, ChatGPT, Claude, Steam, the App Store and purchases abroad. Dollars, euros, dirhams and rubles. Works online before the plastic arrives.',
+      'A VISA card from a leading Kyrgyz bank. Two passports and the card is yours. Pay for Netflix, Spotify, ChatGPT, Claude, Steam, the App Store and purchases abroad. Dollars, euros, dirhams and rubles. Works online before the plastic arrives.',
     ogImageAlt: 'getcard — a VISA card, captioned “Two documents and the card is yours”',
     localeName: 'English',
     localeShort: 'EN',
@@ -282,8 +282,8 @@ export const en: Translations = {
     heading: 'How it works',
     steps: [
       {
-        title: 'You send two documents',
-        body: 'Your internal and foreign passports. It only takes ten minutes.',
+        title: 'You send scans of your passports',
+        body: 'Your internal and international passport — scans, not photographs. It takes ten minutes.',
       },
       {
         title: 'We handle it — the card already works online',
@@ -301,11 +301,11 @@ export const en: Translations = {
     items: [
       {
         q: 'Who can apply for the card?',
-        a: 'Russian citizens. The service is not yet available to citizens of other countries — write to us and we will let you know if that changes.',
+        a: 'We accept passports of any country, not only Russian ones. You need an internal passport and an international one. The bank takes the final decision on every application.',
       },
       {
         q: 'How many documents are needed?',
-        a: 'Two. Your Russian internal passport — the photo page and the registration page. Your foreign passport — the title page. Plus a short form with your contact details and occupation. No proof of income, no proof of address, and no notarised paperwork.',
+        a: 'Two passports, three scans. Your internal passport — the photo page and the registration page. Your international passport — the photo page. They must be scans rather than phone snapshots: the bank does not accept photographs. Plus a short form with your contact details and occupation. No proof of income, no proof of address, and no notarised paperwork.',
       },
       {
         q: 'Do I have to travel anywhere?',
@@ -372,7 +372,8 @@ export const en: Translations = {
       `${legal.entityName} · INN ${legal.inn} · OGRNIP ${legal.ogrnip}`,
       `Account № ${legal.account} at ${legal.bankName} · BIC ${legal.bik} · Corr. account ${legal.corrAccount}`,
       `Average card issue time: ${timeline.toIssueEn}. The bank sets the actual timing.`,
-      'Available to Russian citizens. One meeting in Moscow is required; every other stage happens online.',
+      'We accept passports of any country. One meeting in Moscow is required; every other stage happens online.',
+      `${contacts.phone} · ${contacts.email}`,
     ],
     copyright: '© 2026 getcard · getcard.kg',
     visaNote:

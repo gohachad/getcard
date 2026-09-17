@@ -91,7 +91,7 @@ const ru: OfertaDoc = {
             '**Сайт** — сайт getcard.kg, а также связанные с ним страница оформления заказа и страница отслеживания статуса заявки на app.getcard.kg.',
             '**Банк-эмитент** — кредитная организация Кыргызской Республики, выпускающая банковские карты. Банк-эмитент не является стороной договора, а Исполнитель не является его представителем, агентом или аффилированным лицом.',
             '**Карта** — платёжная карта, выпущенная Банком-эмитентом на имя Клиента.',
-            '**Заявка** — комплекс данных и документов, передаваемый Клиентом для оказания услуг: фотографии страниц паспорта РФ и заграничного паспорта, заполненная анкета Банка-эмитента, контактные данные и адрес доставки.',
+            '**Заявка** — комплекс данных и документов, передаваемый Клиентом для оказания услуг: сканы страниц внутреннего паспорта (разворот с фотографией и страница с регистрацией) и заграничного паспорта, заполненная анкета Банка-эмитента, контактные данные и адрес доставки. Гражданство Клиента не ограничено; принимаются паспорта любых государств.',
             '**Тариф** — пакет услуг и его стоимость, опубликованные на Сайте в разделе «Тарифы».',
             '**Номер заявки** — код вида GC-XXXXX-XXXXX, который Клиент получает после оформления. Учётная запись и пароль не создаются: номер заявки — единственный доступ к её статусу, и его сохранность обеспечивает Клиент.',
           ],
@@ -107,7 +107,7 @@ const ru: OfertaDoc = {
           text: 'Исполнитель оказывает Клиенту информационно-консультационные и организационные услуги, связанные с подготовкой к открытию счёта и выпуску Карты в Банке-эмитенте, в объёме выбранного Тарифа, в том числе:',
           items: [
             'консультирование по требованиям Банка-эмитента и порядку оформления;',
-            'проверку комплектности и корректности документов Клиента, включая автоматическую проверку читаемости загруженных фотографий;',
+            'проверку комплектности и корректности документов Клиента, включая автоматическую проверку читаемости загруженных сканов;',
             'помощь в заполнении анкет и форм Банка-эмитента;',
             'организацию одной очной встречи Клиента с представителем Исполнителя в г. Москве для подписания документов Банка-эмитента;',
             'организационное сопровождение Заявки и, если это предусмотрено Тарифом, доставку Карты.',
@@ -171,7 +171,7 @@ const ru: OfertaDoc = {
           items: [
             'оказывать услуги качественно и в согласованные сроки;',
             'использовать данные Клиента только для исполнения договора;',
-            'не сохранять фотографии документов Клиента в файловом хранилище Сайта: они передаются специалисту и в Банк-эмитент и удаляются из памяти сервера после передачи;',
+            'не сохранять сканы документов Клиента в файловом хранилище Сайта: они передаются специалисту и в Банк-эмитент и удаляются из памяти сервера после передачи;',
             'предоставлять Клиенту инструкции и информацию о статусе Заявки по её номеру и по запросу;',
             'не совершать никаких операций по счёту и Карте Клиента от его имени;',
             'если Банк-эмитент прекратил выпуск Карт после оплаты, но до передачи Заявки, — предложить равноценную альтернативу или вернуть оплату полностью.',
@@ -365,7 +365,7 @@ const ru: OfertaDoc = {
         },
         {
           id: '12.2',
-          text: 'Фотографии документов не сохраняются в файловом хранилище Сайта. Они передаются специалисту и в Банк-эмитент и удаляются из памяти сервера после передачи; на диске Сайта изображение документа не хранится ни в какой момент.',
+          text: 'Сканы документов не сохраняются в файловом хранилище Сайта. Они передаются специалисту и в Банк-эмитент и удаляются из памяти сервера после передачи; на диске Сайта изображение документа не хранится ни в какой момент.',
         },
         {
           id: '12.3',
@@ -404,11 +404,13 @@ const ru: OfertaDoc = {
     { label: 'Банк', value: legal.bankName },
     { label: 'БИК', value: legal.bik },
     { label: 'Корреспондентский счёт', value: legal.corrAccount },
+    { label: 'ИНН банка', value: legal.bankInn },
   ],
   contactsHeading: 'Контакты',
   contacts: [
     { label: 'Сайт', value: 'getcard.kg' },
     { label: 'Оформление и статус заявки', value: 'app.getcard.kg' },
+    { label: 'Телефон', value: contacts.phone },
     { label: 'Электронная почта', value: contacts.email },
     { label: 'Поддержка', value: contacts.supportEmail },
   ],
@@ -457,7 +459,7 @@ const en: OfertaDoc = {
             '**Site** — getcard.kg, together with the order page and the application-tracking page at app.getcard.kg.',
             '**Issuing bank** — a credit institution of the Kyrgyz Republic that issues bank cards. The issuing bank is not a party to this contract, and the Contractor is not its representative, agent or affiliate.',
             '**Card** — a payment card issued by the issuing bank in the Client’s name.',
-            '**Application** — the set of data and documents the Client submits for the services: photographs of the pages of the Russian internal passport and of the international passport, the completed form of the issuing bank, contact details and a delivery address.',
+            '**Application** — the set of data and documents the Client submits for the services: scans of the pages of the internal passport (the photo spread and the registration page) and of the international passport, the completed form of the issuing bank, contact details and a delivery address. The Client’s citizenship is not restricted; passports of any state are accepted.',
             '**Plan** — a package of services and its price, published on the Site under “Plans”.',
             '**Order number** — a code in the form GC-XXXXX-XXXXX issued to the Client after ordering. No account or password is created: the order number is the only access to the status of the Application, and keeping it safe is the Client’s responsibility.',
           ],
@@ -473,7 +475,7 @@ const en: OfertaDoc = {
           text: 'The Contractor provides the Client with information, consulting and organisational services relating to preparation for the opening of an account and the issue of a Card at the issuing bank, to the extent of the chosen Plan, including:',
           items: [
             'advice on the issuing bank’s requirements and on the application procedure;',
-            'checking that the Client’s documents are complete and correct, including an automated check that the uploaded photographs are legible;',
+            'checking that the Client’s documents are complete and correct, including an automated check that the uploaded scans are legible;',
             'help completing the issuing bank’s forms;',
             'arranging one in-person meeting between the Client and the Contractor’s representative in Moscow for the signing of the issuing bank’s documents;',
             'organisational support of the Application and, where the Plan provides for it, delivery of the Card.',
@@ -537,7 +539,7 @@ const en: OfertaDoc = {
           items: [
             'provide the services to a proper standard and within the agreed time;',
             'use the Client’s data only to perform this contract;',
-            'not store photographs of the Client’s documents in the Site’s file storage: they are passed to the specialist and to the issuing bank and are dropped from server memory after being sent;',
+            'not store scans of the Client’s documents in the Site’s file storage: they are passed to the specialist and to the issuing bank and are dropped from server memory after being sent;',
             'give the Client instructions and information about the status of the Application on request and by its order number;',
             'carry out no transactions on the Client’s account or Card on the Client’s behalf;',
             'if the issuing bank has stopped issuing Cards after payment but before the Application was submitted — offer an equivalent alternative or refund the payment in full.',
@@ -731,7 +733,7 @@ const en: OfertaDoc = {
         },
         {
           id: '12.2',
-          text: 'Photographs of documents are not kept in the Site’s file storage. They are passed to the specialist and to the issuing bank and dropped from server memory after being sent; at no point is an image of a document held on the Site’s disk.',
+          text: 'Scans of documents are not kept in the Site’s file storage. They are passed to the specialist and to the issuing bank and dropped from server memory after being sent; at no point is an image of a document held on the Site’s disk.',
         },
         {
           id: '12.3',
@@ -770,11 +772,13 @@ const en: OfertaDoc = {
     { label: 'Bank', value: legal.bankName },
     { label: 'BIC', value: legal.bik },
     { label: 'Correspondent account', value: legal.corrAccount },
+    { label: 'Bank INN', value: legal.bankInn },
   ],
   contactsHeading: 'Contacts',
   contacts: [
     { label: 'Site', value: 'getcard.kg' },
     { label: 'Ordering and order status', value: 'app.getcard.kg' },
+    { label: 'Phone', value: contacts.phone },
     { label: 'Email', value: contacts.email },
     { label: 'Support', value: contacts.supportEmail },
   ],
